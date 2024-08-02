@@ -16,8 +16,8 @@ program
 program
   .command('config [value]')
   .description('inspect and modify the config')
-  .option('-g, --get <path>', 'get value from option')
-  .option('-s, --set <path> <value>')
+  .option('-g, --get <path>', 'get value from config')
+  .option('-s, --set <path> <value>', 'set value from config')
   .option('-d, --delete <path>', 'delete option from config')
   .action((value, cmd) => {
     // 配置优先以config中的index.json为准
