@@ -3,7 +3,8 @@ import { readConfig } from '.';
 
 axios.interceptors.request.use(async (req) => {
   const config: any = await readConfig();
-  axios.defaults.headers.common['Authorization'] = `Bearer ${config.Authorization}`;
+  const Authorization = config[config.default].Authorization;
+  req.headers['Authorization'] = `Bearer ${Authorization}`;
   return req;
 });
 

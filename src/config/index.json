@@ -1,5 +1,13 @@
 {
-  "Authorization": "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",
-  "orgName": "yycfFSET",
-  "apiUrl": "https://api.github.com"
+  "gitlab": {
+    "apiUrl": "please input your gitlab origin (Required)",
+    "orgName": "please input your gitlab org name (Not Required)",
+    "Authorization": "please input your gitlab personal access tokens (Required)"
+  },
+  "github": {
+    "apiUrl": "please input your github origin (Required)",
+    "orgName": "please input your github org name (Not Required)",
+    "Authorization": "please input your github personal access tokens (Required)"
+  },
+  "default": "github"
 }
