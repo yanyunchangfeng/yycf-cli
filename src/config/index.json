@@ -1,12 +1,14 @@
 {
   "gitlab": {
-    "apiUrl": "please input your gitlab origin (Required)",
-    "orgName": "please input your gitlab org name (Not Required)",
+    "origin": "please input your gitlab origin (Required)",
+    "orgs": "please input your gitlab orgs (Not Required)",
+    "user": "please input your gitlab user (Not Required)",
     "Authorization": "please input your gitlab personal access tokens (Required)"
   },
   "github": {
-    "apiUrl": "please input your github origin (Required)",
-    "orgName": "please input your github org name (Not Required)",
+    "origin": "please input your github origin (Required)",
+    "orgs": "please input your github orgs (Required)",
+    "user": "please input your github user (Required)",
     "Authorization": "please input your github personal access tokens (Required)"
   },
   "default": "github"

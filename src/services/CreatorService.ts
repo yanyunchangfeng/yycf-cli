@@ -61,10 +61,12 @@ class CreatorService {
     const config: any = await readConfig();
     let requestUrl;
     if (config.default === GITSERVER.GITHUB) {
-      requestUrl = `yanyunchangfeng/${repo.name}${tag ? '#' + tag : ''}`;
+      requestUrl = `${config[config.default].orgs ? config[config.default].orgs : config[config.default].user}/${
+        repo.name
+      }${tag ? '#' + tag : ''}`;
     }
     if (config.default === GITSERVER.GITLAB) {
-      const origin = config[config.default].apiUrl;
+      const origin = config[config.default].origin;
       const Authorization = config[config.default].Authorization;
       requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip?sha=${tag}`;
       return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.targetDir, {
@@ -122,47 +124,55 @@ class CreatorService {
   }
   async inquirerGitServerConfig() {
     const config: any = await readConfig();
-    const orgList = Object.keys(config).filter((org: string) => org !== 'default');
-    const { org } = await Inquirer.prompt([
+    const gitServerList = Object.keys(config).filter((item: string) => item !== 'default');
+    const { gitServer } = await Inquirer.prompt([
       {
-        name: 'org',
+        name: 'gitServer',
         type: 'list',
         default: config.default,
-        choices: orgList,
+        choices: gitServerList,
         message: 'please choose your git server:'
       }
     ] as any);
-    const orgSetting = config[org];
 
-    const { Authorization, orgName, apiUrl } = await Inquirer.prompt([
+    const orgSetting = config[gitServer];
+
+    const { Authorization, user, origin, orgs } = await Inquirer.prompt([
       {
-        name: 'apiUrl',
+        name: 'origin',
         type: 'input',
-        default: orgSetting.apiUrl,
-        message: 'please input your github/gitlab protocal hostname:'
+        default: orgSetting.origin,
+        message: `please input your ${gitServer} protocal hostname:`
       },
       {
-        name: 'orgName',
+        name: 'user',
         type: 'input',
-        default: orgSetting.orgName,
-        message: 'please input your github/gitlab organizations:'
+        default: orgSetting.user,
+        message: `please input your ${gitServer} user:`
+      },
+      {
+        name: 'orgs',
+        type: 'input',
+        default: orgSetting.orgs,
+        message: `please input your ${gitServer} orgs:`
       },
       {
         name: 'Authorization',
         type: 'input',
         default: orgSetting.Authorization,
-        message: 'please input your github/gitlab personal access tokens:'
+        message: `please input your ${gitServer} personal access tokens:`
       }
     ] as any);
-    if (!Authorization && !orgName && !apiUrl) return;
+    if (!Authorization && !user && !origin && !orgs) return;
     await writeConfig({
       ...config,
-      [org]: {
-        apiUrl,
-        orgName,
-        Authorization
+      [gitServer]: {
+        origin,
+        user,
+        Authorization,
+        orgs
       },
-      default: org
+      default: gitServer
     });
   }
   async fetchTemplate() {
