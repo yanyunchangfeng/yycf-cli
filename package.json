@@ -1,0 +1,56 @@
+{
+  "name": "yycf-cli",
+  "version": "1.0.0",
+  "description": "yycf cli",
+  "main": "bin/index.js",
+  "bin": {
+    "cf": "./bin/index.js",
+    "yycf": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "ts-node  src/index.ts",
+    "build-hmr": "nodemon --watch src --ext ts,json,mjs --exec npm run build ",
+    "build-ts": "tsc -p tsconfig.json",
+    "build": "npm run build-ts && npm run copy-config",
+    "copy-config": "ts-node copyFiles.ts",
+    "start:debug": "node --inspect-brk -r ts-node/register  src/index.ts create xxx",
+    "prepare": "husky install",
+    "prettier": "prettier -c --write  **/* --cache",
+    "pre-commit": "lint-staged"
+  },
+  "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
+  "license": "MIT",
+  "keywords": [
+    "cf",
+    "yycf",
+    "code-analysis",
+    "cli"
+  ],
+  "files": [
+    "bin"
+  ],
+  "dependencies": {
+    "axios": "1.7.2",
+    "chalk": "4.1.1",
+    "commander": "12.1.0",
+    "download-git-repo": "3.0.2",
+    "fs-extra": "11.2.0",
+    "inquirer": "10.1.5",
+    "ora": "5.4.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "11.0.4",
+    "@types/inquirer": "9.0.7",
+    "@types/node": "22.0.0",
+    "nodemon": "3.1.4",
+    "ts-node": "10.9.2",
+    "typescript": "5.5.4",
+    "husky": "8.0.3",
+    "prettier": "2.8.8",
+    "lint-staged": "13.2.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": "prettier --write  --ignore-unknown",
+    "*.{json,less,scss,md}": "prettier --write --ignore-unknown"
+  }
+}
