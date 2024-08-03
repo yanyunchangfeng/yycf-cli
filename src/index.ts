@@ -29,6 +29,6 @@ program.on('--help', () => {
   console.log(`Run ${chalk.cyan(`cf/yycf <command> --help`)} show details`);
 });
 
-program.version(`code-analysis-tool@${require('../package.json').version}`).usage('<command> [option]');
+program.version(`yycf-cli@${require('../package.json').version}`).usage('<command> [option]');
 
 program.parse(process.argv);
