@@ -1,97 +1,50 @@
 import Inquirer from 'inquirer';
 import { CreatoRequestService } from '../services';
-import { wrapLoading, readFile, writeFile, writeConfig, readConfig } from '../utils';
+import { wrapLoading, readFile, writeFile, writeConfig, readConfig, copy } from '../utils';
 import util from 'util';
 // @ts-ignore   正常不用忽略也没问题 因为typings里面有定义  主要是为了解决调式模式下的ts报错（调式编译器的问题）
 import dowloadGitRepo from 'download-git-repo';
 import path from 'path';
-import fs from 'fs-extra';
 import { SetUpService } from '.';
 import { GITSERVER, Repo } from '../shared';
+import os from 'os';
+import fs from 'fs-extra';
 
 class CreatorService {
   projectName: string;
   targetDir: string;
   downloadGitRepo = util.promisify(dowloadGitRepo);
   setUpService: SetUpService;
+  cacheDir: any;
   constructor(projectName: string, targetDir: string) {
     this.projectName = projectName;
     this.targetDir = targetDir;
     this.setUpService = new SetUpService(targetDir);
+    this.initCacheDir();
   }
-  async fetchRepo() {
-    const config: any = await readConfig();
-    let repos: any = await wrapLoading(
-      CreatoRequestService[config.default as GITSERVER].fetchRepoList,
-      'waiting for fetch template'
-    );
-    if (!repos) return;
-    repos = repos.map((item: any) => {
-      return {
-        name: item.name,
-        value: item.id
-      };
-    });
-    const { repo } = await Inquirer.prompt({
-      name: 'repo',
-      type: 'list',
-      choices: repos,
-      message: `please choose a template to create project:`
-    } as any);
-    return { name: repos.find((item: any) => item.value === repo).name, id: repo };
-  }
-  async fetchTag(repo: Repo) {
-    const config: any = await readConfig();
-    const tags = await wrapLoading(
-      CreatoRequestService[config.default as GITSERVER].fetchTagList,
-      'waiting fetch tag',
-      repo
-    );
-    if (!tags) return;
-    const { tag } = await Inquirer.prompt({
-      name: 'tag',
-      type: 'list',
-      choices: tags,
-      message: 'please choose a tag to create project:'
-    } as any);
-    return tag;
-  }
-
-  async download(repo: Repo, tag: string) {
-    const config: any = await readConfig();
-    let requestUrl;
-    if (config.default === GITSERVER.GITHUB) {
-      requestUrl = `${config[config.default].orgs ? config[config.default].orgs : config[config.default].user}/${
-        repo.name
-      }${tag ? '#' + tag : ''}`;
+  async initCacheDir() {
+    // 根据操作系统选择缓存目录
+    const plaform = os.platform();
+    if (plaform === 'linux') {
+      this.cacheDir = '/var/cache/repository'; // 替换为实际的缓存目录
+    } else if (plaform === 'darwin') {
+      this.cacheDir = '/Library/Caches/repository'; // 替换为实际的缓存目录
+    } else if (plaform === 'win32') {
+      const appData = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming');
+      this.cacheDir = path.join(appData, 'repository'); // 替换为实际的缓存目录
+    } else {
+      throw new Error('不支持的操作系统');
     }
-    if (config.default === GITSERVER.GITLAB) {
-      const origin = config[config.default].origin;
-      const Authorization = config[config.default].Authorization;
-      requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip?sha=${tag}`;
-      return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.targetDir, {
-        headers: { Authorization: `Bearer ${Authorization}` }
-      });
-    }
-    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.targetDir);
-  }
-
-  async writePkg() {
-    const pkgPath = path.join(this.targetDir, 'package.json');
-    let pInfo: any = await readFile(pkgPath);
-    if (!pInfo) return;
-    pInfo.name = this.projectName;
-    await writeFile(pkgPath, pInfo);
   }
   async copyEslintConfig() {
     const originPath = path.resolve(__dirname, '../config/eslint.config.mjs');
     const targetPath = path.join(this.targetDir, 'eslint.config.mjs');
-    await fs.copyFile(originPath, targetPath);
+    await copy(originPath, targetPath);
   }
   async installEslintDependencies() {
     await this.setUpService.exec(
       'yarn',
-      ['add eslint globals @eslint/js typescript-eslint eslint-plugin-react -D'],
+      [`add eslint globals @eslint/js typescript-eslint eslint-plugin-react -D`],
       'Installing eslint dependencies '
     );
   }
@@ -107,24 +60,66 @@ class CreatorService {
     await this.installEslintDependencies();
     await this.genertingReport();
   }
-  async inquirerEslint() {
+  async inquirerEslintReport() {
     const { action } = await Inquirer.prompt({
       name: 'action',
       type: 'list',
       choices: ['No', 'Yes'],
-      message: 'please choose generator eslint reporter:'
+      message: 'please choose generator eslint report:'
     } as any);
-
     if (action === 'Yes') {
       await this.generatorEslintReport();
     }
   }
-  async installDependencies() {
-    await this.setUpService.exec('yarn', [], 'Installing dependencies');
-  }
   async inquirerGitServerConfig() {
-    const config: any = await readConfig();
-    const gitServerList = Object.keys(config).filter((item: string) => item !== 'default');
+    const { config, gitServer, gitServerConfig } = await readConfig();
+    const prompt = [
+      {
+        name: 'origin',
+        type: 'input',
+        default: gitServerConfig.origin,
+        message: `please input your ${gitServer} protocal hostname:`
+      },
+      {
+        name: 'Authorization',
+        type: 'input',
+        default: gitServerConfig.Authorization,
+        message: `please input your ${gitServer} personal access tokens:`
+      }
+    ];
+    if (gitServer === GITSERVER.GITHUB) {
+      prompt.push(
+        {
+          name: 'orgs',
+          type: 'input',
+          default: gitServerConfig.orgs,
+          message: `please input your ${gitServer} orgs:`
+        },
+        {
+          name: 'user',
+          type: 'input',
+          default: gitServerConfig.user,
+          message: `please input your ${gitServer} user:`
+        }
+      );
+    }
+    const { Authorization, origin, orgs, user } = await Inquirer.prompt(prompt as any);
+    if (gitServer === GITSERVER.GITHUB) {
+      if (!origin || !Authorization || !(orgs || user)) return;
+    }
+    if (!origin || !Authorization) return;
+    await writeConfig({
+      ...config,
+      [gitServer]: {
+        origin,
+        Authorization,
+        orgs,
+        user
+      }
+    });
+  }
+  async inquirerGitServerList() {
+    const { config, gitServerList } = await readConfig();
     const { gitServer } = await Inquirer.prompt([
       {
         name: 'gitServer',
@@ -134,59 +129,96 @@ class CreatorService {
         message: 'please choose your git server:'
       }
     ] as any);
-
-    const orgSetting = config[gitServer];
-
-    const { Authorization, user, origin, orgs } = await Inquirer.prompt([
-      {
-        name: 'origin',
-        type: 'input',
-        default: orgSetting.origin,
-        message: `please input your ${gitServer} protocal hostname:`
-      },
-      {
-        name: 'user',
-        type: 'input',
-        default: orgSetting.user,
-        message: `please input your ${gitServer} user:`
-      },
-      {
-        name: 'orgs',
-        type: 'input',
-        default: orgSetting.orgs,
-        message: `please input your ${gitServer} orgs:`
-      },
-      {
-        name: 'Authorization',
-        type: 'input',
-        default: orgSetting.Authorization,
-        message: `please input your ${gitServer} personal access tokens:`
-      }
-    ] as any);
-    if (!Authorization && !user && !origin && !orgs) return;
     await writeConfig({
       ...config,
-      [gitServer]: {
-        origin,
-        user,
-        Authorization,
-        orgs
-      },
       default: gitServer
     });
+  }
+  async installDependencies() {
+    await this.setUpService.exec('yarn', [], 'Installing dependencies');
+  }
+  async fetchRepo() {
+    const { gitServer } = await readConfig();
+    let repos: any = await wrapLoading(
+      CreatoRequestService[gitServer as GITSERVER].fetchRepoList,
+      'waiting for fetch template'
+    );
+    if (!repos) return;
+    repos = repos.map((item: any) => {
+      return {
+        name: item.name,
+        value: item.id
+      };
+    });
+    const { repo } = await Inquirer.prompt({
+      name: 'repo',
+      type: 'list',
+      choices: repos,
+      loop: false,
+      message: `please choose a template to create project:`
+    } as any);
+    return { name: repos.find((item: any) => item.value === repo).name, id: repo };
+  }
+  async fetchTag(repo: Repo) {
+    const { gitServer } = await readConfig();
+    const tags = await wrapLoading(
+      CreatoRequestService[gitServer as GITSERVER].fetchTagList,
+      'waiting fetch tag',
+      repo
+    );
+    if (!tags?.length) return;
+    const { tag } = await Inquirer.prompt({
+      name: 'tag',
+      type: 'list',
+      choices: tags,
+      loop: false,
+      message: 'please choose a tag to create project:'
+    } as any);
+    return tag;
+  }
+  async cacheRepository(repo: Repo, tag: string, destDir: string) {
+    const { gitServer, origin, orgs, user, Authorization } = await readConfig();
+    await fs.ensureDir(this.cacheDir);
+    let requestUrl;
+    if (gitServer === GITSERVER.GITHUB) {
+      requestUrl = `${orgs ? orgs : user}/${repo.name}${tag ? '#' + tag : ''}`;
+    }
+    if (gitServer === GITSERVER.GITLAB) {
+      requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip?sha=${tag}`;
+      return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, destDir, {
+        clone: true,
+        headers: { Authorization: `Bearer ${Authorization}` }
+      });
+    }
+    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, destDir, { clone: true });
   }
   async fetchTemplate() {
     const repo = await this.fetchRepo();
     if (!repo) return;
     const tag = await this.fetchTag(repo);
-    await this.download(repo, tag);
+    const destDir = path.join(this.cacheDir, `${repo.name}@${tag ?? 'v1.0.0'}`);
+    if (fs.existsSync(destDir)) {
+      return await copy(destDir, this.targetDir);
+    }
+    await this.cacheRepository(repo, tag, destDir);
+  }
+  async setUp() {
+    await this.setUpService.setup();
+  }
+  async writePkg() {
+    const pkgPath = path.join(this.targetDir, 'package.json');
+    let pInfo: any = await readFile(pkgPath, true);
+    if (!pInfo) return;
+    pInfo.name = this.projectName;
+    await writeFile(pkgPath, pInfo, true);
   }
   async create() {
+    await this.inquirerGitServerList();
     await this.inquirerGitServerConfig();
     await this.fetchTemplate();
     await this.writePkg();
-    await this.setUpService.setup();
-    await this.inquirerEslint();
+    await this.setUp();
+    await this.inquirerEslintReport();
     await this.installDependencies();
   }
 }
