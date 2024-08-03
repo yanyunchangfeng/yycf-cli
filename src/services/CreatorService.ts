@@ -42,11 +42,9 @@ class CreatorService {
     await copy(originPath, targetPath);
   }
   async installEslintDependencies() {
-    await this.setUpService.exec(
-      'yarn',
-      [`add eslint globals @eslint/js typescript-eslint eslint-plugin-react -D`],
-      'Installing eslint dependencies '
-    );
+    const { eslintPkgs } = await readConfig();
+    const command = ['add', ...eslintPkgs, '-D'].join(' ');
+    await this.setUpService.exec('yarn', [command], 'Installing eslint dependencies ');
   }
   async genertingReport() {
     await this.setUpService.exec(

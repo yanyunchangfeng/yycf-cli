@@ -11,5 +11,6 @@
     "user": "please input your github user (Required)",
     "Authorization": "please input your github personal access tokens (Required)"
   },
-  "default": "github"
+  "default": "github",
+  "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"]
 }

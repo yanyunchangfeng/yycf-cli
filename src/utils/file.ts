@@ -35,11 +35,13 @@ export const readConfig = async () => {
   const config: any = await readFile(configPath, true);
   const gitServer = config.default;
   const gitServerConfig = config[gitServer];
-  const gitServerList = Object.keys(config).filter((item) => item !== 'default');
+  const ignores = ['default', 'eslintPkgs'];
+  const gitServerList = Object.keys(config).filter((item) => !ignores.includes(item));
   const orgs = gitServerConfig.orgs;
   const user = gitServerConfig.user;
   const origin = gitServerConfig.origin;
   const Authorization = gitServerConfig.Authorization;
+  const eslintPkgs = config.eslintPkgs;
 
   return {
     gitServer,
@@ -49,7 +51,8 @@ export const readConfig = async () => {
     orgs,
     user,
     origin,
-    Authorization
+    Authorization,
+    eslintPkgs
   };
 };
 
