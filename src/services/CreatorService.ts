@@ -16,6 +16,7 @@ class CreatorService {
   downloadGitRepo = util.promisify(dowloadGitRepo);
   setUpService: SetUpService;
   cacheDir: any;
+  destDir: any;
   constructor(projectName: string, targetDir: string) {
     this.projectName = projectName;
     this.targetDir = targetDir;
@@ -174,7 +175,7 @@ class CreatorService {
     } as any);
     return tag;
   }
-  async cacheRepository(repo: Repo, tag: string, destDir: string) {
+  async cacheRepository(repo: Repo, tag: string) {
     const { gitServer, origin, orgs, user, Authorization } = await readConfig();
     await fs.ensureDir(this.cacheDir);
     let requestUrl;
@@ -183,23 +184,32 @@ class CreatorService {
     }
     if (gitServer === GITSERVER.GITLAB) {
       requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip?sha=${tag}`;
-      return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, destDir, {
+      return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir, {
         clone: true,
         headers: { Authorization: `Bearer ${Authorization}` }
       });
     }
-    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, destDir, { clone: true });
+    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir, { clone: true });
+  }
+  async copyFromCacheResponsitory() {
+    await copy(this.destDir, this.targetDir);
+  }
+  async isDestDirCached() {
+    return fs.existsSync(this.destDir);
   }
   async fetchTemplate() {
     const repo = await this.fetchRepo();
     if (!repo) return;
     const tag = await this.fetchTag(repo);
-    const destDir = path.join(this.cacheDir, `${repo.name}@${tag ?? 'v1.0.0'}`);
-    if (fs.existsSync(destDir)) {
-      return await copy(destDir, this.targetDir);
+    this.destDir = path.join(this.cacheDir, `${repo.name}@${tag ?? 'v1.0.0'}`);
+    const isDestDirCached = await this.isDestDirCached();
+    if (isDestDirCached) {
+      return await this.copyFromCacheResponsitory();
     }
-    await this.cacheRepository(repo, tag, destDir);
+    await this.cacheRepository(repo, tag);
+    return await this.copyFromCacheResponsitory();
   }
+
   async setUp() {
     await this.setUpService.setup();
   }
