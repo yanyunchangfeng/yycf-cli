@@ -38,7 +38,7 @@ class CreatorService {
     }
   }
   async copyEslintConfig() {
-    const originPath = path.resolve(__dirname, '../config/eslint.config.mjs');
+    const originPath = path.resolve(__dirname, '../resources/extensions/eslint/eslint.config.mjs');
     const targetPath = path.join(this.targetDir, 'eslint.config.mjs');
     await copy(originPath, targetPath);
   }
@@ -181,13 +181,12 @@ class CreatorService {
       requestUrl = `${orgs ? orgs : user}/${repo.name}${tag ? '#' + tag : ''}`;
     }
     if (gitServer === GITSERVER.GITLAB) {
-      requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip?sha=${tag}`;
+      requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip${tag ? `sha=${tag}` : ''} `;
       return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir, {
-        clone: true,
         headers: { Authorization: `Bearer ${Authorization}` }
       });
     }
-    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir, { clone: true });
+    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir);
   }
   async copyFromCacheResponsitory() {
     await copy(this.destDir, this.targetDir);
