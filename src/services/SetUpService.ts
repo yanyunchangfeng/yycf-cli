@@ -1,10 +1,12 @@
+import { logger } from '../utils';
+
 class SetUpService {
   root: string;
   constructor(root: string) {
     this.root = root;
   }
   async execGetOutput(command: string, args: any[], description: string) {
-    console.log(`Setup: ${description}`);
+    logger.info(`Setup: ${description}`);
     return new Promise((resolve, reject) => {
       let cp = require('child_process').spawn(command, args, {
         cwd: this.root,
@@ -26,7 +28,7 @@ class SetUpService {
     });
   }
   async exec(command: string, args: any[], description: any) {
-    console.log(`setup: ${description}`);
+    logger.info(`setup: ${description}`);
     return new Promise((resolve, reject) => {
       let cp = require('child_process').spawn(command, args, {
         cwd: this.root,

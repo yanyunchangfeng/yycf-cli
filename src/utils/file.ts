@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import { safeJsonParse } from '.';
 import { configPath } from '../shared';
 import config from '../config/config';
+import { logger } from '../utils';
 
 export const readFile = async (path: string, needParse = false) => {
   if (!fs.existsSync(path)) return;
@@ -9,7 +10,7 @@ export const readFile = async (path: string, needParse = false) => {
     const content = await fs.readFile(path, 'utf-8');
     return needParse ? safeJsonParse(content) : content;
   } catch (err) {
-    console.error(`async readFile path ${path} fail:  ${err}`);
+    logger.error(`async readFile path ${path} fail:  ${err}`);
     return;
   }
 };
@@ -19,27 +20,30 @@ export const writeFile = async (path: string, content: any, needJsonStringify = 
   try {
     await fs.writeFile(path, needJsonStringify ? JSON.stringify(content, null, 2) + require('os').EOL : content);
   } catch (err) {
-    console.error(`async writeFile path ${path} fail:  ${err}`);
+    logger.error(`async writeFile path ${path} fail:  ${err}`);
   }
 };
 
 export const copy = async (originPath: string, targetPath: string) => {
-  console.log(`copy oringinPath ${originPath} to targetPath ${targetPath}`);
+  logger.info(`copy oringinPath ${originPath} to targetPath ${targetPath}`);
   try {
     await fs.copy(originPath, targetPath);
   } catch (err) {
-    console.error(`copy oringinPath ${originPath} to targetPath ${targetPath} fail:  ${err}`);
+    logger.error(`copy oringinPath ${originPath} to targetPath ${targetPath} fail:  ${err}`);
   }
 };
 
 export const readConfig = async () => {
   const gitServer = config.get('defaults.defaultGitServer');
-  const gitServerConfig = config.get(`gitServers.${gitServer}` as any);
-  const gitServerList = Object.keys(config.get('gitServers'));
+  const ignoresGitServers: string[] = config.get('defaults.ignoresGitServers');
+  const gitServers: any = config.get('gitServers');
+  const gitServerList = Object.keys(gitServers).filter((key) => !ignoresGitServers.includes(gitServers[key].type));
+  const gitServerConfig = config.get(gitServer ? `gitServers.${gitServer}` : (`gitServers.${gitServerList[0]}` as any));
   const orgs = gitServerConfig.orgs;
   const user = gitServerConfig.user;
   const origin = gitServerConfig.origin;
   const Authorization = gitServerConfig.Authorization;
+  const gitServerType = gitServerConfig.type;
   const eslintPkgs = config.get('defaults.eslintPkgs');
 
   return {
@@ -50,7 +54,8 @@ export const readConfig = async () => {
     user,
     origin,
     Authorization,
-    eslintPkgs
+    eslintPkgs,
+    gitServerType
   };
 };
 

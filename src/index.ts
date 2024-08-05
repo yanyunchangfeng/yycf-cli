@@ -20,8 +20,6 @@ program
   .option('-s, --set <path> <value>', 'set value from config')
   .option('-d, --delete <path>', 'delete option from config')
   .action((value, cmd) => {
-    // 配置优先以config中的index.json为准
-    // ca config -s default github    value:"github" cmd:{set:'default'}
     require('./base/config')(value, cmd);
   });
 

@@ -37,7 +37,8 @@
     "download-git-repo": "3.0.2",
     "fs-extra": "11.2.0",
     "inquirer": "10.1.5",
-    "ora": "5.4.0"
+    "ora": "5.4.0",
+    "winston": "3.13.1"
   },
   "devDependencies": {
     "@types/convict": "6.1.6",

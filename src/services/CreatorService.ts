@@ -135,9 +135,9 @@ class CreatorService {
     await this.setUpService.exec('yarn', [], 'Installing dependencies');
   }
   async fetchRepo() {
-    const { gitServer } = await readConfig();
+    let { gitServerType } = await readConfig();
     let repos: any = await wrapLoading(
-      CreatoRequestService[gitServer as GITSERVER].fetchRepoList,
+      CreatoRequestService[gitServerType as GITSERVER].fetchRepoList,
       'waiting for fetch template'
     );
     if (!repos) return;
@@ -157,9 +157,9 @@ class CreatorService {
     return { name: repos.find((item: any) => item.value === repo).name, id: repo };
   }
   async fetchTag(repo: Repo) {
-    const { gitServer } = await readConfig();
+    const { gitServerType } = await readConfig();
     const tags = await wrapLoading(
-      CreatoRequestService[gitServer as GITSERVER].fetchTagList,
+      CreatoRequestService[gitServerType as GITSERVER].fetchTagList,
       'waiting fetch tag',
       repo
     );
@@ -174,17 +174,17 @@ class CreatorService {
     return tag;
   }
   async cacheRepository(repo: Repo, tag: string) {
-    const { gitServer, origin, orgs, user, Authorization } = await readConfig();
+    const { gitServerType, origin, orgs, user, Authorization } = await readConfig();
     await fs.ensureDir(this.cacheDir);
     let requestUrl;
-    if (gitServer === GITSERVER.GITHUB) {
-      requestUrl = `${orgs ? orgs : user}/${repo.name}${tag ? '#' + tag : ''}`;
-    }
-    if (gitServer === GITSERVER.GITLAB) {
-      requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip${tag ? `sha=${tag}` : ''} `;
+    if (gitServerType !== GITSERVER.GITHUB) {
+      requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip${tag ? `?sha=${tag}` : ''} `;
       return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir, {
         headers: { Authorization: `Bearer ${Authorization}` }
       });
+    }
+    if (gitServerType === GITSERVER.GITHUB) {
+      requestUrl = `${orgs ? orgs : user}/${repo.name}${tag ? '#' + tag : ''}`;
     }
     return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir);
   }

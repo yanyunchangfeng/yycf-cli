@@ -1,21 +1,31 @@
 {
   "gitServers": {
-    "gitlab": {
-      "origin": "",
-      "user": "",
-      "orgs": "",
-      "Authorization": ""
-    },
     "github": {
       "origin": "",
       "user": "",
       "orgs": "",
+      "type": "github",
+      "Authorization": ""
+    },
+    "suponGitlab": {
+      "origin": "",
+      "user": "",
+      "orgs": "",
+      "type": "gitlab",
+      "Authorization": ""
+    },
+    "otherGitlab": {
+      "origin": "http://gitlab.other.com",
+      "user": "",
+      "orgs": "",
+      "type": "gitlab",
       "Authorization": ""
     }
   },
   "defaults": {
-    "defaultGitServer": "github",
+    "defaultGitServer": "",
     "gitServerConfigured": false,
-    "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"]
+    "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
+    "ignoresGitServers": []
   }
 }

@@ -9,13 +9,22 @@ const config = convict({
         origin: null,
         Authorization: null,
         orgs: null,
-        user: null
+        user: null,
+        type: 'github'
       },
-      gitlab: {
+      suponGitlab: {
         origin: null,
         Authorization: null,
         orgs: null,
-        user: null
+        user: null,
+        type: 'gitlab'
+      },
+      otherGitlab: {
+        origin: null,
+        Authorization: null,
+        orgs: null,
+        user: null,
+        type: 'gitlab'
       }
     }
   },
@@ -29,6 +38,11 @@ const config = convict({
       doc: 'The default configed option',
       format: Boolean,
       default: false
+    },
+    ignoresGitServers: {
+      doc: 'The ignoresGitServers option',
+      format: Array,
+      default: []
     },
     eslintPkgs: {
       doc: 'Version of the YesName package',
