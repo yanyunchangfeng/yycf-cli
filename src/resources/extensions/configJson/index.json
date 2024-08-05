@@ -1,0 +1,21 @@
+{
+  "gitServers": {
+    "gitlab": {
+      "origin": "",
+      "user": "",
+      "orgs": "",
+      "Authorization": ""
+    },
+    "github": {
+      "origin": "",
+      "user": "",
+      "orgs": "",
+      "Authorization": ""
+    }
+  },
+  "defaults": {
+    "defaultGitServer": "github",
+    "gitServerConfigured": false,
+    "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"]
+  }
+}

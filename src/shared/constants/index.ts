@@ -1,3 +1,3 @@
 import path from 'path';
 
-export const configPath = path.resolve(__dirname, '../../config/index.json');
+export const configPath = path.resolve(__dirname, '../../resources/extensions/configJson/index.json');

@@ -1,6 +1,6 @@
 import Inquirer from 'inquirer';
 import { CreatoRequestService } from '../services';
-import { wrapLoading, readFile, writeFile, writeConfig, readConfig, copy } from '../utils';
+import { wrapLoading, readFile, writeFile, readConfig, copy, config, writeConfig } from '../utils';
 import util from 'util';
 // @ts-ignore   正常不用忽略也没问题 因为typings里面有定义  主要是为了解决调式模式下的ts报错（调式编译器的问题）
 import dowloadGitRepo from 'download-git-repo';
@@ -71,7 +71,7 @@ class CreatorService {
     }
   }
   async inquirerGitServerConfig() {
-    const { config, gitServer, gitServerConfig } = await readConfig();
+    const { gitServer, gitServerConfig } = await readConfig();
     const prompt = [
       {
         name: 'origin',
@@ -107,31 +107,29 @@ class CreatorService {
       if (!origin || !Authorization || !(orgs || user)) return;
     }
     if (!origin || !Authorization) return;
-    await writeConfig({
-      ...config,
-      [gitServer]: {
-        origin,
-        Authorization,
-        orgs,
-        user
-      }
+
+    config.set(`gitServers${gitServer}`, {
+      origin,
+      Authorization,
+      orgs,
+      user
     });
+    config.set('defaults.gitServerConfigured', true);
+    await writeConfig();
   }
   async inquirerGitServerList() {
-    const { config, gitServerList } = await readConfig();
+    const { gitServerList, gitServer: defaultGitServer } = await readConfig();
     const { gitServer } = await Inquirer.prompt([
       {
         name: 'gitServer',
         type: 'list',
-        default: config.default,
+        default: defaultGitServer,
         choices: gitServerList,
         message: 'please choose your git server:'
       }
     ] as any);
-    await writeConfig({
-      ...config,
-      default: gitServer
-    });
+    config.set('defaults.defaultGitServer', gitServer);
+    await writeConfig();
   }
   async installDependencies() {
     await this.setUpService.exec('yarn', [], 'Installing dependencies');
@@ -201,7 +199,7 @@ class CreatorService {
     const repo = await this.fetchRepo();
     if (!repo) return;
     const tag = await this.fetchTag(repo);
-    this.destDir = path.join(this.cacheDir, `${repo.name}@${tag ?? 'v1.0.0'}`);
+    this.destDir = path.join(this.cacheDir, `${repo.name}${tag ? `@${tag}` : ''}`);
     const isDestDirCached = await this.isDestDirCached();
     if (isDestDirCached) {
       return await this.copyFromCacheResponsitory();
@@ -220,9 +218,13 @@ class CreatorService {
     pInfo.name = this.projectName;
     await writeFile(pkgPath, pInfo, true);
   }
-  async create() {
+  async initGitServer() {
+    if (config.get('defaults.gitServerConfigured')) return;
     await this.inquirerGitServerList();
     await this.inquirerGitServerConfig();
+  }
+  async create() {
+    await this.initGitServer();
     await this.fetchTemplate();
     await this.writePkg();
     await this.setUp();

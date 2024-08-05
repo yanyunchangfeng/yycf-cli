@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import { safeJsonParse } from '.';
 import { configPath } from '../shared';
+import config from '../config/config';
 
 export const readFile = async (path: string, needParse = false) => {
   if (!fs.existsSync(path)) return;
@@ -32,20 +33,17 @@ export const copy = async (originPath: string, targetPath: string) => {
 };
 
 export const readConfig = async () => {
-  const config: any = await readFile(configPath, true);
-  const gitServer = config.default;
-  const gitServerConfig = config[gitServer];
-  const ignores = ['default', 'eslintPkgs'];
-  const gitServerList = Object.keys(config).filter((item) => !ignores.includes(item));
+  const gitServer = config.get('defaults.defaultGitServer');
+  const gitServerConfig = config.get(`gitServers.${gitServer}` as any);
+  const gitServerList = Object.keys(config.get('gitServers'));
   const orgs = gitServerConfig.orgs;
   const user = gitServerConfig.user;
   const origin = gitServerConfig.origin;
   const Authorization = gitServerConfig.Authorization;
-  const eslintPkgs = config.eslintPkgs;
+  const eslintPkgs = config.get('defaults.eslintPkgs');
 
   return {
     gitServer,
-    config,
     gitServerConfig,
     gitServerList,
     orgs,
@@ -56,6 +54,8 @@ export const readConfig = async () => {
   };
 };
 
-export const writeConfig = async (content: any) => {
-  return await writeFile(configPath, content, true);
+export const writeConfig = async () => {
+  return await writeFile(configPath, config.getProperties(), true);
 };
+
+export { config };

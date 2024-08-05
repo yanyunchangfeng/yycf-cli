@@ -33,21 +33,23 @@
     "axios": "1.7.2",
     "chalk": "4.1.1",
     "commander": "12.1.0",
+    "convict": "6.2.4",
     "download-git-repo": "3.0.2",
     "fs-extra": "11.2.0",
     "inquirer": "10.1.5",
     "ora": "5.4.0"
   },
   "devDependencies": {
+    "@types/convict": "6.1.6",
     "@types/fs-extra": "11.0.4",
     "@types/inquirer": "9.0.7",
     "@types/node": "22.0.0",
-    "nodemon": "3.1.4",
-    "ts-node": "10.9.2",
-    "typescript": "5.5.4",
     "husky": "8.0.3",
+    "lint-staged": "13.2.3",
+    "nodemon": "3.1.4",
     "prettier": "2.8.8",
-    "lint-staged": "13.2.3"
+    "ts-node": "10.9.2",
+    "typescript": "5.5.4"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": "prettier --write  --ignore-unknown",

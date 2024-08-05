@@ -2,7 +2,7 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-
+import './base/initConfig';
 const program = new Command();
 
 program

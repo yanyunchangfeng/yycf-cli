@@ -1,19 +1,16 @@
-import { readConfig, writeConfig } from '../utils';
+import { writeConfig, config } from '../utils';
 import chalk from 'chalk';
 
-module.exports = async (value: any, config: Record<keyof any, any>) => {
+module.exports = async (value: any, cfg: Record<keyof any, any>) => {
   console.log(`${chalk.cyan(`value :`)}`, value);
-  console.log(`${chalk.cyan(`config : `)}`, config);
-  if (!Object.keys(config).length) return;
-  let { config: data } = await readConfig();
-  if (config.set === 'default' && value) {
-    if (!data) return;
-    data = Object.assign(data, { [config.set]: value });
-    await writeConfig(data);
-    console.log(`${chalk.cyan(`${config.set} : ${data[config.set]}`)}`);
+  console.log(`${chalk.cyan(`cfg : `)}`, cfg);
+  if (!Object.keys(cfg).length) return;
+  if (cfg.set && value) {
+    config.set(cfg.set, value);
+    await writeConfig();
+    console.log(`${chalk.cyan(`${config.set} : ${value}`)}`);
   }
-  if (config.get) {
-    if (!data) return;
-    console.log(`${chalk.cyan(`${config.get} : ${data[config.get]}`)}`);
+  if (cfg.get) {
+    console.log(`${chalk.cyan(`${cfg.get} : ${config.get(cfg.get)}`)}`);
   }
 };
