@@ -1,14 +1,14 @@
 {
   "gitServers": {
     "github": {
-      "origin": "",
-      "user": "",
-      "orgs": "",
+      "origin": "https://api.github.com",
+      "user": "yanyunchangfeng",
+      "orgs": "yycfFSET",
       "type": "github",
       "Authorization": ""
     },
     "gitlab": {
-      "origin": "",
+      "origin": "http://gitlab.com",
       "user": "",
       "orgs": "",
       "type": "gitlab",

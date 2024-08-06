@@ -9,6 +9,7 @@ import { SetUpService } from '.';
 import { GITSERVER, Repo } from '../shared';
 import os from 'os';
 import fs from 'fs-extra';
+import { startServer, stopServer } from '../server';
 
 class CreatorService {
   projectName: string;
@@ -24,7 +25,6 @@ class CreatorService {
     this.initCacheDir();
   }
   async initCacheDir() {
-    // 根据操作系统选择缓存目录
     const plaform = os.platform();
     if (plaform === 'linux') {
       this.cacheDir = '/var/cache/repository'; // 替换为实际的缓存目录
@@ -47,17 +47,27 @@ class CreatorService {
     const command = ['add', ...eslintPkgs, '-D'].join(' ');
     await this.setUpService.exec('yarn', [command], 'Installing eslint dependencies ');
   }
-  async genertingReport() {
+  // async genertingReportHtml() {
+  //   await this.setUpService.exec(
+  //     'yarn',
+  //     ['eslint -f html -o ./report/index.html || true'],
+  //     'generating eslint reporter html'
+  //   );
+  // }
+  async generatorReportJson() {
     await this.setUpService.exec(
       'yarn',
-      ['eslint -f html -o ./report/index.html || true'],
-      'generating eslint reporter'
+      ['eslint -f json -o eslint-report.json || true'],
+      'generating eslint reporter json'
     );
   }
   async generatorEslintReport() {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
-    await this.genertingReport();
+    // await this.genertingReportHtml();
+    await this.generatorReportJson();
+    await stopServer();
+    await startServer(this.targetDir);
   }
   async inquirerEslintReport() {
     const { action } = await Inquirer.prompt({
