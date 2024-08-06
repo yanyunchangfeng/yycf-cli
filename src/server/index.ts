@@ -8,7 +8,7 @@ const app = express();
 const basePort = 3000;
 let server: http.Server;
 
-app.use(express.static(path.join(__dirname, '../resources/public')));
+app.use(express.static(path.join(__dirname, '../resources/public/server')));
 
 export async function findAvailablePort(port: number): Promise<number> {
   return new Promise((resolve, reject) => {

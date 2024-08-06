@@ -61,11 +61,17 @@ class CreatorService {
       'generating eslint reporter json'
     );
   }
+  async copyLocalStaticHtml() {
+    const originPath = path.resolve(__dirname, '../resources/public/local/index.html');
+    const targetPath = path.join(this.targetDir, 'index.html');
+    await copy(originPath, targetPath);
+  }
   async generatorEslintReport() {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
     // await this.genertingReportHtml();
     await this.generatorReportJson();
+    await this.copyLocalStaticHtml();
     await stopServer();
     await startServer(this.targetDir);
   }

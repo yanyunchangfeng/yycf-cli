@@ -2,13 +2,14 @@ import path from 'path';
 import fs from 'fs-extra';
 import Inquirer from 'inquirer';
 import { CreatorService } from '../services';
+import { wrapLoading } from '../utils';
 
 module.exports = async (projectName: string, options: Record<keyof any, any>) => {
   const cwd = process.cwd();
   const targetDir = path.join(cwd, projectName);
   if (fs.existsSync(targetDir)) {
     if (options.force) {
-      await fs.remove(targetDir);
+      await wrapLoading(fs.remove, 'Deleting target directory', targetDir);
     } else {
       const { action } = await Inquirer.prompt([
         {
@@ -25,7 +26,7 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
         return;
       }
       if (action === 'overwrite') {
-        await fs.remove(targetDir);
+        await wrapLoading(fs.remove, 'Deleting target directory', targetDir);
       }
     }
   }

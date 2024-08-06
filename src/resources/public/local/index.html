@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESLint Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>ESLint Report</h1>
+    <canvas id="eslintChart" width="400" height="200"></canvas>
+    <script>
+      fetch('eslint-report.json')
+        .then((response) => response.json())
+        .then((data) => {
+          const ruleCounts = {};
+          data.forEach((result) => {
+            result.messages.forEach((message) => {
+              if (ruleCounts[message.ruleId]) {
+                ruleCounts[message.ruleId]++;
+              } else {
+                ruleCounts[message.ruleId] = 1;
+              }
+            });
+          });
+
+          const labels = Object.keys(ruleCounts);
+          const counts = Object.values(ruleCounts);
+
+          const ctx = document.getElementById('eslintChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: 'ESLint Errors and Warnings by Rule',
+                  data: counts,
+                  backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+                }
+              ]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

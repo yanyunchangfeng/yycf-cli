@@ -1,7 +1,7 @@
 import config from '../config/config';
-import path from 'path';
 import { logger } from '../utils';
+import { configPath } from '../shared';
 
-config.loadFile(path.join(__dirname, '../resources/extensions/configJson/index.json'));
+config.loadFile(configPath);
 
 logger.info('config loaded');
