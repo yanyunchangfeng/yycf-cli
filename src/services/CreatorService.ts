@@ -71,7 +71,7 @@ class CreatorService {
     }
   }
   async inquirerGitServerConfig() {
-    const { gitServer, gitServerConfig } = await readConfig();
+    const { gitServerType, gitServerConfig, gitServer } = await readConfig();
     const prompt = [
       {
         name: 'origin',
@@ -86,7 +86,7 @@ class CreatorService {
         message: `please input your ${gitServer} personal access tokens:`
       }
     ];
-    if (gitServer === GITSERVER.GITHUB) {
+    if (gitServerType === GITSERVER.GITHUB) {
       prompt.push(
         {
           name: 'orgs',
@@ -103,7 +103,7 @@ class CreatorService {
       );
     }
     const { Authorization, origin, orgs, user } = await Inquirer.prompt(prompt as any);
-    if (gitServer === GITSERVER.GITHUB) {
+    if (gitServerType === GITSERVER.GITHUB) {
       if (!origin || !Authorization || !(orgs || user)) return;
     }
     if (!origin || !Authorization) return;

@@ -54,3 +54,4 @@ cypress/videos/*
 
 # eslit html
 /report
+/logs

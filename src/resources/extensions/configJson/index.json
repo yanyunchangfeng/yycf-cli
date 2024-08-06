@@ -7,15 +7,8 @@
       "type": "github",
       "Authorization": ""
     },
-    "suponGitlab": {
+    "gitlab": {
       "origin": "",
-      "user": "",
-      "orgs": "",
-      "type": "gitlab",
-      "Authorization": ""
-    },
-    "otherGitlab": {
-      "origin": "http://gitlab.other.com",
       "user": "",
       "orgs": "",
       "type": "gitlab",
@@ -23,9 +16,9 @@
     }
   },
   "defaults": {
-    "defaultGitServer": "",
+    "defaultGitServer": "github",
     "gitServerConfigured": false,
-    "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
-    "ignoresGitServers": []
+    "ignoresGitServers": [],
+    "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"]
   }
 }

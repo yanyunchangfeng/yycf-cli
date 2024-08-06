@@ -12,14 +12,7 @@ const config = convict({
         user: null,
         type: 'github'
       },
-      suponGitlab: {
-        origin: null,
-        Authorization: null,
-        orgs: null,
-        user: null,
-        type: 'gitlab'
-      },
-      otherGitlab: {
+      gitlab: {
         origin: null,
         Authorization: null,
         orgs: null,
