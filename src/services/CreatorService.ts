@@ -47,13 +47,13 @@ class CreatorService {
     const command = ['add', ...eslintPkgs, '-D'].join(' ');
     await this.setUpService.exec('yarn', [command], 'Installing eslint dependencies ');
   }
-  // async genertingReportHtml() {
-  //   await this.setUpService.exec(
-  //     'yarn',
-  //     ['eslint -f html -o ./report/index.html || true'],
-  //     'generating eslint reporter html'
-  //   );
-  // }
+  async genertingReportHtml() {
+    await this.setUpService.exec(
+      'yarn',
+      ['eslint -f html -o ./report/index.html || true'],
+      'generating eslint reporter html'
+    );
+  }
   async generatorReportJson() {
     await this.setUpService.exec(
       'yarn',
@@ -69,7 +69,7 @@ class CreatorService {
   async generatorEslintReport() {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
-    // await this.genertingReportHtml();
+    await this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();
     await stopServer();
@@ -130,74 +130,10 @@ class CreatorService {
       orgs: orgs ?? gitServerConfig.orgs,
       user: user ?? gitServerConfig.user
     });
-    config.set('defaults.gitServerConfigured', true);
+    // config.set('defaults.gitServerConfigured', true);
     await writeConfig();
   }
-  async inquirerNewGitServer(gitServer: string) {
-    const prompts = [
-      {
-        name: 'origin',
-        type: 'input',
-        message: `please input your ${gitServer} protocal hostname:`
-      },
-      {
-        name: 'Authorization',
-        type: 'input',
-        message: `please input your ${gitServer} personal access tokens:`
-      },
-      {
-        name: 'type',
-        type: 'list',
-        choices: [GITSERVER.GITHUB, GITSERVER.GITLAB],
-        message: `please choose your ${gitServer} type:`
-      },
-      {
-        name: 'orgs',
-        type: 'input',
-        message: `please input your ${gitServer} orgs:`
-      },
-      {
-        name: 'user',
-        type: 'input',
-        message: `please input your ${gitServer} user:`
-      }
-    ];
-    const { Authorization, origin, orgs, user, type } = await Inquirer.prompt(prompts as any);
-    config.set(`gitServers.${gitServer}`, {
-      origin,
-      Authorization,
-      orgs,
-      user,
-      type
-    });
-    await writeConfig();
-  }
-  async promptUser() {
-    const { gitServerList } = await readConfig();
-    const { option } = await Inquirer.prompt([
-      {
-        name: 'option',
-        type: 'list',
-        choices: [...gitServerList, 'newGitServer'],
-        message: 'please choose an option'
-      }
-    ] as any);
-    if (option === 'newGitServer') {
-      const { gitServer } = await Inquirer.prompt([
-        {
-          type: 'input',
-          name: 'gitServer',
-          message: 'please input your git server name:'
-        }
-      ] as any);
-      await this.inquirerNewGitServer(gitServer);
-      await this.promptUser();
-    }
-    if (option !== 'newGitServer') {
-      config.set('defaults.defaultGitServer', option);
-      await writeConfig();
-    }
-  }
+
   async installDependencies() {
     await this.setUpService.exec('yarn', [], 'Installing dependencies');
   }
@@ -284,10 +220,140 @@ class CreatorService {
     pInfo.name = this.projectName;
     await writeFile(pkgPath, pInfo, true);
   }
+  async inquirerNewGitServer() {
+    const { gitServerList } = await readConfig();
+    const { gitServer } = await Inquirer.prompt([
+      {
+        type: 'input',
+        name: 'gitServer',
+        message: 'please input your git server name:',
+        validate: (input: string) => {
+          if (input === '') {
+            return 'git server name is required';
+          }
+          if (gitServerList.includes(input)) {
+            return 'git server name is already exists';
+          }
+          return true;
+        }
+      }
+    ] as any);
+    const basePrompts = [
+      {
+        name: 'origin',
+        type: 'input',
+        message: `please input your ${gitServer} protocal hostname:`
+      },
+      {
+        name: 'Authorization',
+        type: 'input',
+        message: `please input your ${gitServer} personal access tokens:`
+      },
+      {
+        name: 'type',
+        type: 'list',
+        choices: [GITSERVER.GITHUB, GITSERVER.GITLAB],
+        message: `please choose your ${gitServer} type:`
+      }
+    ];
+    const gitHubExtraPrompts = [
+      {
+        name: 'orgs',
+        type: 'input',
+        message: `please input your ${gitServer} orgs:`
+      },
+      {
+        name: 'user',
+        type: 'input',
+        message: `please input your ${gitServer} user:`
+      }
+    ];
+    const { Authorization, origin, type, orgs = '', user = '' } = await Inquirer.prompt(basePrompts as any);
+    const result = {
+      origin,
+      Authorization,
+      type,
+      orgs,
+      user
+    };
+    if (type === GITSERVER.GITHUB) {
+      const { orgs, user } = await Inquirer.prompt(gitHubExtraPrompts as any);
+      config.set(`gitServers.${gitServer}`, {
+        ...result,
+        orgs,
+        user
+      });
+    }
+    config.set(`gitServers.${gitServer}`, result);
+    await writeConfig();
+  }
+  async inquirerChooseGitServer() {
+    const { gitServerList } = await readConfig();
+    const { gitServer } = await Inquirer.prompt([
+      {
+        name: 'gitServer',
+        type: 'list',
+        choices: gitServerList,
+        message: 'please choose a git server:'
+      }
+    ] as any);
+    config.set('defaults.defaultGitServer', gitServer);
+    await writeConfig();
+  }
+  async inquireDeleteGitServer() {
+    const { gitServerList } = await readConfig();
+    if (!gitServerList.length) {
+      return;
+    }
+    const { gitServer } = await Inquirer.prompt([
+      {
+        name: 'gitServer',
+        type: 'list',
+        choices: gitServerList,
+        message: 'please choose a git server to delete:'
+      }
+    ] as any);
+    const { confirmDelete } = await Inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'confirmDelete',
+        message: `are you sure to delete ${gitServer}?`,
+        default: false
+      }
+    ] as any);
+    if (confirmDelete) {
+      const origin: any = config.getProperties();
+      delete origin.gitServers[gitServer];
+      config.set('gitServers', origin.gitServers);
+      await writeConfig();
+    }
+  }
+  async promptUserOption() {
+    const { option } = await Inquirer.prompt([
+      {
+        name: 'option',
+        type: 'list',
+        choices: ['chooseGitServer', 'newGitServer', 'deleteGitServer'],
+        message: 'please choose an option'
+      }
+    ] as any);
+    switch (option) {
+      case 'chooseGitServer':
+        await this.inquirerChooseGitServer();
+        await this.inquirerGitServerConfig();
+        return;
+      case 'newGitServer':
+        await this.inquirerNewGitServer();
+        break;
+      case 'deleteGitServer':
+        await this.inquireDeleteGitServer();
+        break;
+    }
+    await this.promptUserOption();
+  }
   async initGitServer() {
     if (config.get('defaults.gitServerConfigured')) return;
-    await this.promptUser();
-    await this.inquirerGitServerConfig();
+    await this.promptUserOption();
   }
   async create() {
     await this.initGitServer();
