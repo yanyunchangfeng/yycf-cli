@@ -1,11 +1,11 @@
 import fs from 'fs-extra';
-
+import { logger } from './src/utils';
 const copyFiles = async () => {
   try {
     await fs.copy('src/resources', 'bin/resources');
-    console.log('Files copied successfully!');
+    logger.info('Files copied successfully!');
   } catch (err) {
-    console.error('Error copying files:', err);
+    logger.error('Error copying files:', err);
   }
 };
 

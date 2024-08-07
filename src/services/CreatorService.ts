@@ -123,29 +123,80 @@ class CreatorService {
       if (!origin || !Authorization || !(orgs || user)) return;
     }
     if (!origin || !Authorization) return;
-
-    config.set(`gitServers${gitServer}`, {
+    config.set(`gitServers.${gitServer}`, {
+      ...gitServerConfig,
       origin,
       Authorization,
-      orgs,
-      user
+      orgs: orgs ?? gitServerConfig.orgs,
+      user: user ?? gitServerConfig.user
     });
     config.set('defaults.gitServerConfigured', true);
     await writeConfig();
   }
-  async inquirerGitServerList() {
-    const { gitServerList, gitServer: defaultGitServer } = await readConfig();
-    const { gitServer } = await Inquirer.prompt([
+  async inquirerNewGitServer(gitServer: string) {
+    const prompts = [
       {
-        name: 'gitServer',
+        name: 'origin',
+        type: 'input',
+        message: `please input your ${gitServer} protocal hostname:`
+      },
+      {
+        name: 'Authorization',
+        type: 'input',
+        message: `please input your ${gitServer} personal access tokens:`
+      },
+      {
+        name: 'type',
         type: 'list',
-        default: defaultGitServer,
-        choices: gitServerList,
-        message: 'please choose your git server:'
+        choices: [GITSERVER.GITHUB, GITSERVER.GITLAB],
+        message: `please choose your ${gitServer} type:`
+      },
+      {
+        name: 'orgs',
+        type: 'input',
+        message: `please input your ${gitServer} orgs:`
+      },
+      {
+        name: 'user',
+        type: 'input',
+        message: `please input your ${gitServer} user:`
+      }
+    ];
+    const { Authorization, origin, orgs, user, type } = await Inquirer.prompt(prompts as any);
+    config.set(`gitServers.${gitServer}`, {
+      origin,
+      Authorization,
+      orgs,
+      user,
+      type
+    });
+    await writeConfig();
+  }
+  async promptUser() {
+    const { gitServerList } = await readConfig();
+    const { option } = await Inquirer.prompt([
+      {
+        name: 'option',
+        type: 'list',
+        choices: [...gitServerList, 'newGitServer'],
+        message: 'please choose an option'
       }
     ] as any);
-    config.set('defaults.defaultGitServer', gitServer);
-    await writeConfig();
+    if (option === 'newGitServer') {
+      const { gitServer } = await Inquirer.prompt([
+        {
+          type: 'input',
+          name: 'gitServer',
+          message: 'please input your git server name:'
+        }
+      ] as any);
+      await this.inquirerNewGitServer(gitServer);
+      await this.promptUser();
+    }
+    if (option !== 'newGitServer') {
+      config.set('defaults.defaultGitServer', option);
+      await writeConfig();
+    }
   }
   async installDependencies() {
     await this.setUpService.exec('yarn', [], 'Installing dependencies');
@@ -235,7 +286,7 @@ class CreatorService {
   }
   async initGitServer() {
     if (config.get('defaults.gitServerConfigured')) return;
-    await this.inquirerGitServerList();
+    await this.promptUser();
     await this.inquirerGitServerConfig();
   }
   async create() {
