@@ -1,6 +1,6 @@
 import convict from 'convict';
 
-const config = convict({
+const dbconfig = convict({
   gitServers: {
     doc: 'Git servers configurations',
     format: Object,
@@ -45,5 +45,5 @@ const config = convict({
   }
 });
 
-config.validate({ allowed: 'strict' });
-export default config;
+dbconfig.validate({ allowed: 'strict' });
+export default dbconfig;

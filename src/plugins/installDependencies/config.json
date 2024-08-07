@@ -1,0 +1,7 @@
+{
+  "name": "installDependencies",
+  "description": "This plugin will install dependencies for the project",
+  "enabled": true,
+  "initMessage": "plugin is running",
+  "exitMessage": "plugin is exiting"
+}

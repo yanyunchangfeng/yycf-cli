@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import Inquirer from 'inquirer';
 import { CreatorService } from '../services';
 import { wrapLoading } from '../utils';
+import { main } from './main';
 
 module.exports = async (projectName: string, options: Record<keyof any, any>) => {
   const cwd = process.cwd();
@@ -30,6 +31,7 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
       }
     }
   }
-  const creator = new CreatorService(projectName, targetDir);
-  creator.create();
+  main({ projectName, targetDir });
+  // const creator = new CreatorService(projectName, targetDir);
+  // creator.create();
 };

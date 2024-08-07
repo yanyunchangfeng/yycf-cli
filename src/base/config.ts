@@ -1,4 +1,5 @@
-import { writeConfig, config } from '../utils';
+import { writeConfig } from '../utils';
+import config from '../config/dbConfig';
 import chalk from 'chalk';
 import { logger } from '../utils';
 

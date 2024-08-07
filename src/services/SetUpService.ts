@@ -2,7 +2,7 @@ import { logger } from '../utils';
 
 class SetUpService {
   root: string;
-  constructor(root: string) {
+  constructor(root: string = process.cwd()) {
     this.root = root;
   }
   async execGetOutput(command: string, args: any[], description: string) {

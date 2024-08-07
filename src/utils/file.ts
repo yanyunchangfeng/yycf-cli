@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import { safeJsonParse } from '.';
 import { configPath } from '../shared';
-import config from '../config/config';
+import config from '../config/dbConfig';
 import { logger } from '../utils';
 
 export const readFile = async (path: string, needParse = false) => {
@@ -62,5 +62,3 @@ export const readConfig = async () => {
 export const writeConfig = async () => {
   return await writeFile(configPath, config.getProperties(), true);
 };
-
-export { config };

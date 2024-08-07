@@ -3,6 +3,7 @@ import { logger } from './src/utils';
 const copyFiles = async () => {
   try {
     await fs.copy('src/resources', 'bin/resources');
+    await fs.copy('src/config.json', 'bin/config.json');
     logger.info('Files copied successfully!');
   } catch (err) {
     logger.error('Error copying files:', err);

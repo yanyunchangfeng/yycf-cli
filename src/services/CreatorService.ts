@@ -1,6 +1,7 @@
 import Inquirer from 'inquirer';
 import { CreatoRequestService } from '../services';
-import { wrapLoading, readFile, writeFile, readConfig, copy, config, writeConfig } from '../utils';
+import config from '../config/dbConfig';
+import { wrapLoading, readFile, writeFile, readConfig, copy, writeConfig } from '../utils';
 import util from 'util';
 // @ts-ignore   正常不用忽略也没问题 因为typings里面有定义  主要是为了解决调式模式下的ts报错（调式编译器的问题）
 import dowloadGitRepo from 'download-git-repo';
@@ -9,7 +10,6 @@ import { SetUpService } from '.';
 import { GITSERVER, Repo } from '../shared';
 import os from 'os';
 import fs from 'fs-extra';
-import { startServer, stopServer } from '../server';
 
 class CreatorService {
   projectName: string;
@@ -35,55 +35,6 @@ class CreatorService {
       this.cacheDir = path.join(appData, 'repository'); // 替换为实际的缓存目录
     } else {
       throw new Error('不支持的操作系统');
-    }
-  }
-  async copyEslintConfig() {
-    const originPath = path.resolve(__dirname, '../resources/extensions/eslint/eslint.config.mjs');
-    const targetPath = path.join(this.targetDir, 'eslint.config.mjs');
-    await copy(originPath, targetPath);
-  }
-  async installEslintDependencies() {
-    const { eslintPkgs } = await readConfig();
-    const command = ['add', ...eslintPkgs, '-D'].join(' ');
-    await this.setUpService.exec('yarn', [command], 'Installing eslint dependencies ');
-  }
-  async genertingReportHtml() {
-    await this.setUpService.exec(
-      'yarn',
-      ['eslint -f html -o ./report/index.html || true'],
-      'generating eslint reporter html'
-    );
-  }
-  async generatorReportJson() {
-    await this.setUpService.exec(
-      'yarn',
-      ['eslint -f json -o eslint-report.json || true'],
-      'generating eslint reporter json'
-    );
-  }
-  async copyLocalStaticHtml() {
-    const originPath = path.resolve(__dirname, '../resources/public/local/index.html');
-    const targetPath = path.join(this.targetDir, 'index.html');
-    await copy(originPath, targetPath);
-  }
-  async generatorEslintReport() {
-    await this.copyEslintConfig();
-    await this.installEslintDependencies();
-    await this.genertingReportHtml();
-    await this.generatorReportJson();
-    await this.copyLocalStaticHtml();
-    await stopServer();
-    await startServer(this.targetDir);
-  }
-  async inquirerEslintReport() {
-    const { action } = await Inquirer.prompt({
-      name: 'action',
-      type: 'list',
-      choices: ['No', 'Yes'],
-      message: 'please choose generator eslint report:'
-    } as any);
-    if (action === 'Yes') {
-      await this.generatorEslintReport();
     }
   }
   async inquirerGitServerConfig() {
@@ -132,10 +83,6 @@ class CreatorService {
     });
     // config.set('defaults.gitServerConfigured', true);
     await writeConfig();
-  }
-
-  async installDependencies() {
-    await this.setUpService.exec('yarn', [], 'Installing dependencies');
   }
   async fetchRepo() {
     let { gitServerType } = await readConfig();
@@ -208,10 +155,6 @@ class CreatorService {
     }
     await this.cacheRepository(repo, tag);
     return await this.copyFromCacheResponsitory();
-  }
-
-  async setUp() {
-    await this.setUpService.setup();
   }
   async writePkg() {
     const pkgPath = path.join(this.targetDir, 'package.json');
@@ -359,9 +302,6 @@ class CreatorService {
     await this.initGitServer();
     await this.fetchTemplate();
     await this.writePkg();
-    await this.setUp();
-    await this.inquirerEslintReport();
-    await this.installDependencies();
   }
 }
 export default CreatorService;
