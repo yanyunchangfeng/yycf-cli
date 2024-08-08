@@ -81,7 +81,7 @@ class CreatorService {
       orgs: orgs ?? gitServerConfig.orgs,
       user: user ?? gitServerConfig.user
     });
-    // config.set('defaults.gitServerConfigured', true);
+    config.set('defaults.gitServerConfigured', true);
     await writeConfig();
   }
   async fetchRepo() {
@@ -276,13 +276,14 @@ class CreatorService {
       {
         name: 'option',
         type: 'list',
-        choices: ['chooseGitServer', 'newGitServer', 'deleteGitServer'],
+        choices: ['chooseGitServer', 'newGitServer', 'deleteGitServer', 'resetGitServerConfigured'],
         message: 'please choose an option'
       }
     ] as any);
     switch (option) {
       case 'chooseGitServer':
         await this.inquirerChooseGitServer();
+        if (config.get('defaults.gitServerConfigured')) return;
         await this.inquirerGitServerConfig();
         return;
       case 'newGitServer':
@@ -291,11 +292,14 @@ class CreatorService {
       case 'deleteGitServer':
         await this.inquireDeleteGitServer();
         break;
+      case 'resetGitServerConfigured':
+        config.set('defaults.gitServerConfigured', false);
+        await writeConfig();
+        break;
     }
     await this.promptUserOption();
   }
   async initGitServer() {
-    if (config.get('defaults.gitServerConfigured')) return;
     await this.promptUserOption();
   }
   async create() {
