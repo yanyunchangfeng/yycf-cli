@@ -1,7 +1,7 @@
 import Inquirer from 'inquirer';
 import { CreatoRequestService } from '../services';
 import config from '../config/dbConfig';
-import { wrapLoading, readFile, writeFile, readConfig, copy, writeConfig } from '../utils';
+import { wrapLoading, readFile, writeFile, readConfig, copy, writeConfig, logger } from '../utils';
 import util from 'util';
 // @ts-ignore   正常不用忽略也没问题 因为typings里面有定义  主要是为了解决调式模式下的ts报错（调式编译器的问题）
 import dowloadGitRepo from 'download-git-repo';
@@ -264,12 +264,15 @@ class CreatorService {
         default: false
       }
     ] as any);
-    if (confirmDelete) {
-      const origin: any = config.getProperties();
-      delete origin.gitServers[gitServer];
-      config.set('gitServers', origin.gitServers);
-      await writeConfig();
+    if (!confirmDelete) return;
+    if (gitServerList.length === 1) {
+      logger.warn('can not delete the last git server');
+      return;
     }
+    const dbConfig: any = config.getProperties();
+    delete dbConfig.gitServers[gitServer];
+    config.set('gitServers', dbConfig.gitServers);
+    await writeConfig();
   }
   async promptUserOption() {
     const { option } = await Inquirer.prompt([
