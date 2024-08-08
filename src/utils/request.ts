@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { readConfig } from '.';
+import { readGitServerConfig } from '.';
 
 axios.interceptors.request.use(async (req) => {
-  const { Authorization } = await readConfig();
+  const { Authorization } = await readGitServerConfig();
   req.headers['Authorization'] = `Bearer ${Authorization}`;
   return req;
 });

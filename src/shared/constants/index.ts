@@ -1,3 +1,4 @@
 import path from 'path';
 
-export const configPath = path.resolve(__dirname, '../../resources/dbConfigJson/index.json');
+export const gitSeverPath = path.resolve(__dirname, '../../resources/db/gitServerJson/index.json');
+export const pluginPath = path.resolve(__dirname, '../../resources/db/pluginJson/index.json');

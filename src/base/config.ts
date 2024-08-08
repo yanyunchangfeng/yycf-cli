@@ -1,5 +1,5 @@
-import { writeConfig } from '../utils';
-import config from '../config/dbConfig';
+import { writeGitServerConfig } from '../utils';
+import gitServerConfig from '../config/gitServerConfig';
 import chalk from 'chalk';
 import { logger } from '../utils';
 
@@ -8,11 +8,11 @@ module.exports = async (value: any, cfg: Record<keyof any, any>) => {
   logger.info(`${chalk.cyan(`cfg : `)}`, cfg);
   if (!Object.keys(cfg).length) return;
   if (cfg.set && value) {
-    config.set(cfg.set, value);
-    await writeConfig();
-    logger.info(`${chalk.cyan(`${config.set} : ${value}`)}`);
+    gitServerConfig.set(cfg.set, value);
+    await writeGitServerConfig();
+    logger.info(`${chalk.cyan(`${cfg.set} : ${value}`)}`);
   }
   if (cfg.get) {
-    logger.info(`${chalk.cyan(`${cfg.get} : ${config.get(cfg.get)}`)}`);
+    logger.info(`${chalk.cyan(`${cfg.get} : ${gitServerConfig.get(cfg.get)}`)}`);
   }
 };

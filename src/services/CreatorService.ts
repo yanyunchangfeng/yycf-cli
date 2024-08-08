@@ -1,44 +1,38 @@
 import Inquirer from 'inquirer';
-import { CreatoRequestService } from '../services';
-import config from '../config/dbConfig';
-import { wrapLoading, readFile, writeFile, readConfig, copy, writeConfig, logger } from '../utils';
-import util from 'util';
-// @ts-ignore   正常不用忽略也没问题 因为typings里面有定义  主要是为了解决调式模式下的ts报错（调式编译器的问题）
-import dowloadGitRepo from 'download-git-repo';
+import { CreatoRequestService, CacheRepositoryService } from '../services';
+import config from '../config/gitServerConfig';
+import {
+  wrapLoading,
+  readFile,
+  writeFile,
+  readGitServerConfig,
+  copy,
+  writeGitServerConfig,
+  logger,
+  readPluginConfig,
+  writePluginConfig
+} from '../utils';
 import path from 'path';
 import { SetUpService } from '.';
 import { GITSERVER, Repo } from '../shared';
-import os from 'os';
 import fs from 'fs-extra';
+import pluginsConfig from '../config/pluginConfig';
 
 class CreatorService {
   projectName: string;
   targetDir: string;
-  downloadGitRepo = util.promisify(dowloadGitRepo);
   setUpService: SetUpService;
-  cacheDir: any;
   destDir: any;
+  cacheRepositoryService: CacheRepositoryService;
   constructor(projectName: string, targetDir: string) {
     this.projectName = projectName;
     this.targetDir = targetDir;
     this.setUpService = new SetUpService(targetDir);
-    this.initCacheDir();
+    this.cacheRepositoryService = new CacheRepositoryService();
   }
-  async initCacheDir() {
-    const plaform = os.platform();
-    if (plaform === 'linux') {
-      this.cacheDir = '/var/cache/repository'; // 替换为实际的缓存目录
-    } else if (plaform === 'darwin') {
-      this.cacheDir = '/Library/Caches/repository'; // 替换为实际的缓存目录
-    } else if (plaform === 'win32') {
-      const appData = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming');
-      this.cacheDir = path.join(appData, 'repository'); // 替换为实际的缓存目录
-    } else {
-      throw new Error('不支持的操作系统');
-    }
-  }
+
   async inquirerGitServerConfig() {
-    const { gitServerType, gitServerConfig, gitServer } = await readConfig();
+    const { gitServerType, gitServerConfig, gitServer } = await readGitServerConfig();
     const prompt = [
       {
         name: 'origin',
@@ -82,10 +76,10 @@ class CreatorService {
       user: user ?? gitServerConfig.user
     });
     config.set('defaults.gitServerConfigured', true);
-    await writeConfig();
+    await writeGitServerConfig();
   }
   async fetchRepo() {
-    let { gitServerType } = await readConfig();
+    let { gitServerType } = await readGitServerConfig();
     let repos: any = await wrapLoading(
       CreatoRequestService[gitServerType as GITSERVER].fetchRepoList,
       'waiting for fetch template'
@@ -107,7 +101,7 @@ class CreatorService {
     return { name: repos.find((item: any) => item.value === repo).name, id: repo };
   }
   async fetchTag(repo: Repo) {
-    const { gitServerType } = await readConfig();
+    const { gitServerType } = await readGitServerConfig();
     const tags = await wrapLoading(
       CreatoRequestService[gitServerType as GITSERVER].fetchTagList,
       'waiting fetch tag',
@@ -123,21 +117,7 @@ class CreatorService {
     } as any);
     return tag;
   }
-  async cacheRepository(repo: Repo, tag: string) {
-    const { gitServerType, origin, orgs, user, Authorization } = await readConfig();
-    await fs.ensureDir(this.cacheDir);
-    let requestUrl;
-    if (gitServerType !== GITSERVER.GITHUB) {
-      requestUrl = `direct:${origin}/api/v4/projects/${repo.id}/repository/archive.zip${tag ? `?sha=${tag}` : ''} `;
-      return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir, {
-        headers: { Authorization: `Bearer ${Authorization}` }
-      });
-    }
-    if (gitServerType === GITSERVER.GITHUB) {
-      requestUrl = `${orgs ? orgs : user}/${repo.name}${tag ? '#' + tag : ''}`;
-    }
-    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, this.destDir);
-  }
+
   async copyFromCacheResponsitory() {
     await copy(this.destDir, this.targetDir);
   }
@@ -148,12 +128,12 @@ class CreatorService {
     const repo = await this.fetchRepo();
     if (!repo) return;
     const tag = await this.fetchTag(repo);
-    this.destDir = path.join(this.cacheDir, `${repo.name}${tag ? `@${tag}` : ''}`);
+    this.destDir = path.join(this.cacheRepositoryService.cacheDir, `${repo.name}${tag ? `@${tag}` : ''}`);
     const isDestDirCached = await this.isDestDirCached();
     if (isDestDirCached) {
       return await this.copyFromCacheResponsitory();
     }
-    await this.cacheRepository(repo, tag);
+    await this.cacheRepositoryService.cacheRepository(repo, tag);
     return await this.copyFromCacheResponsitory();
   }
   async writePkg() {
@@ -164,14 +144,14 @@ class CreatorService {
     await writeFile(pkgPath, pInfo, true);
   }
   async inquirerNewGitServer() {
-    const { gitServerList } = await readConfig();
+    const { gitServerList } = await readGitServerConfig();
     const { gitServer } = await Inquirer.prompt([
       {
         type: 'input',
         name: 'gitServer',
         message: 'please input your git server name:',
         validate: (input: string) => {
-          if (input === '') {
+          if (input.trim() === '') {
             return 'git server name is required';
           }
           if (gitServerList.includes(input)) {
@@ -228,23 +208,24 @@ class CreatorService {
       });
     }
     config.set(`gitServers.${gitServer}`, result);
-    await writeConfig();
+    await writeGitServerConfig();
   }
   async inquirerChooseGitServer() {
-    const { gitServerList } = await readConfig();
+    const { gitServerList, gitServer: defaultGitServer } = await readGitServerConfig();
     const { gitServer } = await Inquirer.prompt([
       {
         name: 'gitServer',
         type: 'list',
         choices: gitServerList,
+        default: defaultGitServer,
         message: 'please choose a git server:'
       }
     ] as any);
     config.set('defaults.defaultGitServer', gitServer);
-    await writeConfig();
+    await writeGitServerConfig();
   }
   async inquireDeleteGitServer() {
-    const { gitServerList } = await readConfig();
+    const { gitServerList } = await readGitServerConfig();
     if (!gitServerList.length) {
       return;
     }
@@ -269,17 +250,54 @@ class CreatorService {
       logger.warn('can not delete the last git server');
       return;
     }
-    const dbConfig: any = config.getProperties();
-    delete dbConfig.gitServers[gitServer];
-    config.set('gitServers', dbConfig.gitServers);
-    await writeConfig();
+    const gitServerConfig: any = config.getProperties();
+    delete gitServerConfig.gitServers[gitServer];
+    config.set('gitServers', gitServerConfig.gitServers);
+    await writeGitServerConfig();
+  }
+  async inquirerChoosePluginsEnabled() {
+    const plugins = await readPluginConfig();
+    const requiredPlugins = ['loadConfig', 'createProject', 'setUpYarn'];
+    const pluginList = plugins.map((plugin) => {
+      return {
+        name: plugin.name,
+        value: plugin.name,
+        checked: plugin.enabled,
+        disabled: requiredPlugins.includes(plugin.name)
+      };
+    });
+    const { choosePlugins } = await Inquirer.prompt([
+      {
+        type: 'checkbox',
+        name: 'choosePlugins',
+        choices: pluginList
+        // validate: (choices: any[]) => {
+        //   choices = choices.map((choice) => choice.name);
+        //   if (!choices.includes('clearCacheRepository')) return `You must required plugin clearCacheRepository `;
+        // }
+      }
+    ] as any);
+    const newPlugins: any = plugins.map((plugin) => {
+      if ([...requiredPlugins, ...choosePlugins].includes(plugin.name)) {
+        return { ...plugin, enabled: true };
+      }
+      return { ...plugin, enabled: false };
+    });
+    pluginsConfig.set('plugins', newPlugins);
+    await writePluginConfig();
   }
   async promptUserOption() {
     const { option } = await Inquirer.prompt([
       {
         name: 'option',
         type: 'list',
-        choices: ['chooseGitServer', 'newGitServer', 'deleteGitServer', 'resetGitServerConfigured'],
+        choices: [
+          'chooseGitServer',
+          'newGitServer',
+          'deleteGitServer',
+          'resetGitServerConfigured',
+          'choosePluginsEnabled'
+        ],
         message: 'please choose an option'
       }
     ] as any);
@@ -297,7 +315,10 @@ class CreatorService {
         break;
       case 'resetGitServerConfigured':
         config.set('defaults.gitServerConfigured', false);
-        await writeConfig();
+        await writeGitServerConfig();
+        break;
+      case 'choosePluginsEnabled':
+        await this.inquirerChoosePluginsEnabled();
         break;
     }
     await this.promptUserOption();

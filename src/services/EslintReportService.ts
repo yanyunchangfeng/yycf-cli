@@ -1,5 +1,5 @@
 import path from 'path';
-import { copy, readConfig } from '../utils';
+import { copy, readGitServerConfig } from '../utils';
 import SetUpService from './SetUpService';
 import { startServer, stopServer } from '../server';
 
@@ -16,7 +16,7 @@ class EslintReportService {
     await copy(originPath, targetPath);
   }
   async installEslintDependencies() {
-    const { eslintPkgs } = await readConfig();
+    const { eslintPkgs } = await readGitServerConfig();
     const command = ['add', ...eslintPkgs, '-D'].join(' ');
     await this.setUpService.exec('yarn', [command], 'Installing eslint dependencies ');
   }

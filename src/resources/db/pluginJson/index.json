@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    { "name": "loadConfig", "enabled": true },
+    { "name": "clearCacheRepository", "enabled": false },
+    { "name": "createProject", "enabled": true },
+    { "name": "setUpYarn", "enabled": true },
+    { "name": "generatorEslintReport", "enabled": true },
+    { "name": "installDependencies", "enabled": true }
+  ]
+}

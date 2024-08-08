@@ -1,0 +1,6 @@
+{
+  "name": "clearCacheRepository",
+  "enabled": true,
+  "initMessage": "plugin is running",
+  "exitMessage": "plugin is exiting"
+}

@@ -1,7 +1,8 @@
 import fs from 'fs-extra';
 import { safeJsonParse } from '.';
-import { configPath } from '../shared';
-import config from '../config/dbConfig';
+import { gitSeverPath, pluginPath } from '../shared';
+import gitServersConfig from '../config/gitServerConfig';
+import pluginConfig from '../config/pluginConfig';
 import { logger } from '../utils';
 
 export const readFile = async (path: string, needParse = false) => {
@@ -33,18 +34,20 @@ export const copy = async (originPath: string, targetPath: string) => {
   }
 };
 
-export const readConfig = async () => {
-  const gitServer = config.get('defaults.defaultGitServer');
-  const ignoresGitServers: string[] = config.get('defaults.ignoresGitServers');
-  const gitServers: any = config.get('gitServers');
+export const readGitServerConfig = async () => {
+  const gitServer = gitServersConfig.get('defaults.defaultGitServer');
+  const ignoresGitServers: string[] = gitServersConfig.get('defaults.ignoresGitServers');
+  const gitServers: any = gitServersConfig.get('gitServers');
   const gitServerList = Object.keys(gitServers).filter((key) => !ignoresGitServers.includes(gitServers[key].type));
-  const gitServerConfig = config.get(gitServer ? `gitServers.${gitServer}` : (`gitServers.${gitServerList[0]}` as any));
+  const gitServerConfig = gitServersConfig.get(
+    gitServer ? `gitServers.${gitServer}` : (`gitServers.${gitServerList[0]}` as any)
+  );
   const orgs = gitServerConfig.orgs;
   const user = gitServerConfig.user;
   const origin = gitServerConfig.origin;
   const Authorization = gitServerConfig.Authorization;
   const gitServerType = gitServerConfig.type;
-  const eslintPkgs = config.get('defaults.eslintPkgs');
+  const eslintPkgs = gitServersConfig.get('defaults.eslintPkgs');
 
   return {
     gitServer,
@@ -59,6 +62,13 @@ export const readConfig = async () => {
   };
 };
 
-export const writeConfig = async () => {
-  return await writeFile(configPath, config.getProperties(), true);
+export const writeGitServerConfig = async () => {
+  return await writeFile(gitSeverPath, gitServersConfig.getProperties(), true);
+};
+
+export const readPluginConfig = async () => {
+  return pluginConfig.getProperties().plugins;
+};
+export const writePluginConfig = async () => {
+  return await writeFile(pluginPath, pluginConfig.getProperties(), true);
 };

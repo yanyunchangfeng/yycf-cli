@@ -1,17 +1,20 @@
-import path from 'path';
-import { readFile } from '../utils';
+import convict from 'convict';
 
-interface PluginConfig {
-  name: string;
-  enabled: boolean;
-}
+const pluginsConfig = convict({
+  plugins: {
+    doc: 'plugins configurations',
+    format: Array,
+    default: [
+      { name: 'loadConfig', enabled: true },
+      { name: 'clearCacheRepository', enabled: false },
+      { name: 'createProject', enabled: true },
+      { name: 'setUpYarn', enabled: true },
+      { name: 'generatorEslintReport', enabled: true },
+      { name: 'installDependencies', enabled: true }
+    ]
+  }
+});
 
-interface Config {
-  plugins: PluginConfig[];
-}
+pluginsConfig.validate({ allowed: 'strict' });
 
-export async function loadConfig(): Promise<Config> {
-  const configPath = path.resolve(__dirname, '../config.json');
-  const data = await readFile(configPath, true);
-  return data as Config;
-}
+export default pluginsConfig;

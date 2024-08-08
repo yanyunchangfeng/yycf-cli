@@ -1,12 +1,11 @@
 import fs from 'fs-extra';
-import { logger } from './src/utils';
 import path from 'path';
 
-const originDbJsonPath = path.join(__dirname, 'src/resources/dbConfigJson/index.json');
-const targetDbJsonPath = path.join(__dirname, 'bin/resources/dbConfigJson/index.json');
+const originDbPath = path.join(__dirname, 'src/resources/db');
+const targetDbPath = path.join(__dirname, 'bin/resources/db');
 
 const filter = (src: string, dest: string) => {
-  if (src.includes('dbConfigJson')) {
+  if (src.includes('db')) {
     return false;
   }
   return true;
@@ -15,13 +14,13 @@ const filter = (src: string, dest: string) => {
 const copyFiles = async () => {
   try {
     await fs.copy('src/resources', 'bin/resources', { filter });
-    await fs.copy('src/config.json', 'bin/config.json');
-    if (!fs.existsSync(targetDbJsonPath)) {
-      await fs.copy(originDbJsonPath, targetDbJsonPath);
+    if (!fs.existsSync(targetDbPath)) {
+      await fs.copy(originDbPath, targetDbPath);
     }
-    logger.info('Files copied successfully!');
+    // await fs.copy('src/resources/db/pluginJson', 'bin/resources/db/pluginJson');
+    console.log('Files copied successfully!');
   } catch (err) {
-    logger.error('Error copying files:', err);
+    console.error('Error copying files:', err);
   }
 };
 
