@@ -40,17 +40,15 @@ class EslintReportService {
     const targetPath = path.join(this.targetDir, 'index.html');
     await copy(originPath, targetPath);
   }
-  async addEslintStandPlugin() {
-    await this.setUpService.exec(
-      'yarn',
-      ['init', '@eslint/config@latest', '--config', 'eslint-config-standard'],
-      'init eslint-config-standard'
-    );
+  async addEslintPlugin() {
+    // yarn 会出现node版本 以及安装不了插件的问题
+    const { eslintPlugin } = await readPluginConfig();
+    await this.setUpService.exec('npm', ['init', ...eslintPlugin], 'npm init eslint plugin');
   }
   async init() {
-    await this.copyEslintConfig();
-    await this.installEslintDependencies();
-    // await this.addEslintStandPlugin();
+    // await this.copyEslintConfig();
+    // await this.installEslintDependencies();
+    await this.addEslintPlugin();
     await this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();

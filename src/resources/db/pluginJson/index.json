@@ -10,6 +10,7 @@
     { "name": "generatorEslintReport", "enabled": true },
     { "name": "installDependencies", "enabled": true }
   ],
+  "eslintPlugin": ["@eslint/config@latest", "--config", "eslint-config-standard"],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
   "requiredPlugins": ["loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"]
 }
