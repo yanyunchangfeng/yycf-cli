@@ -1,9 +1,9 @@
 import SetUpService from './SetUpService';
-
+import { PluginContext } from '../shared';
 class InstallDependencies {
   setUpService: SetUpService;
-  constructor(targetDir: string) {
-    this.setUpService = new SetUpService(targetDir);
+  constructor(context: PluginContext) {
+    this.setUpService = new SetUpService(context.targetDir);
   }
   async installDependencies() {
     await this.setUpService.exec('yarn', [], 'Installing dependencies');

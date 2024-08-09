@@ -40,7 +40,8 @@
     "inquirer": "10.1.5",
     "open": "8.4.2",
     "ora": "5.4.0",
-    "winston": "3.13.1"
+    "winston": "3.13.1",
+    "winston-daily-rotate-file": "5.0.0"
   },
   "devDependencies": {
     "@types/convict": "6.1.6",

@@ -2,13 +2,14 @@ import path from 'path';
 import { copy, readPluginConfig } from '../utils';
 import SetUpService from './SetUpService';
 import { startServer, stopServer } from '../server';
+import { PluginContext } from '../shared';
 
 class EslintReportService {
   setUpService: SetUpService;
   targetDir: string;
-  constructor(targetDir: string) {
-    this.targetDir = targetDir;
-    this.setUpService = new SetUpService(targetDir);
+  constructor(context: PluginContext) {
+    this.targetDir = context.targetDir;
+    this.setUpService = new SetUpService(context.targetDir);
   }
   async copyEslintConfig() {
     const originPath = path.resolve(__dirname, '../resources/extensions/eslint/eslint.config.mjs');
@@ -46,7 +47,7 @@ class EslintReportService {
       'init eslint-config-standard'
     );
   }
-  async generatorEslintReport() {
+  async init() {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
     // await this.addEslintStandPlugin();

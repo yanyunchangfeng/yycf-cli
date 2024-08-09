@@ -22,6 +22,52 @@ class CreatorService {
     this.targetDir = context.targetDir;
     this.context = context;
   }
+  async fetchRepo() {
+    let { gitServerType } = await readGitServerConfig();
+    let repos: any = await wrapLoading(
+      CreatoRequestService[gitServerType as GITSERVER].fetchRepoList,
+      'waiting for fetch template'
+    );
+    if (!repos) return;
+    repos = repos.map((item: any) => {
+      return {
+        name: item.name,
+        value: item.id
+      };
+    });
+    const { repo } = await Inquirer.prompt({
+      name: 'repo',
+      type: 'list',
+      choices: repos,
+      loop: false,
+      message: `please choose a template to create project:`
+    } as any);
+    return { name: repos.find((item: any) => item.value === repo).name, id: repo };
+  }
+  async fetchTag(repo: Repo) {
+    const { gitServerType } = await readGitServerConfig();
+    const tags = await wrapLoading(
+      CreatoRequestService[gitServerType as GITSERVER].fetchTagList,
+      'waiting fetch tag',
+      repo
+    );
+    if (!tags?.length) return;
+    const { tag } = await Inquirer.prompt({
+      name: 'tag',
+      type: 'list',
+      choices: tags,
+      loop: false,
+      message: 'please choose a tag to create project:'
+    } as any);
+    return tag;
+  }
+  async fetchTemplate() {
+    const repo = await this.fetchRepo();
+    if (!repo) return;
+    const tag = await this.fetchTag(repo);
+    this.context.repo = repo;
+    this.context.tag = tag;
+  }
   async inquirerGitServerConfig() {
     const { gitServerType, gitServerConfig, gitServer } = await readGitServerConfig();
     const basePrompts = [
@@ -84,52 +130,6 @@ class CreatorService {
     config.set('defaults.gitServerConfigured', true);
     await writeGitServerConfig();
   }
-  async fetchRepo() {
-    let { gitServerType } = await readGitServerConfig();
-    let repos: any = await wrapLoading(
-      CreatoRequestService[gitServerType as GITSERVER].fetchRepoList,
-      'waiting for fetch template'
-    );
-    if (!repos) return;
-    repos = repos.map((item: any) => {
-      return {
-        name: item.name,
-        value: item.id
-      };
-    });
-    const { repo } = await Inquirer.prompt({
-      name: 'repo',
-      type: 'list',
-      choices: repos,
-      loop: false,
-      message: `please choose a template to create project:`
-    } as any);
-    return { name: repos.find((item: any) => item.value === repo).name, id: repo };
-  }
-  async fetchTag(repo: Repo) {
-    const { gitServerType } = await readGitServerConfig();
-    const tags = await wrapLoading(
-      CreatoRequestService[gitServerType as GITSERVER].fetchTagList,
-      'waiting fetch tag',
-      repo
-    );
-    if (!tags?.length) return;
-    const { tag } = await Inquirer.prompt({
-      name: 'tag',
-      type: 'list',
-      choices: tags,
-      loop: false,
-      message: 'please choose a tag to create project:'
-    } as any);
-    return tag;
-  }
-  async fetchTemplate() {
-    const repo = await this.fetchRepo();
-    if (!repo) return;
-    const tag = await this.fetchTag(repo);
-    this.context.repo = repo;
-    this.context.tag = tag;
-  }
   async inquirerNewGitServer() {
     const { gitServerList } = await readGitServerConfig();
     const { gitServer } = await Inquirer.prompt([
@@ -139,13 +139,14 @@ class CreatorService {
         message: 'please input your git server name:',
         validate: (input: string) => {
           if (input.trim() === '') {
-            return 'git server name is required';
+            return 'git server name  cannot be empty or consist only of whitespace';
           }
           if (gitServerList.includes(input)) {
             return 'git server name is already exists';
           }
           return true;
-        }
+        },
+        required: true
       }
     ] as any);
     const basePrompts = [
@@ -212,7 +213,7 @@ class CreatorService {
     await writeGitServerConfig();
   }
   async inquireDeleteGitServer() {
-    const { gitServerList } = await readGitServerConfig();
+    const { gitServerList, gitServer: defaultGitServer } = await readGitServerConfig();
     if (!gitServerList.length) {
       return;
     }
@@ -237,9 +238,13 @@ class CreatorService {
       logger.warn('can not delete the last git server');
       return;
     }
+
     const gitServerConfig: any = config.getProperties();
     delete gitServerConfig.gitServers[gitServer];
     config.set('gitServers', gitServerConfig.gitServers);
+    if (defaultGitServer === gitServer) {
+      config.set('defaults.defaultGitServer', '');
+    }
     await writeGitServerConfig();
   }
   async inquirerChoosePluginsEnabled() {

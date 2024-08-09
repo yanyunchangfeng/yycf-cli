@@ -1,7 +1,41 @@
 import winston from 'winston';
 import path from 'path';
-// 创建日志目录路径
+import DailyRotateFile from 'winston-daily-rotate-file';
+
 const logDirectory = path.resolve(__dirname, '../../logs');
+const infoTransport = new DailyRotateFile({
+  filename: 'app-%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: true,
+  dirname: logDirectory,
+  maxSize: '20m',
+  maxFiles: '14d'
+});
+const errorTransport = new DailyRotateFile({
+  filename: 'error-%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: true,
+  dirname: logDirectory,
+  maxSize: '20m',
+  maxFiles: '14d',
+  level: 'error'
+});
+const exceptionTransport = new DailyRotateFile({
+  filename: 'exceptions-%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: true,
+  dirname: logDirectory,
+  maxSize: '20m',
+  maxFiles: '14d'
+});
+const rejectionTransport = new DailyRotateFile({
+  filename: 'rejections-%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: true,
+  dirname: logDirectory,
+  maxSize: '20m',
+  maxFiles: '14d'
+});
 
 export const logger = winston.createLogger({
   level: 'info',
@@ -15,21 +49,9 @@ export const logger = winston.createLogger({
     }),
     winston.format.colorize()
   ),
-  transports: [
-    new winston.transports.Console(),
-    // 文件输出
-    new winston.transports.File({
-      filename: path.join(logDirectory, 'app.log'),
-      level: 'info'
-    }),
-    // 错误日志单独文件输出
-    new winston.transports.File({
-      filename: path.join(logDirectory, 'error.log'),
-      level: 'error'
-    })
-  ],
-  exceptionHandlers: [new winston.transports.File({ filename: path.join(logDirectory, 'exceptions.log') })],
-  rejectionHandlers: [new winston.transports.File({ filename: path.join(logDirectory, 'rejections.log') })],
+  transports: [new winston.transports.Console(), infoTransport, errorTransport],
+  exceptionHandlers: [exceptionTransport],
+  rejectionHandlers: [rejectionTransport],
   exitOnError: false
 });
 
