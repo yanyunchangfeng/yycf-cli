@@ -3,8 +3,13 @@
     { "name": "loadConfig", "enabled": true },
     { "name": "clearCacheRepository", "enabled": false },
     { "name": "createProject", "enabled": true },
+    { "name": "cacheRepository", "enabled": true },
+    { "name": "downloadRepository", "enabled": true },
+    { "name": "writePkg", "enabled": true },
     { "name": "setUpYarn", "enabled": true },
     { "name": "generatorEslintReport", "enabled": true },
     { "name": "installDependencies", "enabled": true }
-  ]
+  ],
+  "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
+  "requiredPlugins": ["loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"]
 }

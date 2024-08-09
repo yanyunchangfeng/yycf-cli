@@ -36,9 +36,8 @@ export const copy = async (originPath: string, targetPath: string) => {
 
 export const readGitServerConfig = async () => {
   const gitServer = gitServersConfig.get('defaults.defaultGitServer');
-  const ignoresGitServers: string[] = gitServersConfig.get('defaults.ignoresGitServers');
   const gitServers: any = gitServersConfig.get('gitServers');
-  const gitServerList = Object.keys(gitServers).filter((key) => !ignoresGitServers.includes(gitServers[key].type));
+  const gitServerList = Object.keys(gitServers);
   const gitServerConfig = gitServersConfig.get(
     gitServer ? `gitServers.${gitServer}` : (`gitServers.${gitServerList[0]}` as any)
   );
@@ -47,7 +46,6 @@ export const readGitServerConfig = async () => {
   const origin = gitServerConfig.origin;
   const Authorization = gitServerConfig.Authorization;
   const gitServerType = gitServerConfig.type;
-  const eslintPkgs = gitServersConfig.get('defaults.eslintPkgs');
 
   return {
     gitServer,
@@ -57,7 +55,6 @@ export const readGitServerConfig = async () => {
     user,
     origin,
     Authorization,
-    eslintPkgs,
     gitServerType
   };
 };
@@ -67,7 +64,7 @@ export const writeGitServerConfig = async () => {
 };
 
 export const readPluginConfig = async () => {
-  return pluginConfig.getProperties().plugins;
+  return pluginConfig.getProperties();
 };
 export const writePluginConfig = async () => {
   return await writeFile(pluginPath, pluginConfig.getProperties(), true);

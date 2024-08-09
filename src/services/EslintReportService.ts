@@ -1,5 +1,5 @@
 import path from 'path';
-import { copy, readGitServerConfig } from '../utils';
+import { copy, readPluginConfig } from '../utils';
 import SetUpService from './SetUpService';
 import { startServer, stopServer } from '../server';
 
@@ -16,9 +16,9 @@ class EslintReportService {
     await copy(originPath, targetPath);
   }
   async installEslintDependencies() {
-    const { eslintPkgs } = await readGitServerConfig();
-    const command = ['add', ...eslintPkgs, '-D'].join(' ');
-    await this.setUpService.exec('yarn', [command], 'Installing eslint dependencies ');
+    const { eslintPkgs } = await readPluginConfig();
+    const command = ['add', ...eslintPkgs, '-D'];
+    await this.setUpService.exec('yarn', [...command], 'Installing eslint dependencies ');
   }
   async genertingReportHtml() {
     await this.setUpService.exec(
@@ -39,9 +39,17 @@ class EslintReportService {
     const targetPath = path.join(this.targetDir, 'index.html');
     await copy(originPath, targetPath);
   }
+  async addEslintStandPlugin() {
+    await this.setUpService.exec(
+      'yarn',
+      ['init', '@eslint/config@latest', '--config', 'eslint-config-standard'],
+      'init eslint-config-standard'
+    );
+  }
   async generatorEslintReport() {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
+    // await this.addEslintStandPlugin();
     await this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();

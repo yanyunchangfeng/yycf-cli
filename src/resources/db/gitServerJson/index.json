@@ -17,8 +17,6 @@
   },
   "defaults": {
     "defaultGitServer": "github",
-    "gitServerConfigured": false,
-    "ignoresGitServers": [],
-    "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"]
+    "gitServerConfigured": false
   }
 }

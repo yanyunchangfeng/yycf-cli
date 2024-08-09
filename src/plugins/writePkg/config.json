@@ -1,0 +1,6 @@
+{
+  "name": "writePkg",
+  "enabled": true,
+  "initMessage": "plugin is running",
+  "exitMessage": "plugin is exiting"
+}

@@ -1,39 +1,30 @@
 import Inquirer from 'inquirer';
-import { CreatoRequestService, CacheRepositoryService } from '../services';
+import { CreatoRequestService } from '../services';
 import config from '../config/gitServerConfig';
 import {
   wrapLoading,
-  readFile,
-  writeFile,
   readGitServerConfig,
-  copy,
   writeGitServerConfig,
   logger,
   readPluginConfig,
   writePluginConfig
 } from '../utils';
-import path from 'path';
-import { SetUpService } from '.';
-import { GITSERVER, Repo } from '../shared';
-import fs from 'fs-extra';
+import { GITSERVER, Repo, PluginContext } from '../shared';
 import pluginsConfig from '../config/pluginConfig';
 
 class CreatorService {
+  context: Record<string, any>;
   projectName: string;
   targetDir: string;
-  setUpService: SetUpService;
   destDir: any;
-  cacheRepositoryService: CacheRepositoryService;
-  constructor(projectName: string, targetDir: string) {
-    this.projectName = projectName;
-    this.targetDir = targetDir;
-    this.setUpService = new SetUpService(targetDir);
-    this.cacheRepositoryService = new CacheRepositoryService();
+  constructor(context: PluginContext) {
+    this.projectName = context.projectName;
+    this.targetDir = context.targetDir;
+    this.context = context;
   }
-
   async inquirerGitServerConfig() {
     const { gitServerType, gitServerConfig, gitServer } = await readGitServerConfig();
-    const prompt = [
+    const basePrompts = [
       {
         name: 'origin',
         type: 'input',
@@ -45,10 +36,18 @@ class CreatorService {
         type: 'input',
         default: gitServerConfig.Authorization,
         message: `please input your ${gitServer} personal access tokens:`
+      },
+      {
+        name: 'type',
+        type: 'list',
+        choices: [GITSERVER.GITHUB, GITSERVER.GITLAB],
+        default: gitServerType,
+        message: `please choose your ${gitServer} type:`
       }
     ];
-    if (gitServerType === GITSERVER.GITHUB) {
-      prompt.push(
+    const { Authorization, origin, type } = await Inquirer.prompt(basePrompts as any);
+    if (type === GITSERVER.GITHUB) {
+      const gitHubExtraPrompts = [
         {
           name: 'orgs',
           type: 'input',
@@ -61,19 +60,26 @@ class CreatorService {
           default: gitServerConfig.user,
           message: `please input your ${gitServer} user:`
         }
-      );
-    }
-    const { Authorization, origin, orgs, user } = await Inquirer.prompt(prompt as any);
-    if (gitServerType === GITSERVER.GITHUB) {
+      ];
+      const { orgs, user } = await Inquirer.prompt(gitHubExtraPrompts as any);
       if (!origin || !Authorization || !(orgs || user)) return;
+      config.set(`gitServers.${gitServer}`, {
+        ...gitServerConfig,
+        origin,
+        Authorization,
+        type,
+        orgs,
+        user
+      });
+      config.set('defaults.gitServerConfigured', true);
+      return await writeGitServerConfig();
     }
     if (!origin || !Authorization) return;
     config.set(`gitServers.${gitServer}`, {
       ...gitServerConfig,
       origin,
       Authorization,
-      orgs: orgs ?? gitServerConfig.orgs,
-      user: user ?? gitServerConfig.user
+      type
     });
     config.set('defaults.gitServerConfigured', true);
     await writeGitServerConfig();
@@ -117,31 +123,12 @@ class CreatorService {
     } as any);
     return tag;
   }
-
-  async copyFromCacheResponsitory() {
-    await copy(this.destDir, this.targetDir);
-  }
-  async isDestDirCached() {
-    return fs.existsSync(this.destDir);
-  }
   async fetchTemplate() {
     const repo = await this.fetchRepo();
     if (!repo) return;
     const tag = await this.fetchTag(repo);
-    this.destDir = path.join(this.cacheRepositoryService.cacheDir, `${repo.name}${tag ? `@${tag}` : ''}`);
-    const isDestDirCached = await this.isDestDirCached();
-    if (isDestDirCached) {
-      return await this.copyFromCacheResponsitory();
-    }
-    await this.cacheRepositoryService.cacheRepository(repo, tag);
-    return await this.copyFromCacheResponsitory();
-  }
-  async writePkg() {
-    const pkgPath = path.join(this.targetDir, 'package.json');
-    let pInfo: any = await readFile(pkgPath, true);
-    if (!pInfo) return;
-    pInfo.name = this.projectName;
-    await writeFile(pkgPath, pInfo, true);
+    this.context.repo = repo;
+    this.context.tag = tag;
   }
   async inquirerNewGitServer() {
     const { gitServerList } = await readGitServerConfig();
@@ -256,8 +243,7 @@ class CreatorService {
     await writeGitServerConfig();
   }
   async inquirerChoosePluginsEnabled() {
-    const plugins = await readPluginConfig();
-    const requiredPlugins = ['loadConfig', 'createProject', 'setUpYarn'];
+    const { plugins, requiredPlugins } = await readPluginConfig();
     const pluginList = plugins.map((plugin) => {
       return {
         name: plugin.name,
@@ -270,11 +256,8 @@ class CreatorService {
       {
         type: 'checkbox',
         name: 'choosePlugins',
+        loop: false,
         choices: pluginList
-        // validate: (choices: any[]) => {
-        //   choices = choices.map((choice) => choice.name);
-        //   if (!choices.includes('clearCacheRepository')) return `You must required plugin clearCacheRepository `;
-        // }
       }
     ] as any);
     const newPlugins: any = plugins.map((plugin) => {
@@ -329,7 +312,6 @@ class CreatorService {
   async create() {
     await this.initGitServer();
     await this.fetchTemplate();
-    await this.writePkg();
   }
 }
 export default CreatorService;

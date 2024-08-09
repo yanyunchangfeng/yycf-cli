@@ -1,11 +1,11 @@
 import { PluginContext } from '../../shared';
-import { CreatorService } from '../../services';
+import { CacheRepositoryService } from '../../services';
 import { logger } from '../../utils';
 import config from './config.json';
 
 export const init = async (context: PluginContext) => {
   logger.info(`${config.name} ${config.initMessage}`);
-  const creator = new CreatorService(context);
-  await creator.create();
+  const cache = new CacheRepositoryService(context);
+  await cache.getCacheRepository();
   logger.info(`${config.name} ${config.exitMessage}`);
 };

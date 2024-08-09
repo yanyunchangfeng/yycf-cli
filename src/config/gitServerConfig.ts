@@ -31,16 +31,6 @@ const gitServerConfig = convict({
       doc: 'The default configed option',
       format: Boolean,
       default: false
-    },
-    ignoresGitServers: {
-      doc: 'The ignoresGitServers option',
-      format: Array,
-      default: []
-    },
-    eslintPkgs: {
-      doc: 'Version of the YesName package',
-      format: Array,
-      default: ['eslint', 'globals', '@eslint/js', 'typescript-eslint', 'eslint-plugin-react', 'typescript']
     }
   }
 });

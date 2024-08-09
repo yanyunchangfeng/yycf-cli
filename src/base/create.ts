@@ -30,6 +30,9 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
       }
     }
   }
-  const context: Record<keyof any, any> = {};
-  main({ projectName, targetDir }, context);
+  const context: Record<keyof any, any> = {
+    projectName,
+    targetDir
+  };
+  main(context);
 };
