@@ -12,9 +12,8 @@ class EslintReportService {
     this.setUpService = new SetUpService(context.targetDir);
   }
   async copyEslintConfig() {
-    const originPath = path.resolve(__dirname, '../resources/extensions/eslint/eslint.config.mjs');
-    const targetPath = path.join(this.targetDir, 'eslint.config.mjs');
-    await copy(originPath, targetPath);
+    const originPath = path.resolve(__dirname, '../resources/extensions/eslint');
+    await copy(originPath, this.targetDir);
   }
   async installEslintDependencies() {
     const { eslintPkgs } = await readPluginConfig();
@@ -36,19 +35,19 @@ class EslintReportService {
     );
   }
   async copyLocalStaticHtml() {
-    const originPath = path.resolve(__dirname, '../resources/public/local/index.html');
-    const targetPath = path.join(this.targetDir, 'index.html');
-    await copy(originPath, targetPath);
+    const originPath = path.resolve(__dirname, '../resources/public/local');
+    await copy(originPath, this.targetDir);
   }
   async addEslintPlugin() {
-    // yarn 会出现node版本 以及安装不了插件的问题
+    // 1. yarn 会出现node版本 以及安装不了插件的问题
+    // 2. npm 可以然而需要很多交互命令选择
     const { eslintPlugin } = await readPluginConfig();
     await this.setUpService.exec('npm', ['init', ...eslintPlugin], 'npm init eslint plugin');
   }
   async init() {
-    // await this.copyEslintConfig();
-    // await this.installEslintDependencies();
-    await this.addEslintPlugin();
+    await this.copyEslintConfig();
+    await this.installEslintDependencies();
+    // await this.addEslintPlugin();
     await this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();

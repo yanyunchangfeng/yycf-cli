@@ -26,7 +26,31 @@
 
           const labels = Object.keys(ruleCounts);
           const counts = Object.values(ruleCounts);
-
+          const baseColor = [
+            '#25859e',
+            '#6acece',
+            '#e78816',
+            '#eabc7f',
+            '#12619d',
+            '#ad2532',
+            '#15938d',
+            '#b3aa9b',
+            '#042d4c'
+          ];
+          const genColor = (arr) => {
+            let num = 0;
+            let color = [];
+            for (let i = 0; i < arr.length; i++) {
+              if (num < baseColor.length) {
+                color[i] = baseColor[num++];
+              } else {
+                num = 0;
+                color[i] = baseColor[num++];
+              }
+            }
+            return color;
+          };
+          const colors = genColor(counts);
           const ctx = document.getElementById('eslintChart').getContext('2d');
           new Chart(ctx, {
             type: 'bar',
@@ -36,8 +60,10 @@
                 {
                   label: 'ESLint Errors and Warnings by Rule',
                   data: counts,
-                  backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                  borderColor: 'rgba(75, 192, 192, 1)',
+                  // backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                  backgroundColor: colors,
+                  // borderColor: 'rgba(75, 192, 192, 1)',
+                  borderColor: colors,
                   borderWidth: 1
                 }
               ]
