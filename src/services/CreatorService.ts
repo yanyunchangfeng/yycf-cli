@@ -13,10 +13,9 @@ import { GITSERVER, Repo, PluginContext } from '../shared';
 import pluginsConfig from '../config/pluginConfig';
 
 class CreatorService {
-  context: Record<string, any>;
+  context;
   projectName: string;
   targetDir: string;
-  destDir: any;
   constructor(context: PluginContext) {
     this.projectName = context.projectName;
     this.targetDir = context.targetDir;

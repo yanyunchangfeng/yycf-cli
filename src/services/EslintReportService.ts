@@ -1,9 +1,9 @@
 import path from 'path';
-import { copy, readPluginConfig } from '../utils';
+import { copy, logger, readPluginConfig } from '../utils';
 import SetUpService from './SetUpService';
 import { startServer, stopServer } from '../server';
 import { PluginContext } from '../shared';
-
+import Inquirer from 'inquirer';
 class EslintReportService {
   setUpService: SetUpService;
   targetDir: string;
@@ -38,20 +38,38 @@ class EslintReportService {
     const originPath = path.resolve(__dirname, '../resources/public/local');
     await copy(originPath, this.targetDir);
   }
-  async addEslintPlugin() {
+  async initEslintPlugin() {
     // 1. yarn 会出现node版本 以及安装不了插件的问题
     // 2. npm 可以然而需要很多交互命令选择
-    const { eslintPlugin } = await readPluginConfig();
-    await this.setUpService.exec('npm', ['init', ...eslintPlugin], 'npm init eslint plugin');
+    const { eslintPlugins } = await readPluginConfig();
+    const { chooseEslintPlugin } = await Inquirer.prompt([
+      {
+        name: 'chooseEslintPlugin',
+        type: 'list',
+        choices: eslintPlugins,
+        default: eslintPlugins[0],
+        message: 'please choose a initial eslint config:'
+      }
+    ] as any);
+    logger.info(`choose ${chooseEslintPlugin}`);
+
+    await this.setUpService.exec('npm', ['init', `${chooseEslintPlugin}`], `npm init ${chooseEslintPlugin}`);
   }
-  async init() {
+  async initInnerEslint() {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
-    // await this.addEslintPlugin();
-    await this.genertingReportHtml();
+    this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();
-    await stopServer();
+    // await stopServer();
+    await startServer(this.targetDir);
+  }
+  async initCustomEslint() {
+    await this.initEslintPlugin();
+    this.genertingReportHtml();
+    await this.generatorReportJson();
+    await this.copyLocalStaticHtml();
+    // await stopServer();
     await startServer(this.targetDir);
   }
 }

@@ -7,10 +7,11 @@
     { "name": "downloadRepository", "enabled": true },
     { "name": "writePkg", "enabled": true },
     { "name": "setUpYarn", "enabled": true },
-    { "name": "generatorEslintReport", "enabled": true },
+    { "name": "innerEslintReport", "enabled": true },
+    { "name": "customEslintReport", "enabled": true },
     { "name": "installDependencies", "enabled": true }
   ],
-  "eslintPlugin": ["@eslint/config@latest", "--config", "eslint-config-standard"],
+  "eslintPlugins": ["@eslint/config@latest"],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
   "requiredPlugins": ["loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"]
 }

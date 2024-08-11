@@ -22,7 +22,7 @@ const pluginsConfig = convict({
     format: Array,
     default: ['eslint', 'globals', '@eslint/js', 'typescript-eslint', 'eslint-plugin-react', 'typescript']
   },
-  eslintPlugin: {
+  eslintPlugins: {
     doc: 'eslint Plugin',
     format: Array,
     default: ['@eslint/config@latest', '--config', 'eslint-config-standard']

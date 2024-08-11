@@ -1,5 +1,5 @@
 {
-  "name": "generatorEslintReport",
+  "name": "innerEslintReport",
   "enabled": true,
   "initMessage": "plugin is running",
   "exitMessage": "plugin is exiting"
