@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "ts-node  src/index.ts create xxx",
-    "build-hmr": "nodemon --watch src --ext ts,json,mjs --exec npm run build ",
+    "build-hmr": "nodemon --watch src --ext ts,json,mjs,html --exec npm run build ",
     "build-ts": "tsc -p tsconfig.json",
     "build": "npm run build-ts && npm run copy-config",
     "copy-config": "ts-node copyFiles.ts",
