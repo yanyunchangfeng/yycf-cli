@@ -1,7 +1,7 @@
 import path from 'path';
 import { copy, logger, readPluginConfig } from '../utils';
 import SetUpService from './SetUpService';
-import { startServer, stopServer } from '../server';
+import { startEslintServer } from '../server';
 import { PluginContext } from '../shared';
 import Inquirer from 'inquirer';
 class EslintReportService {
@@ -35,7 +35,7 @@ class EslintReportService {
     );
   }
   async copyLocalStaticHtml() {
-    const originPath = path.resolve(__dirname, '../resources/public/local');
+    const originPath = path.resolve(__dirname, '../resources/public/local/eslint');
     await copy(originPath, this.targetDir);
   }
   async initEslintPlugin() {
@@ -61,16 +61,14 @@ class EslintReportService {
     this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();
-    // await stopServer();
-    await startServer(this.targetDir);
+    await startEslintServer(this.targetDir);
   }
   async initCustomEslint() {
     await this.initEslintPlugin();
     this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();
-    // await stopServer();
-    await startServer(this.targetDir);
+    await startEslintServer(this.targetDir);
   }
 }
 
