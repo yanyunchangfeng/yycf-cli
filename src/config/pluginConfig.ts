@@ -7,8 +7,8 @@ const pluginsConfig = convict({
     format: Array,
     default: [
       { name: 'clearLogs', enabled: true },
-      { name: 'loadConfig', enabled: true },
       { name: 'clearCacheRepository', enabled: false },
+      { name: 'loadConfig', enabled: true },
       { name: 'createProject', enabled: true },
       { name: 'cacheRepository', enabled: true },
       { name: 'downloadRepository', enabled: true },

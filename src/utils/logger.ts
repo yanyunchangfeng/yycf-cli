@@ -39,7 +39,7 @@ const genRejectionTransport = () =>
     maxSize: '20m',
     maxFiles: '14d'
   });
-export const init = () => {
+const init = () => {
   return winston.createLogger({
     level: 'info',
     format: winston.format.combine(
