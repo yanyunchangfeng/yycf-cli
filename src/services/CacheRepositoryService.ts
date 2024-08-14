@@ -2,7 +2,7 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
 import { PluginContext } from '../shared';
-import { readGitServerConfig, wrapLoading, copy } from '../utils';
+import { copy } from '../utils';
 import util from 'util';
 // @ts-ignore   正常不用忽略也没问题 因为typings里面有定义  主要是为了解决调式模式下的ts报错（调式编译器的问题）
 import dowloadGitRepo from 'download-git-repo';
@@ -43,7 +43,7 @@ class CacheRepositoryService {
     }
   }
   async clearCacheRepository() {
-    await fs.emptyDir(this.cacheDir);
+    await fs.remove(this.cacheDir);
   }
   async init() {
     await fs.ensureDir(this.cacheDir);

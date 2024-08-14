@@ -10,22 +10,26 @@
   "scripts": {
     "start": "ts-node  src/index.ts create xxx",
     "build-hmr": "nodemon --watch src --ext ts,json,mjs,html --exec npm run build ",
-    "build-ts": "tsc -p tsconfig.json",
+    "build-ts": "tsc -p tsconfig.build.json",
     "build-brower-ts": "tsc -p tsconfig.brower.json",
     "build": "npm run build-ts &&  npm run build-brower-ts && npm run copy-config",
     "copy-config": "ts-node copyFiles.ts",
     "start:debug": "node --inspect-brk -r ts-node/register  src/index.ts create xxx",
     "prepare": "husky install",
     "prettier": "prettier -c --write  **/* --cache",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "test":"jest"
   },
   "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
   "license": "MIT",
   "keywords": [
-    "cf",
-    "yycf",
     "code-analysis",
-    "cli"
+    "code-analyzer",
+    "code-analyze",
+    "code",
+    "analysis",
+    "analyzer",
+    "analyze"
   ],
   "files": [
     "bin"
@@ -41,19 +45,23 @@
     "inquirer": "10.1.5",
     "open": "8.4.2",
     "ora": "5.4.0",
+    "plato": "1.7.0",
     "winston": "3.13.1",
     "winston-daily-rotate-file": "5.0.0"
   },
   "devDependencies": {
     "@types/convict": "6.1.6",
+    "@types/express": "4.17.21",
     "@types/fs-extra": "11.0.4",
     "@types/inquirer": "9.0.7",
+    "@types/jest": "29.5.12",
     "@types/node": "22.0.0",
-    "@types/express": "4.17.21",
     "husky": "8.0.3",
+    "jest": "29.7.0",
     "lint-staged": "13.2.3",
     "nodemon": "3.1.4",
     "prettier": "2.8.8",
+    "ts-jest": "29.2.4",
     "ts-node": "10.9.2",
     "typescript": "5.5.4"
   },

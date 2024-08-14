@@ -39,6 +39,12 @@ yycf-cli 是一个由 TypeScript 开发的脚手架工具，适用于基于远�
     cf/yycf create <project-name>
 ```
 
+## 测试
+
+```
+   yarn test or npm test
+```
+
 ## 开源许可证
 
 MIT
