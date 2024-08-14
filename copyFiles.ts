@@ -3,9 +3,10 @@ import path from 'path';
 
 const originDbPath = path.join(__dirname, 'src/resources/db');
 const targetDbPath = path.join(__dirname, 'bin/resources/db');
+const filters = ['db', 'ts', 'md'];
 
 const filter = (src: string, dest: string) => {
-  if (src.includes('db')) {
+  if (filters.find((filter) => src.includes(filter))) {
     return false;
   }
   return true;

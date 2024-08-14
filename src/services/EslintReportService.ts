@@ -2,7 +2,7 @@ import path from 'path';
 import { copy, logger, readPluginConfig } from '../utils';
 import SetUpService from './SetUpService';
 import { startEslintServer } from '../server';
-import { PluginContext } from '../shared';
+import { PluginContext, resourcePath } from '../shared';
 import Inquirer from 'inquirer';
 class EslintReportService {
   setUpService: SetUpService;
@@ -12,7 +12,7 @@ class EslintReportService {
     this.setUpService = new SetUpService(context.targetDir);
   }
   async copyEslintConfig() {
-    const originPath = path.resolve(__dirname, '../resources/extensions/eslint');
+    const originPath = path.resolve(resourcePath, 'extensions/eslint');
     await copy(originPath, this.targetDir);
   }
   async installEslintDependencies() {
@@ -23,20 +23,21 @@ class EslintReportService {
   async genertingReportHtml() {
     await this.setUpService.exec(
       'yarn',
-      ['eslint -f html -o ./report/index.html || true'],
+      ['eslint -f html -o eslint-report/index.html || true'],
       'generating eslint reporter html'
     );
   }
   async generatorReportJson() {
     await this.setUpService.exec(
       'yarn',
-      ['eslint -f json -o eslint-report.json || true'],
+      ['eslint -f json -o eslint-report/report.json || true'],
       'generating eslint reporter json'
     );
   }
   async copyLocalStaticHtml() {
-    const originPath = path.resolve(__dirname, '../resources/public/local/eslint');
-    await copy(originPath, this.targetDir);
+    const originPath = path.resolve(resourcePath, 'public/local/eslint');
+    const targetPath = path.resolve(this.targetDir, 'eslint-report');
+    await copy(originPath, targetPath);
   }
   async initEslintPlugin() {
     // 1. yarn 会出现node版本 以及安装不了插件的问题
@@ -58,16 +59,14 @@ class EslintReportService {
   async initInnerEslint() {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
-    this.genertingReportHtml();
+    // this.genertingReportHtml();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();
     await startEslintServer(this.targetDir);
   }
   async initCustomEslint() {
     await this.initEslintPlugin();
-    this.genertingReportHtml();
     await this.generatorReportJson();
-    await this.copyLocalStaticHtml();
     await startEslintServer(this.targetDir);
   }
 }

@@ -5,3 +5,4 @@ export { default as EslintReportService } from './EslintReportService';
 export { default as InstallDependencies } from './InstallDependencies';
 export { default as CacheRepositoryService } from './CacheRepositoryService';
 export { default as DownLoadService } from './DownLoadService';
+export { default as PlatoReportService } from './PlatoReportService';

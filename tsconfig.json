@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES6",
     "module": "CommonJS",
     "rootDir": "src",
     "outDir": "bin",
@@ -13,5 +13,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": []
+  "exclude": ["src/resources/public/**/*"]
 }

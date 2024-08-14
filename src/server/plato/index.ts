@@ -13,8 +13,8 @@ app.use(express.static(path.join(resourcePath, 'public/server/plato')));
 
 export async function startPlatoServer(projectDir: string) {
   // 路由读取 JSON 文件并发送到前端
-  app.get('/eslint-report', async (req, res) => {
-    const reportPath = path.join(projectDir, 'eslint-report.json');
+  app.get('/report', async (req, res) => {
+    const reportPath = path.join(projectDir, 'plato-report/report.json');
     try {
       const data = await readFile(reportPath, true);
       res.json(data);

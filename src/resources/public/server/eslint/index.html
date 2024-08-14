@@ -3,102 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ESLint Report</title>
+    <title>ESLint Report Visualization</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      background-color: #f0f0f0;
-      font-family: Arial, sans-serif;
       overflow-y: hidden;
     }
-    .chart-container {
-      flex: 1;
+    .flex-fill {
+      -webkit-box-flex: 1 !important;
+      -ms-flex: 1 1 auto !important;
+      flex: 1 !important;
     }
-    canvas {
-      width: 100%;
-      height: 100%;
+    .d-flex {
+      display: flex;
+    }
+    .align-items-center {
+      align-items: center;
+    }
+    .align-items-stretch {
+      -webkit-box-align: stretch !important;
+      -ms-flex-align: stretch !important;
+      align-items: stretch !important;
+    }
+    .align-items-baseline {
+      -webkit-box-align: baseline !important;
+      -ms-flex-align: baseline !important;
+      align-items: baseline !important;
+    }
+    .justify-content-center {
+      justify-content: center;
+    }
+    .align-self-center {
+      -ms-flex-item-align: center !important;
+      -ms-grid-row-align: center !important;
+      align-self: center !important;
+    }
+    .flex-column {
+      -webkit-box-orient: vertical !important;
+      -webkit-box-direction: normal !important;
+      -ms-flex-direction: column !important;
+      flex-direction: column !important;
     }
   </style>
-  <body>
-    <h1>ESLint Report</h1>
-    <div class="chart-container">
+  <body class="d-flex flex-column">
+    <h1  class="align-self-center">ESLint Report Visualization</h1>
+    <div class="flex-fill">
       <canvas id="eslintChart" width="400" height="200"></canvas>
     </div>
-    <script>
-      fetch('/eslint-report')
-        .then((response) => response.json())
-        .then((data) => {
-          const ruleCounts = {};
-          data.forEach((result) => {
-            result.messages.forEach((message) => {
-              if (ruleCounts[message.ruleId]) {
-                ruleCounts[message.ruleId]++;
-              } else {
-                ruleCounts[message.ruleId] = 1;
-              }
-            });
-          });
-
-          const labels = Object.keys(ruleCounts);
-          const counts = Object.values(ruleCounts);
-          const baseColor = [
-            '#25859e',
-            '#6acece',
-            '#e78816',
-            '#eabc7f',
-            '#12619d',
-            '#ad2532',
-            '#15938d',
-            '#b3aa9b',
-            '#042d4c'
-          ];
-          const genColor = (arr) => {
-            let num = 0;
-            let color = [];
-            for (let i = 0; i < arr.length; i++) {
-              if (num < baseColor.length) {
-                color[i] = baseColor[num++];
-              } else {
-                num = 0;
-                color[i] = baseColor[num++];
-              }
-            }
-            return color;
-          };
-          const colors = genColor(counts);
-          const ctx = document.getElementById('eslintChart').getContext('2d');
-          new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: labels,
-              datasets: [
-                {
-                  label: 'ESLint Errors and Warnings by Rule',
-                  data: counts,
-                  // backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                  backgroundColor: colors,
-                  // borderColor: 'rgba(75, 192, 192, 1)',
-                  borderColor: colors,
-                  borderWidth: 1
-                }
-              ]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true
-                }
-              }
-            }
-          });
-        });
-    </script>
+    <script src="index.js" type="module"></script>
   </body>
 </html>

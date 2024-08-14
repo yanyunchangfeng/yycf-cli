@@ -14,8 +14,10 @@ const pluginsConfig = convict({
       { name: 'downloadRepository', enabled: true },
       { name: 'writePkg', enabled: true },
       { name: 'setUpYarn', enabled: true },
-      { name: 'generatorEslintReport', enabled: true },
-      { name: 'installDependencies', enabled: true }
+      { name: 'innerEslintReport', enabled: false },
+      { name: 'customEslintReport', enabled: false },
+      { name: 'platoReport', enabled: false },
+      { name: 'installDependencies', enabled: false }
     ]
   },
   eslintPkgs: {
@@ -32,6 +34,11 @@ const pluginsConfig = convict({
     doc: 'required plugins',
     format: Array,
     default: ['loadConfig', 'createProject', 'setUpYarn', 'downloadRepository', 'writePkg']
+  },
+  platoCommand: {
+    doc: 'plato Command',
+    format: Array,
+    default: ['plato', '-r', '-d', 'report', 'dist/*.js']
   }
 });
 

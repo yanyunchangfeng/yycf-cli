@@ -1,6 +1,6 @@
 {
   "plugins": [
-    { "name": "clearLogs", "enabled": true },
+    { "name": "clearLogs", "enabled": false },
     { "name": "clearCacheRepository", "enabled": false },
     { "name": "loadConfig", "enabled": true },
     { "name": "createProject", "enabled": true },
@@ -8,11 +8,13 @@
     { "name": "downloadRepository", "enabled": true },
     { "name": "writePkg", "enabled": true },
     { "name": "setUpYarn", "enabled": true },
-    { "name": "innerEslintReport", "enabled": true },
-    { "name": "customEslintReport", "enabled": true },
-    { "name": "installDependencies", "enabled": true }
+    { "name": "innerEslintReport", "enabled": false },
+    { "name": "customEslintReport", "enabled": false },
+    { "name": "platoReport", "enabled": false },
+    { "name": "installDependencies", "enabled": false }
   ],
   "eslintPlugins": ["@eslint/config@latest"],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
-  "requiredPlugins": ["loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"]
+  "requiredPlugins": ["loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
+  "platoCommand": ["plato", "-r", "-d", "plato-report", "dist/*.js"]
 }
