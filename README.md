@@ -14,8 +14,9 @@ yycf-cli 是一个由 TypeScript 开发的脚手架工具，适用于基于远�
 - 创建项目：支持基于远端 git Server 仓库模版创建新项目。
 - 文件配置：支持配置远端 git Server 仓库域名、组织、用户和访问令牌
 - 代码分析：支持分析代码中的常见问题，包括代码风格、代码质量等，并生成数据可视化报告。
-  - eslint: 代码风格检查工具
-  - [plato 指标](src/resources/public/server/plato/README.md): 代码质量分析
+  - [eslint 指标](src/resources/public/server/eslint/README.md): 风格
+  - [plato 指标](src/resources/public/server/plato/README.md): 质量
+  - [jscpd 指标](src/resources/public/server/jscpd/README.md): 重复度
 
 ## 技术架构
 
