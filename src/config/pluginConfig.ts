@@ -7,6 +7,7 @@ export const pluginConfig = convict({
     format: Array,
     default: [
       { name: 'clearLogs', enabled: true },
+      { name: 'initLogs', enabled: true },
       { name: 'clearCacheRepository', enabled: false },
       { name: 'loadConfig', enabled: true },
       { name: 'createProject', enabled: true },
@@ -34,7 +35,7 @@ export const pluginConfig = convict({
   requiredPlugins: {
     doc: 'required plugins',
     format: Array,
-    default: ['loadConfig', 'createProject', 'setUpYarn', 'downloadRepository', 'writePkg']
+    default: ['initLogs', 'loadConfig', 'createProject', 'setUpYarn', 'downloadRepository', 'writePkg']
   },
   platoCommand: {
     doc: 'plato Command',

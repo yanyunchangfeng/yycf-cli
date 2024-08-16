@@ -25,7 +25,7 @@ describe('clearCacheRepository', () => {
       await fs.mkdir(context.destDir);
     }
   });
-  it('should clear cache Repo', async () => {
+  it('should clear cache repo dir', async () => {
     await init(context);
     expect(fs.existsSync(cache.cacheDir)).toBe(false);
   });

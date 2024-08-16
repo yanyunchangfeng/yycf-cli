@@ -62,7 +62,7 @@ const init = () => {
 let logger = init();
 logger.info('Logger initialized');
 
-const generatorNewLogger = () => {
+const initializeLogger = () => {
   logger = init();
   logger.info('Logger reinitialized');
 };
@@ -71,4 +71,4 @@ process.on('uncaughtException', (error) => {
   logger.error(`Uncaught Exception: ${error}`);
 });
 
-export { logger, generatorNewLogger };
+export { logger, initializeLogger };

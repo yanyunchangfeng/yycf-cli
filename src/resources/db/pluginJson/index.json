@@ -1,6 +1,7 @@
 {
   "plugins": [
     { "name": "clearLogs", "enabled": false },
+    { "name": "initLogs", "enabled": true },
     { "name": "clearCacheRepository", "enabled": false },
     { "name": "loadConfig", "enabled": true },
     { "name": "createProject", "enabled": true },
@@ -16,7 +17,7 @@
   ],
   "eslintPlugins": ["@eslint/config@latest"],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
-  "requiredPlugins": ["loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
+  "requiredPlugins": ["initLogs", "loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
   "platoCommand": ["plato", "-r", "-d", "plato-report", "dist/*.js"],
   "jscpdCommand": ["jscpd", "-p", "src/**/*.\\{ts,tsx\\}", "-r", "json", "-o", "jscpd-report"]
 }
