@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ESLint Report Visualization</title>
+    <title>JsCpd Report Visualization</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <style>
@@ -13,8 +13,6 @@
       overflow-y: hidden;
     }
     .flex-fill {
-      -webkit-box-flex: 1 !important;
-      -ms-flex: 1 1 auto !important;
       flex: 1 !important;
     }
     .d-flex {
@@ -49,9 +47,22 @@
     }
   </style>
   <body class="d-flex flex-column">
-    <h1  class="align-self-center">ESLint Report Visualization</h1>
-    <div class="flex-fill">
-      <canvas id="reportChart" width="400" height="200"></canvas>
+    <h1 class="align-self-center">JsCpd Report Visualization</h1>
+    <div class="d-flex flex-fill">
+      <div class="flex-fill">
+        <canvas id="tokensChart" width="400" height="200"></canvas>
+      </div>
+      <div class="flex-fill">
+        <canvas id="duplicatedLinesChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+    <div class="d-flex flex-fill">
+      <div class="flex-fill">
+        <canvas id="percentageChart" width="400" height="200"></canvas>
+      </div>
+      <div class="flex-fill">
+        <canvas id="duplicatedTokensChart" width="400" height="200"></canvas>
+      </div>
     </div>
     <script src="index.js" type="module"></script>
   </body>

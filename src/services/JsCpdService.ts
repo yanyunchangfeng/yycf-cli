@@ -1,14 +1,14 @@
 import { PluginContext, resourcePublicLocalPath } from '../shared';
-import { readPluginConfig, copy } from '../utils';
 import { SetUpService, ServerService } from '.';
+import { readPluginConfig, copy } from '../utils';
 import path from 'path';
-
-class PlatoReportService {
+import { rename } from 'fs-extra';
+class JsCpdService {
   context;
   setUpService: SetUpService;
   serverService: ServerService;
-  staticPath = 'plato';
-  reportPath = 'plato-report';
+  staticPath = 'jscpd';
+  reportPath = 'jscpd-report';
   constructor(context: PluginContext) {
     this.context = context;
     this.setUpService = new SetUpService(context.targetDir);
@@ -23,22 +23,22 @@ class PlatoReportService {
     await copy(originPath, targetPath);
   }
   async generatorReportJson() {
-    const { platoCommand } = await readPluginConfig();
-    await this.setUpService.exec('yarn', platoCommand, `generator ${this.staticPath} report json`);
+    const { jscpdCommand } = await readPluginConfig();
+    await this.setUpService.exec('yarn', jscpdCommand, `generator ${this.staticPath} Report Json`);
+    await rename(
+      path.join(this.context.targetDir, this.reportPath, 'jscpd-report.json'),
+      path.join(this.context.targetDir, this.reportPath, 'report.json')
+    );
   }
   async installDependencies() {
     await this.setUpService.exec('yarn', ['add', this.staticPath, '-D'], `Install ${this.staticPath} dependencies`);
   }
-  async buildTargetResource() {
-    await this.setUpService.exec('yarn', ['build'], `build target resource`);
-  }
   async init() {
     await this.installDependencies();
-    await this.buildTargetResource();
     await this.generatorReportJson();
     await this.copyLocalStaticHtml();
     await this.serverService.startServer();
   }
 }
 
-export default PlatoReportService;
+export default JsCpdService;

@@ -30,7 +30,7 @@ fetch('/report')
     const labels = Object.keys(ruleCounts);
     const counts = Object.values(ruleCounts);
     const colors = genColor(counts);
-    const eslint = <HTMLCanvasElement>document.getElementById('eslintChart');
+    const eslint = <HTMLCanvasElement>document.getElementById('reportChart');
     const ctx = eslint.getContext('2d');
     new Chart(ctx, {
       type: 'bar',

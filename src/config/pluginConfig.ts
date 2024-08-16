@@ -17,6 +17,7 @@ const pluginsConfig = convict({
       { name: 'innerEslintReport', enabled: false },
       { name: 'customEslintReport', enabled: false },
       { name: 'platoReport', enabled: false },
+      { name: 'jscpdReport', enabled: false },
       { name: 'installDependencies', enabled: false }
     ]
   },
@@ -39,6 +40,11 @@ const pluginsConfig = convict({
     doc: 'plato Command',
     format: Array,
     default: ['plato', '-r', '-d', 'report', 'dist/*.js']
+  },
+  jscpdCommand: {
+    doc: 'jscpd Command',
+    format: Array,
+    default: ['jscpd', '-p', 'src/**/*.\\{ts,tsx\\}', , '-r', 'json', '-o', 'jscpd-report']
   }
 });
 

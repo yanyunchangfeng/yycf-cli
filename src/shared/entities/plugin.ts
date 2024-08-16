@@ -1,4 +1,5 @@
 import { Repo } from '../';
+
 export interface PluginParams {
   projectName: string;
   targetDir: string;

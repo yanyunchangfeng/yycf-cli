@@ -11,10 +11,12 @@
     { "name": "innerEslintReport", "enabled": false },
     { "name": "customEslintReport", "enabled": false },
     { "name": "platoReport", "enabled": false },
+    { "name": "jscpdReport", "enabled": false },
     { "name": "installDependencies", "enabled": false }
   ],
   "eslintPlugins": ["@eslint/config@latest"],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
   "requiredPlugins": ["loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
-  "platoCommand": ["plato", "-r", "-d", "plato-report", "dist/*.js"]
+  "platoCommand": ["plato", "-r", "-d", "plato-report", "dist/*.js"],
+  "jscpdCommand": ["jscpd", "-p", "src/**/*.\\{ts,tsx\\}", "-r", "json", "-o", "jscpd-report"]
 }
