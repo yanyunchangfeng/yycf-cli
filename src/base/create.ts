@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import Inquirer from 'inquirer';
 import { wrapLoading } from '../utils';
-import { main } from './main';
+import { main } from '../base/main';
 
 module.exports = async (projectName: string, options: Record<keyof any, any>) => {
   const cwd = process.cwd();

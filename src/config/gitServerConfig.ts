@@ -1,6 +1,6 @@
 import convict from 'convict';
 
-const gitServerConfig = convict({
+export const gitServerConfig = convict({
   gitServers: {
     doc: 'Git servers configurations',
     format: Object,
@@ -11,13 +11,6 @@ const gitServerConfig = convict({
         orgs: null,
         user: null,
         type: 'github'
-      },
-      gitlab: {
-        origin: null,
-        Authorization: null,
-        orgs: null,
-        user: null,
-        type: 'gitlab'
       }
     }
   },
@@ -25,7 +18,7 @@ const gitServerConfig = convict({
     defaultGitServer: {
       doc: 'The default selected option',
       format: String,
-      default: 'github'
+      default: ''
     },
     gitServerConfigured: {
       doc: 'The default configed option',
@@ -36,4 +29,3 @@ const gitServerConfig = convict({
 });
 
 gitServerConfig.validate({ allowed: 'strict' });
-export default gitServerConfig;

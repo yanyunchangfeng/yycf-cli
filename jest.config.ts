@@ -6,7 +6,7 @@ const config: Config = {
   collectCoverage: true,
   transform: {
     ...tsjPreset.transform,
-    '/test/.*\\.spec\\.ts?$': [
+    '/test/.*\\.spec\\.ts$': [
       'ts-jest',
       {
         tsconfig: 'tsconfig.json',
@@ -20,8 +20,8 @@ const config: Config = {
   },
 
   coverageReporters: ['lcov', 'html'],
-  testRegex: '/test/.*\\.spec\\.ts?$'
-  // collectCoverageFrom: ['src/**/*']
+  testRegex: '/test/.*\\.spec\\.ts$',
+  collectCoverageFrom: ['src/**/*']
 };
 
 export default config;

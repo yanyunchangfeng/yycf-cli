@@ -1,6 +1,6 @@
 import Inquirer from 'inquirer';
 import { CreatoRequestService } from '../services';
-import config from '../config/gitServerConfig';
+import { gitServerConfig as config, pluginConfig } from '../config';
 import {
   wrapLoading,
   readGitServerConfig,
@@ -10,7 +10,6 @@ import {
   writePluginConfig
 } from '../utils';
 import { GITSERVER, Repo, PluginContext } from '../shared';
-import pluginsConfig from '../config/pluginConfig';
 
 class CreatorService {
   context;
@@ -270,7 +269,7 @@ class CreatorService {
       }
       return { ...plugin, enabled: false };
     });
-    pluginsConfig.set('plugins', newPlugins);
+    pluginConfig.set('plugins', newPlugins);
     await writePluginConfig();
   }
   async promptUserOption() {

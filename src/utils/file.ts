@@ -1,8 +1,7 @@
 import fs from 'fs-extra';
 import { safeJsonParse } from '.';
 import { gitSeverPath, pluginPath } from '../shared';
-import gitServersConfig from '../config/gitServerConfig';
-import pluginConfig from '../config/pluginConfig';
+import { gitServerConfig as gitServersConfig, pluginConfig } from '../config';
 import { logger } from '../utils';
 
 export const readFile = async (path: string, needParse = false) => {

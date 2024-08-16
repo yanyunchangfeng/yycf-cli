@@ -1,5 +1,5 @@
 import { writeGitServerConfig } from '../utils';
-import gitServerConfig from '../config/gitServerConfig';
+import { gitServerConfig } from '../config';
 import chalk from 'chalk';
 import { logger } from '../utils';
 

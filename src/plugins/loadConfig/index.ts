@@ -1,4 +1,4 @@
-import gitServerConfig from '../../config/gitServerConfig';
+import { gitServerConfig } from '../../config';
 import { logger } from '../../utils';
 import { gitSeverPath } from '../../shared';
 import config from './config.json';

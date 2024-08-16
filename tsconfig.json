@@ -15,6 +15,5 @@
       "src/*": ["src/*"]
     }
   },
-  "include": ["src/**/*", "test/**/*"],
-  "exclude": ["src/resources/public/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }

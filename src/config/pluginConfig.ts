@@ -1,7 +1,7 @@
 import convict from 'convict';
 import { pluginPath } from '../shared';
 
-const pluginsConfig = convict({
+export const pluginConfig = convict({
   plugins: {
     doc: 'plugins configurations',
     format: Array,
@@ -48,7 +48,5 @@ const pluginsConfig = convict({
   }
 });
 
-pluginsConfig.validate({ allowed: 'strict' });
-pluginsConfig.loadFile(pluginPath);
-
-export default pluginsConfig;
+pluginConfig.validate({ allowed: 'strict' });
+pluginConfig.loadFile(pluginPath);
