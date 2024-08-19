@@ -6,7 +6,7 @@ class InstallDependencies {
     this.setUpService = new SetUpService(context.targetDir);
   }
   async installDependencies() {
-    await this.setUpService.exec('yarn', [], 'Installing dependencies');
+    await this.setUpService.exec('yarn', [], 'Install dependencies');
   }
 }
 

@@ -1,6 +1,6 @@
 import path from 'path';
 import { copy, logger, readPluginConfig } from '../utils';
-import { PluginContext, resourcePath, resourcePublicLocalPath } from '../shared';
+import { PluginContext, resourcePath } from '../shared';
 import Inquirer from 'inquirer';
 import { ServerService, SetUpService } from '.';
 class EslintReportService {
@@ -40,11 +40,6 @@ class EslintReportService {
       `generator ${this.staticPath} report json`
     );
   }
-  async copyLocalStaticHtml() {
-    const originPath = path.join(resourcePublicLocalPath, this.staticPath);
-    const targetPath = path.join(this.targetDir, this.reportPath);
-    await copy(originPath, targetPath);
-  }
   async initEslintPlugin() {
     // 1. yarn 会出现node版本 以及安装不了插件的问题
     // 2. npm 可以然而需要很多交互命令选择
@@ -66,13 +61,13 @@ class EslintReportService {
     await this.copyEslintConfig();
     await this.installEslintDependencies();
     await this.generatorReportJson();
-    await this.copyLocalStaticHtml();
+    await this.serverService.copyServerStaticHtml();
     await this.serverService.startServer();
   }
   async initCustomEslint() {
     await this.initEslintPlugin();
     await this.generatorReportJson();
-    await this.copyLocalStaticHtml();
+    await this.serverService.copyServerStaticHtml();
     await this.serverService.startServer();
   }
 }

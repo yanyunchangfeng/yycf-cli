@@ -13,7 +13,7 @@ const genColor = (arr: any) => {
   return color;
 };
 
-fetch('/report')
+fetch('report.json')
   .then((response) => response.json())
   .then((data) => {
     const ruleCounts: any = {};

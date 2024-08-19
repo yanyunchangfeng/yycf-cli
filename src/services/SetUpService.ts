@@ -29,6 +29,7 @@ class SetUpService {
   }
   async exec(command: string, args: any[], description: any) {
     logger.info(`setup: ${description}`);
+    logger.info(`${command} ${args.join(' ')}`);
     return new Promise((resolve, reject) => {
       let cp = require('child_process').spawn(command, args, {
         cwd: this.root,
@@ -47,23 +48,23 @@ class SetUpService {
       });
     });
   }
-  async installYarnAsync() {
-    return await this.exec('npm', ['install', '-g', 'yarn'], 'Install yarn');
+  async installPkgAsync(pkg: string) {
+    return await this.exec('npm', ['install', '-g', pkg], `Install ${pkg}`);
   }
-  async ensureYarnInstalledAsync() {
+  async ensurePkgInstalledAsync(pkg: string) {
     const semverPattern =
       /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$/;
-    let hasYarn = false;
+    let hasPkg = false;
     try {
-      const stdout: any = await this.execGetOutput('yarn', ['-v'], 'Check yarn version');
-      hasYarn = semverPattern.test(stdout);
+      const stdout: any = await this.execGetOutput(pkg, ['--version'], `Check ${pkg} version`);
+      hasPkg = semverPattern.test(stdout);
     } catch (e) {
-      hasYarn = false;
+      hasPkg = false;
     }
-    if (!hasYarn) await this.installYarnAsync();
+    if (!hasPkg) await this.installPkgAsync(pkg);
   }
-  async setup() {
-    await this.ensureYarnInstalledAsync();
+  async setup(pkg: string) {
+    await this.ensurePkgInstalledAsync(pkg);
   }
 }
 

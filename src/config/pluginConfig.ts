@@ -19,6 +19,7 @@ export const pluginConfig = convict({
       { name: 'customEslintReport', enabled: false },
       { name: 'platoReport', enabled: false },
       { name: 'jscpdReport', enabled: false },
+      { name: 'madgeReport', enabled: false },
       { name: 'installDependencies', enabled: false }
     ]
   },
@@ -37,16 +38,17 @@ export const pluginConfig = convict({
     format: Array,
     default: ['initLogs', 'loadConfig', 'createProject', 'setUpYarn', 'downloadRepository', 'writePkg']
   },
-  platoCommand: {
-    doc: 'plato Command',
+  platoArgs: {
+    doc: 'plato args',
     format: Array,
-    default: ['plato', '-r', '-d', 'report', 'dist/*.js']
+    default: ['-r', '-d', 'report', 'dist/*.js']
   },
-  jscpdCommand: {
-    doc: 'jscpd Command',
+  jscpdArgs: {
+    doc: 'jscpd args',
     format: Array,
-    default: ['jscpd', '-p', 'src/**/*.\\{ts,tsx\\}', , '-r', 'json', '-o', 'jscpd-report']
-  }
+    default: ['-p', '"src/**/*.{ts,tsx}"', , '-r', 'json', '-o', 'jscpd-report']
+  },
+  madgeArgs: ['-i', 'madge-report/report.png', 'src/**/*']
 });
 
 pluginConfig.validate({ allowed: 'strict' });

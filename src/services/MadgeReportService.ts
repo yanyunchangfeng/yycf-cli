@@ -1,14 +1,13 @@
 import { PluginContext } from '../shared';
 import { SetUpService, ServerService } from '.';
 import { readPluginConfig } from '../utils';
-import path from 'path';
-import { rename } from 'fs-extra';
-class JsCpdService {
+
+class MadgeReportService {
   context;
   setUpService: SetUpService;
   serverService: ServerService;
-  staticPath = 'jscpd';
-  reportPath = 'jscpd-report';
+  staticPath = 'madge';
+  reportPath = 'madge-report';
   constructor(context: PluginContext) {
     this.context = context;
     this.setUpService = new SetUpService(context.targetDir);
@@ -17,20 +16,15 @@ class JsCpdService {
       reportPath: this.reportPath
     });
   }
-  async generatorReportJson() {
-    const { jscpdArgs } = await readPluginConfig();
-    await this.setUpService.exec(this.staticPath, jscpdArgs, `generator ${this.staticPath} Report Json`);
-    await rename(
-      path.join(this.context.targetDir, this.reportPath, 'jscpd-report.json'),
-      path.join(this.context.targetDir, this.reportPath, 'report.json')
-    );
+  async generatorReport() {
+    const { madgeArgs } = await readPluginConfig();
+    await this.setUpService.exec(this.staticPath, madgeArgs, `Generate ${this.staticPath} report`);
   }
   async init() {
     await this.setUpService.setup(this.staticPath);
-    await this.generatorReportJson();
     await this.serverService.copyServerStaticHtml();
+    await this.generatorReport();
     await this.serverService.startServer();
   }
 }
-
-export default JsCpdService;
+export default MadgeReportService;

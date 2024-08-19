@@ -70,7 +70,7 @@ interface ReportData {
 }
 
 // 使用 fetch 获取 JSON 数据
-fetch('/report')
+fetch('report.json')
   .then((response) => {
     if (!response.ok) {
       throw new Error('Network response was not ok');

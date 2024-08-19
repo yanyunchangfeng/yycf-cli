@@ -1,7 +1,6 @@
-import { PluginContext, resourcePublicLocalPath } from '../shared';
-import { readPluginConfig, copy } from '../utils';
+import { PluginContext } from '../shared';
+import { readPluginConfig } from '../utils';
 import { SetUpService, ServerService } from '.';
-import path from 'path';
 
 class PlatoReportService {
   context;
@@ -17,26 +16,19 @@ class PlatoReportService {
       reportPath: this.reportPath
     });
   }
-  async copyLocalStaticHtml() {
-    const originPath = path.join(resourcePublicLocalPath, this.staticPath);
-    const targetPath = path.join(this.context.targetDir, this.reportPath);
-    await copy(originPath, targetPath);
-  }
   async generatorReportJson() {
-    const { platoCommand } = await readPluginConfig();
-    await this.setUpService.exec('yarn', platoCommand, `generator ${this.staticPath} report json`);
-  }
-  async installDependencies() {
-    await this.setUpService.exec('yarn', ['add', this.staticPath, '-D'], `Install ${this.staticPath} dependencies`);
+    const { platoArgs } = await readPluginConfig();
+    await this.setUpService.exec(this.staticPath, platoArgs, `generator ${this.staticPath} report json`);
   }
   async buildTargetResource() {
-    await this.setUpService.exec('yarn', ['build'], `build target resource`);
+    await this.setUpService.exec('yarn', [], `Install dependencies`);
+    await this.setUpService.exec('yarn', ['build'], `build resource`);
   }
   async init() {
-    await this.installDependencies();
+    await this.setUpService.setup(this.staticPath);
     await this.buildTargetResource();
     await this.generatorReportJson();
-    await this.copyLocalStaticHtml();
+    await this.serverService.copyServerStaticHtml();
     await this.serverService.startServer();
   }
 }

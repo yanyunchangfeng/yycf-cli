@@ -1,6 +1,6 @@
 import { PluginContext, resourcePublicServerPath, ServerParams } from '../shared';
 import express from 'express';
-import { logger, readFile } from '../utils';
+import { logger, copy } from '../utils';
 import path from 'path';
 import http from 'http';
 import open from 'open';
@@ -14,21 +14,21 @@ class ServerService {
   constructor(context: PluginContext, serverParams: ServerParams) {
     this.context = context;
     this.ServerParams = serverParams;
-    this.init();
   }
   init() {
-    this.app.use(express.static(path.join(resourcePublicServerPath, this.ServerParams.staticPath)));
+    this.app.use(express.static(path.join(this.context.targetDir, this.ServerParams.reportPath)));
   }
   async startServer() {
-    this.app.get('/report', async (req, res) => {
-      const reportPath = path.join(this.context.targetDir, this.ServerParams.reportPath, 'report.json');
-      try {
-        const data = await readFile(reportPath, true);
-        res.json(data);
-      } catch (err) {
-        res.status(500).send(`Error reading ${this.ServerParams.reportPath} report.`);
-      }
-    });
+    this.init();
+    // this.app.get('/report', async (req, res) => {
+    //   const reportPath = path.join(this.context.targetDir, this.ServerParams.reportPath, 'report.json');
+    //   try {
+    //     const data = await readFile(reportPath, true);
+    //     res.json(data);
+    //   } catch (err) {
+    //     res.status(500).send(`Error reading ${this.ServerParams.reportPath} report.`);
+    //   }
+    // });
     try {
       const port = await this.findAvailablePort(this.basePort);
       this.server = this.app.listen(port, () => {
@@ -62,6 +62,11 @@ class ServerService {
         }
       });
     });
+  }
+  async copyServerStaticHtml() {
+    const originPath = path.join(resourcePublicServerPath, this.ServerParams.staticPath);
+    const targetPath = path.join(this.context.targetDir, this.ServerParams.reportPath);
+    await copy(originPath, targetPath);
   }
 }
 

@@ -13,11 +13,13 @@
     { "name": "customEslintReport", "enabled": false },
     { "name": "platoReport", "enabled": false },
     { "name": "jscpdReport", "enabled": false },
+    { "name": "madgeReport", "enabled": false },
     { "name": "installDependencies", "enabled": false }
   ],
   "eslintPlugins": ["@eslint/config@latest"],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
   "requiredPlugins": ["initLogs", "loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
-  "platoCommand": ["plato", "-r", "-d", "plato-report", "dist/*.js"],
-  "jscpdCommand": ["jscpd", "-p", "src/**/*.\\{ts,tsx\\}", "-r", "json", "-o", "jscpd-report"]
+  "platoArgs": ["-r", "-d", "plato-report", "dist/*.js"],
+  "jscpdArgs": ["-p", "'src/**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
+  "madgeArgs": ["-i", "madge-report/report.png", "src/**/*"]
 }
