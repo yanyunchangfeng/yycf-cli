@@ -27,8 +27,8 @@ class JsCpdService {
   }
   async init() {
     await this.setUpService.setup(this.staticPath);
-    await this.generatorReportJson();
     await this.serverService.copyServerStaticHtml();
+    await this.generatorReportJson();
     await this.serverService.startServer();
   }
 }

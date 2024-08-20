@@ -1,11 +1,12 @@
 import { PluginContext } from '../shared';
 import { readPluginConfig } from '../utils';
-import { SetUpService, ServerService } from '.';
+import { SetUpService, ServerService, InstallDependencies } from '.';
 
 class PlatoReportService {
   context;
   setUpService: SetUpService;
   serverService: ServerService;
+  installDependencies: InstallDependencies;
   staticPath = 'plato';
   reportPath = 'plato-report';
   constructor(context: PluginContext) {
@@ -15,18 +16,15 @@ class PlatoReportService {
       staticPath: this.staticPath,
       reportPath: this.reportPath
     });
+    this.installDependencies = new InstallDependencies(context);
   }
   async generatorReportJson() {
     const { platoArgs } = await readPluginConfig();
     await this.setUpService.exec(this.staticPath, platoArgs, `generator ${this.staticPath} report json`);
   }
-  async buildTargetResource() {
-    await this.setUpService.exec('yarn', [], `Install dependencies`);
-    await this.setUpService.exec('yarn', ['build'], `build resource`);
-  }
   async init() {
     await this.setUpService.setup(this.staticPath);
-    await this.buildTargetResource();
+    await this.installDependencies.build();
     await this.generatorReportJson();
     await this.serverService.copyServerStaticHtml();
     await this.serverService.startServer();

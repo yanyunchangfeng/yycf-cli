@@ -66,6 +66,21 @@ class SetUpService {
   async setup(pkg: string) {
     await this.ensurePkgInstalledAsync(pkg);
   }
+  async ensurePkgInstalledGlobal(pkg: string) {
+    let hasPkg = false;
+    const reg = new RegExp(`(^|\\s)(@?${pkg})@([0-9]+(?:\\.[0-9]+)*(?:\\.[0-9]+)?)(-[a-zA-Z0-9-]+)?`, 'm');
+    try {
+      const stdout: any = await this.execGetOutput('npm', ['list', '-g', '--depth=0'], `Check ${pkg} installed`);
+      const match: any = stdout.match(reg);
+      if (match) {
+        hasPkg = true;
+        logger.info(`${pkg} installed global, version : ${match[3]}`);
+      }
+    } catch (e) {
+      hasPkg = false;
+    }
+    if (!hasPkg) await this.installPkgAsync(pkg);
+  }
 }
 
 export default SetUpService;

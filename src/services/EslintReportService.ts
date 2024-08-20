@@ -26,19 +26,13 @@ class EslintReportService {
     const command = ['add', ...eslintPkgs, '-D'];
     await this.setUpService.exec('yarn', [...command], `Install ${this.staticPath} dependencies `);
   }
-  async genertingReportHtml() {
-    await this.setUpService.exec(
-      'yarn',
-      ['eslint', '-f', 'json', '-o', `${this.reportPath}/index.html`, '||', 'true'],
-      `generator ${this.staticPath} report html`
-    );
+  async generatorInnerReport() {
+    const { eslintArgs } = await readPluginConfig();
+    await this.setUpService.exec(this.staticPath, eslintArgs, `generator ${this.staticPath} report json`);
   }
-  async generatorReportJson() {
-    await this.setUpService.exec(
-      'yarn',
-      ['eslint', '-f', 'json', '-o', `${this.reportPath}/report.json`, '||', 'true'],
-      `generator ${this.staticPath} report json`
-    );
+  async generatorCustomReport() {
+    const { eslintArgs } = await readPluginConfig();
+    await this.setUpService.exec('yarn', [this.staticPath, ...eslintArgs], `generator ${this.staticPath} report json`);
   }
   async initEslintPlugin() {
     // 1. yarn 会出现node版本 以及安装不了插件的问题
@@ -57,17 +51,21 @@ class EslintReportService {
 
     await this.setUpService.exec('npm', ['init', `${chooseEslintPlugin}`], `npm init ${chooseEslintPlugin}`);
   }
+  async setUpEslintGlobalPkg() {
+    const { eslintPkgs } = await readPluginConfig();
+    await Promise.all(eslintPkgs.map((pkg) => this.setUpService.ensurePkgInstalledGlobal(pkg)));
+  }
   async initInnerEslint() {
     await this.copyEslintConfig();
-    await this.installEslintDependencies();
-    await this.generatorReportJson();
+    await this.setUpEslintGlobalPkg();
     await this.serverService.copyServerStaticHtml();
+    await this.generatorInnerReport();
     await this.serverService.startServer();
   }
   async initCustomEslint() {
     await this.initEslintPlugin();
-    await this.generatorReportJson();
     await this.serverService.copyServerStaticHtml();
+    await this.generatorCustomReport();
     await this.serverService.startServer();
   }
 }

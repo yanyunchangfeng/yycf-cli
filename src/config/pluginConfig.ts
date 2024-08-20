@@ -3,7 +3,7 @@ import { pluginPath } from '../shared';
 
 export const pluginConfig = convict({
   plugins: {
-    doc: 'plugins configurations',
+    doc: 'plugin configurations',
     format: Array,
     default: [
       { name: 'clearLogs', enabled: true },
@@ -17,21 +17,26 @@ export const pluginConfig = convict({
       { name: 'setUpYarn', enabled: true },
       { name: 'innerEslintReport', enabled: false },
       { name: 'customEslintReport', enabled: false },
-      { name: 'platoReport', enabled: false },
       { name: 'jscpdReport', enabled: false },
       { name: 'madgeReport', enabled: false },
+      { name: 'platoReport', enabled: false },
       { name: 'installDependencies', enabled: false }
     ]
   },
   eslintPkgs: {
     doc: 'eslint packages',
     format: Array,
-    default: ['eslint', 'globals', '@eslint/js', 'typescript-eslint', 'eslint-plugin-react', 'typescript']
+    default: ['globals', '@eslint/js', 'typescript-eslint', 'eslint-plugin-react', 'typescript']
   },
   eslintPlugins: {
     doc: 'eslint Plugin',
     format: Array,
     default: ['@eslint/config@latest', '--config', 'eslint-config-standard']
+  },
+  eslintArgs: {
+    doc: 'eslint args',
+    format: Array,
+    default: ['-f', 'json', '-o', 'eslint/report.json', '||', 'true']
   },
   requiredPlugins: {
     doc: 'required plugins',
@@ -41,14 +46,14 @@ export const pluginConfig = convict({
   platoArgs: {
     doc: 'plato args',
     format: Array,
-    default: ['-r', '-d', 'report', 'dist/*.js']
+    default: ['-r', '-d', 'report', 'dist/**/*.js']
   },
   jscpdArgs: {
     doc: 'jscpd args',
     format: Array,
-    default: ['-p', '"src/**/*.{ts,tsx}"', , '-r', 'json', '-o', 'jscpd-report']
+    default: ['-p', '"src/**/*.{ts,tsx}"', '-r', 'json', '-o', 'jscpd-report']
   },
-  madgeArgs: ['-i', 'madge-report/report.png', 'src/**/*']
+  madgeArgs: ['-i', 'madge-report/report.svg', 'src/**/*']
 });
 
 pluginConfig.validate({ allowed: 'strict' });
