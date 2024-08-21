@@ -22,5 +22,5 @@
   "requiredPlugins": ["initLogs", "loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
   "platoArgs": ["-r", "-d", "plato-report", "dist/**/*.js"],
   "jscpdArgs": ["-p", "'src/**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
-  "madgeArgs": ["-i", "madge-report/report.svg", "src/**/*"]
+  "madgeArgs": ["--extensions", "ts,tsx", "src", "-i", "madge-report/report.svg"]
 }

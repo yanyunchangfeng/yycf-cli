@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import Inquirer from 'inquirer';
-import { wrapLoading } from '../utils';
+import { wrapLoading, initNodePath } from '../utils';
 import { main } from '../base/main';
 
 module.exports = async (projectName: string, options: Record<keyof any, any>) => {
@@ -34,5 +34,6 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
     projectName,
     targetDir
   };
+  initNodePath();
   main(context);
 };

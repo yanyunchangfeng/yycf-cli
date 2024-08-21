@@ -2,9 +2,6 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { initNodePath } from './utils';
-
-initNodePath();
 
 const program = new Command();
 
