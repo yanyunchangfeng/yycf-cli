@@ -6,6 +6,7 @@ export interface PluginParams {
   destDir: string;
   repo: Repo;
   tag: string;
+  cacheDirName?: string;
 }
 
 export interface PluginContext extends PluginParams {

@@ -14,7 +14,8 @@ describe('clearCacheRepository', () => {
       id: 222,
       name: 'webpack-react-template'
     },
-    tag: 'v18.2.0'
+    tag: 'v18.2.0',
+    cacheDirName: 'testProjectCache'
   };
   const cache = new CacheRepositoryService(context);
   context.destDir = path.join(cache.cacheDir, `${context.repo.name}${context.tag ? `@${context.tag}` : ''}`);

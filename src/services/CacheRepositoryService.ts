@@ -11,9 +11,10 @@ class CacheRepositoryService {
   cacheDir: any;
   context;
   downloadGitRepo = util.promisify(dowloadGitRepo);
-  constructor(context: PluginContext, dirName: string = 'repository') {
+  dirName = 'repository';
+  constructor(context: PluginContext) {
     this.context = context;
-    this.initCacheDir(dirName);
+    this.initCacheDir(this.context.cacheDirName || this.dirName);
   }
   async initCacheDir(dirName: string) {
     const plaform = os.platform();

@@ -16,9 +16,15 @@ describe('Main Workflow', () => {
       id: 222,
       name: 'webpack-react-template'
     },
-    tag: 'v18.2.0'
+    tag: 'v18.2.0',
+    cacheDirName: 'cacheRepository'
   };
   const cache = new CacheRepositoryService(context);
+  beforeEach(async () => {
+    if (!fs.existsSync(logPath)) {
+      await fs.mkdir(logPath);
+    }
+  });
   it('should execute the full workflow correctly', async () => {
     await clearLogs(context);
     expect(fs.existsSync(logPath)).toBe(false);
