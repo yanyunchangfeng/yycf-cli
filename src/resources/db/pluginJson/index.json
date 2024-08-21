@@ -20,7 +20,7 @@
   "eslintArgs": ["-f", "json", "-o", "eslint-report/report.json", "||", "true"],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
   "requiredPlugins": ["initLogs", "loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
-  "platoArgs": ["-r", "-d", "plato-report", "dist/**/*.js"],
+  "platoArgs": ["-r", "-d", "plato-report", "dist"],
   "jscpdArgs": ["-p", "'**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
   "madgeArgs": ["--extensions", "ts,tsx", "*", "-i", "madge-report/report.svg"]
 }

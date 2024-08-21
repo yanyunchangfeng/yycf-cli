@@ -46,7 +46,7 @@ export const pluginConfig = convict({
   platoArgs: {
     doc: 'plato args',
     format: Array,
-    default: ['-r', '-d', 'plato-report', 'dist/**/*.js']
+    default: ['-r', '-d', 'plato-report', 'dist']
   },
   jscpdArgs: {
     doc: 'jscpd args',
