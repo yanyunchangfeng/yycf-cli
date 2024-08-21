@@ -46,14 +46,14 @@ export const pluginConfig = convict({
   platoArgs: {
     doc: 'plato args',
     format: Array,
-    default: ['-r', '-d', 'report', 'dist/**/*.js']
+    default: ['-r', '-d', 'plato-report', 'dist/**/*.js']
   },
   jscpdArgs: {
     doc: 'jscpd args',
     format: Array,
-    default: ['-p', '"src/**/*.{ts,tsx}"', '-r', 'json', '-o', 'jscpd-report']
+    default: ['-p', '"**/*.{ts,tsx}"', '-r', 'json', '-o', 'jscpd-report']
   },
-  madgeArgs: ['-i', 'madge-report/report.svg', 'src/**/*']
+  madgeArgs: ['--extensions', 'ts,tsx', '*', '-i', 'madge-report/report.svg']
 });
 
 pluginConfig.validate({ allowed: 'strict' });

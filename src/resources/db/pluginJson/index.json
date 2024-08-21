@@ -21,6 +21,6 @@
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
   "requiredPlugins": ["initLogs", "loadConfig", "createProject", "setUpYarn", "downloadRepository", "writePkg"],
   "platoArgs": ["-r", "-d", "plato-report", "dist/**/*.js"],
-  "jscpdArgs": ["-p", "'src/**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
-  "madgeArgs": ["--extensions", "ts,tsx", "src", "-i", "madge-report/report.svg"]
+  "jscpdArgs": ["-p", "'**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
+  "madgeArgs": ["--extensions", "ts,tsx", "*", "-i", "madge-report/report.svg"]
 }

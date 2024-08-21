@@ -7,6 +7,7 @@ class SetUpService {
   }
   async execGetOutput(command: string, args: any[], description: string) {
     logger.info(`Setup: ${description}`);
+    logger.info(`${command} ${args.join(' ')}`);
     return new Promise((resolve, reject) => {
       let cp = require('child_process').spawn(command, args, {
         cwd: this.root,
