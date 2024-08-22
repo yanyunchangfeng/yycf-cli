@@ -32,7 +32,8 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
   }
   const context = {
     projectName,
-    targetDir
+    targetDir,
+    skipPrompts: options.yes
   };
   initNodePath();
   main(context);

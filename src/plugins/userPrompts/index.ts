@@ -1,11 +1,13 @@
 import { PluginContext } from '../../shared';
-import { SetUpService } from '../../services';
+import { PromptService } from '../../services';
 import { logger } from '../../utils';
 import config from './config.json';
 
 export const init = async (context: PluginContext) => {
   logger.info(`${config.name} ${config.initMessage}`);
-  const setUpService = new SetUpService();
-  await setUpService.setup('yarn');
+  const prompt = new PromptService(context);
+  if (!context.skipPrompts) {
+    await prompt.init();
+  }
   logger.info(`${config.name} ${config.exitMessage}`);
 };

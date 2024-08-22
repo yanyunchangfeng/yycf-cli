@@ -1,4 +1,4 @@
-import { Repo } from '../';
+import { Repo } from '.';
 
 export interface PluginParams {
   projectName: string;
@@ -6,6 +6,7 @@ export interface PluginParams {
   destDir: string;
   repo: Repo;
   tag: string;
+  skipPrompts: boolean;
   cacheDirName?: string;
 }
 

@@ -6,6 +6,6 @@ import config from './config.json';
 export const init = async (context: PluginContext) => {
   logger.info(`${config.name} ${config.initMessage}`);
   const creator = new CreatorService(context);
-  await creator.create();
+  await creator.init();
   logger.info(`${config.name} ${config.exitMessage}`);
 };

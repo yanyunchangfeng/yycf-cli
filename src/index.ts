@@ -9,6 +9,7 @@ program
   .command('create <app-name>')
   .description('create a new project')
   .option('-f, --force', 'overwrite target directory if it exists')
+  .option('-y, --yes', 'use defaults without prompting')
   .action((name, cmd) => {
     require('./base/create')(name, cmd);
   });
