@@ -12,7 +12,11 @@ export const main = async (context: Record<keyof any, any>) => {
         const pluginPath = path.resolve(__dirname, '../plugins', plugin.name);
         const pluginModule = require(pluginPath);
         if (typeof pluginModule.init === 'function') {
-          await pluginModule.init(context);
+          if (plugin.async) {
+            pluginModule.init(context);
+          } else {
+            await pluginModule.init(context);
+          }
         }
       }
     }

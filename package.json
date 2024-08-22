@@ -12,13 +12,13 @@
     "build-hmr": "nodemon --watch src --ext ts,json,js,html --exec npm run build ",
     "build-ts": "tsc -p tsconfig.build.json",
     "build-brower-ts": "tsc -p tsconfig.brower.json",
-    "build": "npm run build-ts &&  npm run build-brower-ts && npm run copy-config",
+    "build": "npm run build-ts &  npm run build-brower-ts & npm run copy-config",
     "copy-config": "ts-node copyFiles.ts",
     "start:debug": "node --inspect-brk -r ts-node/register  src/index.ts create xxx",
     "prepare": "husky install",
     "prettier": "prettier -c --write  **/* --cache",
     "pre-commit": "lint-staged",
-    "test":"jest"
+    "test": "jest"
   },
   "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
   "license": "MIT",
