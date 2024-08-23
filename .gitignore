@@ -55,3 +55,5 @@ cypress/videos/*
 # eslit html
 /report
 /logs
+
+src/resources/db/gitServerJson/index.json

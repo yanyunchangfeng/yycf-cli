@@ -11,11 +11,14 @@ describe('Main Workflow', () => {
   const context: PluginContext = {
     projectName: 'testProject',
     targetDir: path.join(cwd, 'testProject'),
-    destDir: '',
-    repo: {
-      id: 222,
-      name: 'webpack-react-template'
-    },
+    destDirs: [],
+    repos: [
+      {
+        id: 222,
+        name: 'webpack-react-template',
+        tag: 'v18.2.0'
+      }
+    ],
     tag: 'v18.2.0',
     cacheDirName: 'cacheRepository'
   };

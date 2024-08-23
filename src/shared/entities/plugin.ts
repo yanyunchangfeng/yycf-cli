@@ -3,11 +3,11 @@ import { Repo } from '.';
 export interface PluginParams {
   projectName: string;
   targetDir: string;
-  destDir: string;
-  repo: Repo;
-  tag: string;
-  skipPrompts: boolean;
+  destDirs: string[];
+  repos: Repo[];
+  skipPrompts?: boolean;
   cacheDirName?: string;
+  all?: boolean;
 }
 
 export interface PluginContext extends PluginParams {

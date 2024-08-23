@@ -29,19 +29,22 @@ class CacheRepositoryService {
       throw new Error('不支持的操作系统');
     }
   }
-  async isDestDirCached() {
-    const { repo, tag } = this.context;
-    this.context.destDir = path.join(this.cacheDir, `${repo.name}${tag ? `@${tag}` : ''}`);
-    return fs.existsSync(this.context.destDir);
-  }
-  async copyFromCacheResponsitory() {
-    await copy(this.context.destDir, this.context.targetDir);
+  async clearDestDir() {
+    this.context.destDirs = [];
   }
   async getCacheRepository() {
-    const isDestDirCached = await this.isDestDirCached();
-    if (isDestDirCached) {
-      return await this.copyFromCacheResponsitory();
-    }
+    await this.clearDestDir();
+    await Promise.all(
+      this.context.repos.map(async (repo) => {
+        const { name, tag } = repo;
+        const destDir = path.join(this.cacheDir, `${name}${tag ? `@${tag}` : ''}`);
+        const targetDir = path.join(this.context.targetDir, `${name}${tag ? `@${tag}` : ''}`);
+        this.context.destDirs.push(destDir);
+        if (fs.existsSync(destDir)) {
+          await copy(destDir, targetDir);
+        }
+      })
+    );
   }
   async clearCacheRepository() {
     await fs.remove(this.cacheDir);

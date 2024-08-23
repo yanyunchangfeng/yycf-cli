@@ -21,14 +21,24 @@ class CreatorService {
         value: item.id
       };
     });
-    const { repo } = await Inquirer.prompt({
-      name: 'repo',
-      type: 'list',
-      choices: repos,
-      loop: false,
-      message: `please choose a template to create project:`
-    } as any);
-    return { name: repos.find((item: any) => item.value === repo).name, id: repo };
+    if (this.context.all) {
+      // 批量操作
+      return repos.map((item: any) => {
+        return {
+          name: item.name,
+          id: item.value
+        };
+      });
+    } else {
+      const { repo } = await Inquirer.prompt({
+        name: 'repo',
+        type: 'list',
+        choices: repos,
+        loop: false,
+        message: `please choose a template to create project:`
+      } as any);
+      return [{ name: repos.find((item: any) => item.value === repo).name, id: repo }];
+    }
   }
   async fetchTag(repo: Repo) {
     const { gitServerType } = await readGitServerConfig();
@@ -38,21 +48,30 @@ class CreatorService {
       repo
     );
     if (!tags?.length) return;
-    const { tag } = await Inquirer.prompt({
-      name: 'tag',
-      type: 'list',
-      choices: tags,
-      loop: false,
-      message: 'please choose a tag to create project:'
-    } as any);
-    return tag;
+    if (this.context.all) {
+      // 批量操作
+      return tags[0].name;
+    } else {
+      const { tag } = await Inquirer.prompt({
+        name: 'tag',
+        type: 'list',
+        choices: tags,
+        loop: false,
+        message: 'please choose a tag to create project:'
+      } as any);
+      return tag.name;
+    }
   }
   async fetchTemplate() {
-    const repo = await this.fetchRepo();
-    if (!repo) return;
-    const tag = await this.fetchTag(repo);
-    this.context.repo = repo;
-    this.context.tag = tag;
+    const repos = await this.fetchRepo();
+    if (!repos) return;
+    const tags = await Promise.all(repos.map((repo: Repo) => this.fetchTag(repo)));
+    this.context.repos = repos.map((repo: any, index: number) => {
+      return {
+        ...repo,
+        tag: tags[index]
+      };
+    });
   }
   async init() {
     await this.fetchTemplate();

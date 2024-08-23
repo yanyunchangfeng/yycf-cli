@@ -9,22 +9,20 @@ describe('clearCacheRepository', () => {
   const context: PluginContext = {
     projectName: 'testProject',
     targetDir: path.join(cwd, 'testProject'),
-    destDir: '',
-    repo: {
-      id: 222,
-      name: 'webpack-react-template'
-    },
-    tag: 'v18.2.0',
+    destDirs: [],
+    repos: [
+      {
+        id: 222,
+        name: 'webpack-react-template',
+        tag: 'v1.0.0'
+      }
+    ],
     cacheDirName: 'testProjectCache'
   };
   const cache = new CacheRepositoryService(context);
-  context.destDir = path.join(cache.cacheDir, `${context.repo.name}${context.tag ? `@${context.tag}` : ''}`);
   beforeEach(async () => {
     // 确保缓存目录存在
     await fs.ensureDir(cache.cacheDir);
-    if (!fs.existsSync(context.destDir)) {
-      await fs.mkdir(context.destDir);
-    }
   });
   it('should clear cache repo dir', async () => {
     await init(context);
