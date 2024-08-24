@@ -6,7 +6,6 @@ export const main = async (context: Record<keyof any, any>) => {
   try {
     const { plugins } = await readPluginConfig();
     // 加载插件
-    const tasksList: Listr.ListrTask<any>[] = [];
     for await (const plugin of plugins) {
       const { plugins: newPlugins } = await readPluginConfig();
       const enabled = newPlugins.find((p) => p.name === plugin.name)?.enabled;
@@ -14,6 +13,7 @@ export const main = async (context: Record<keyof any, any>) => {
         const pluginPath = path.resolve(__dirname, '../plugins', plugin.name);
         const pluginModule = require(pluginPath);
         if (typeof pluginModule.init === 'function') {
+          const tasksList: Listr.ListrTask<any>[] = [];
           tasksList.push({
             title: plugin.name,
             task: async (ctx, task) => {
@@ -23,16 +23,16 @@ export const main = async (context: Record<keyof any, any>) => {
                 await pluginModule.init(context);
               }
             },
-            enabled: () => plugin.enabled
+            enabled: () => enabled
           });
+          const tasks = new Listr(tasksList, {
+            renderer: context.skipPrompts && context.all ? 'default' : 'verbose',
+            exitOnError: false
+          });
+          await tasks.run();
         }
       }
     }
-    const tasks = new Listr(tasksList, {
-      renderer: 'verbose', // silent | default
-      exitOnError: false
-    });
-    tasks.run();
   } catch (error) {
     logger.error(error);
   }
