@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import { logPath, PluginContext } from 'src/shared';
 import { CacheRepositoryService } from 'src/services';
 import path from 'path';
+
 const cwd = process.cwd();
 
 describe('Main Workflow', () => {

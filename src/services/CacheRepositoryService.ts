@@ -38,7 +38,9 @@ class CacheRepositoryService {
       this.context.repos.map(async (repo) => {
         const { name, tag } = repo;
         const destDir = path.join(this.cacheDir, `${name}${tag ? `@${tag}` : ''}`);
-        const targetDir = path.join(this.context.targetDir, `${name}${tag ? `@${tag}` : ''}`);
+        const targetDir = this.context.all
+          ? path.join(this.context.targetDir, `${name}${tag ? `@${tag}` : ''}`)
+          : this.context.targetDir;
         this.context.destDirs.push(destDir);
         if (fs.existsSync(destDir)) {
           await copy(destDir, targetDir);

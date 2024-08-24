@@ -12,7 +12,7 @@ class DownloadService {
   constructor(context: PluginContext) {
     this.context = context;
   }
-  async download(repo: Repo, destDir = this.context.destDirs[0] || this.context.targetDir) {
+  async download(repo: Repo, destDir: string) {
     const { gitServerType, origin, orgs, user, Authorization } = await readGitServerConfig();
     const { tag, id } = repo;
     let requestUrl;
@@ -34,9 +34,10 @@ class DownloadService {
   async init() {
     await Promise.all(
       this.context.repos.map(async (repo, index) => {
-        console.log(repo, 'repo');
         const { tag, name } = repo;
-        const targetDir = path.join(this.context.targetDir, `${name}${tag ? `@${tag}` : ''}`);
+        const targetDir = this.context.all
+          ? path.join(this.context.targetDir, `${name}${tag ? `@${tag}` : ''}`)
+          : this.context.targetDir;
         if (fs.existsSync(targetDir)) {
           logger.info(`cacheRepository plugin enabled,target dir [${targetDir}] already exists don't need download`);
           return;
