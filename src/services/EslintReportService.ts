@@ -5,12 +5,12 @@ import Inquirer from 'inquirer';
 import { ServerService, SetUpService } from '.';
 class EslintReportService {
   setUpService: SetUpService;
-  targetDir: string;
   serverService: ServerService;
   staticPath: string = 'eslint';
   reportPath: string = 'eslint-report';
+  context;
   constructor(context: PluginContext) {
-    this.targetDir = context.targetDir;
+    this.context = context;
     this.setUpService = new SetUpService(context.targetDir);
     this.serverService = new ServerService(context, {
       staticPath: this.staticPath,
@@ -19,7 +19,7 @@ class EslintReportService {
   }
   async copyEslintConfig() {
     const originPath = path.resolve(resourcePath, 'extensions/eslint');
-    await copy(originPath, this.targetDir);
+    await copy(originPath, this.context.targetDir);
   }
   async installEslintDependencies() {
     const { eslintPkgs } = await readPluginConfig();
