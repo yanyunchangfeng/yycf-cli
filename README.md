@@ -17,6 +17,7 @@ yycf-cli 是一个由 TypeScript 开发的脚手架工具，适用于基于远�
   - [eslint 指标](doc/eslint/README.md): 风格
   - [plato 指标](doc/plato/README.md): 质量
   - [jscpd 指标](doc/jscpd/README.md): 重复度
+  - [madge 指标](doc/madge/README.md): 依赖
 
 ## 技术架构
 
