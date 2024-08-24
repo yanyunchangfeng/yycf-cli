@@ -17,13 +17,9 @@ export const main = async (context: Record<keyof any, any>) => {
           tasksList.push({
             title: plugin.name,
             task: async (ctx, task) => {
-              if (plugin.async) {
-                pluginModule.init(context);
-              } else {
-                await pluginModule.init(context);
-              }
-            },
-            enabled: () => enabled
+              if (!plugin.async) return await pluginModule.init(context);
+              pluginModule.init(context);
+            }
           });
           const tasks = new Listr(tasksList, {
             renderer: context.skipPrompts && context.all ? 'default' : 'verbose',
