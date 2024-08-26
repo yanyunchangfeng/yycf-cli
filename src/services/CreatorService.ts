@@ -59,7 +59,7 @@ class CreatorService {
         loop: false,
         message: 'please choose a tag to create project:'
       } as any);
-      return tag.name;
+      return tag;
     }
   }
   async fetchTemplate() {

@@ -42,7 +42,7 @@ class DownloadService {
           logger.info(`cacheRepository plugin enabled,target dir [${targetDir}] already exists don't need download`);
           return;
         }
-        const destDir = this.context.destDirs[index] || targetDir;
+        const destDir = this.context.destDirs?.[index] || targetDir;
         await this.download(repo, destDir);
         if (this.context.destDirs) {
           logger.info(`cacheRepository plugin enabled, need copy to targetDir`);

@@ -37,7 +37,7 @@ class CacheRepositoryService {
     await Promise.all(
       this.context.repos.map(async (repo) => {
         const { name, tag } = repo;
-        const destDir = path.join(this.cacheDir, `${name}${tag ? `@${tag}` : ''}`);
+        const destDir = path.join(this.cacheDir, name, tag ? tag : '');
         const targetDir = this.context.all
           ? path.join(this.context.targetDir, `${name}${tag ? `@${tag}` : ''}`)
           : this.context.targetDir;
