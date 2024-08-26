@@ -16,10 +16,10 @@ export const pluginConfig = convict({
       { name: 'downloadRepository', enabled: true, async: false },
       { name: 'writePkg', enabled: true, async: false },
       { name: 'setUpYarn', enabled: true, async: false },
-      { name: 'innerEslintReport', enabled: true, async: true },
       { name: 'customEslintReport', enabled: false, async: true },
-      { name: 'jscpdReport', enabled: true, async: true },
-      { name: 'madgeReport', enabled: true, async: true },
+      { name: 'innerEslintReport', enabled: false, async: true },
+      { name: 'jscpdReport', enabled: false, async: true },
+      { name: 'madgeReport', enabled: false, async: true },
       { name: 'platoReport', enabled: false, async: true },
       { name: 'installDependencies', enabled: false, async: true }
     ]
@@ -42,7 +42,17 @@ export const pluginConfig = convict({
   requiredPlugins: {
     doc: 'required plugins',
     format: Array,
-    default: ['initLogs', 'loadConfig', 'createProject', 'setUpYarn', 'downloadRepository', 'writePkg', 'userPrompts']
+    default: [
+      'initLogs',
+      'loadConfig',
+      'createProject',
+      'setUpYarn',
+      'downloadRepository',
+      'writePkg',
+      'userPrompts',
+      'cacheRepository',
+      'customEslintReport'
+    ]
   },
   platoArgs: {
     doc: 'plato args',

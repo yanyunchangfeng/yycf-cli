@@ -47,23 +47,23 @@
       "async": false
     },
     {
-      "name": "innerEslintReport",
-      "enabled": true,
-      "async": true
-    },
-    {
       "name": "customEslintReport",
       "enabled": false,
       "async": true
     },
     {
+      "name": "innerEslintReport",
+      "enabled": false,
+      "async": true
+    },
+    {
       "name": "jscpdReport",
-      "enabled": true,
+      "enabled": false,
       "async": true
     },
     {
       "name": "madgeReport",
-      "enabled": true,
+      "enabled": false,
       "async": true
     },
     {
@@ -87,7 +87,9 @@
     "setUpYarn",
     "downloadRepository",
     "writePkg",
-    "userPrompts"
+    "userPrompts",
+    "cacheRepository",
+    "customEslintReport"
   ],
   "platoArgs": ["-r", "-d", "plato-report", "dist"],
   "jscpdArgs": ["-p", "'**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
