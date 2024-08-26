@@ -188,15 +188,17 @@ class PromptService {
     await writeGitServerConfig();
   }
   async inquirerChoosePluginsEnabled() {
-    const { plugins, requiredPlugins } = await readPluginConfig();
-    const pluginList = plugins.map((plugin) => {
-      return {
-        name: plugin.name,
-        value: plugin.name,
-        checked: plugin.enabled,
-        disabled: requiredPlugins.includes(plugin.name)
-      };
-    });
+    const { plugins, requiredPlugins, disabledPlugins } = await readPluginConfig();
+    const pluginList = plugins
+      .filter((plugin) => !disabledPlugins.includes(plugin.name))
+      .map((plugin) => {
+        return {
+          name: plugin.name,
+          value: plugin.name,
+          checked: plugin.enabled,
+          disabled: requiredPlugins.includes(plugin.name)
+        };
+      });
     const { choosePlugins } = await Inquirer.prompt([
       {
         type: 'checkbox',

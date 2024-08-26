@@ -54,6 +54,11 @@ export const pluginConfig = convict({
       'customEslintReport'
     ]
   },
+  disabledPlugins: {
+    doc: 'required plugins',
+    format: Array,
+    default: ['customEslintReport']
+  },
   platoArgs: {
     doc: 'plato args',
     format: Array,
@@ -64,7 +69,7 @@ export const pluginConfig = convict({
     format: Array,
     default: ['-p', '"**/*.{ts,tsx}"', '-r', 'json', '-o', 'jscpd-report']
   },
-  madgeArgs: ['--extensions', 'ts,tsx', '*', '-i', 'madge-report/report.svg']
+  madgeArgs: ['--extensions', 'ts,tsx', '*', '-i', 'madge-report/report.png']
 });
 
 pluginConfig.validate({ allowed: 'strict' });
