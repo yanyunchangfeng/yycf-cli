@@ -20,7 +20,6 @@ describe('Main Workflow', () => {
         tag: 'v18.2.0'
       }
     ],
-    tag: 'v18.2.0',
     cacheDirName: 'cacheRepository'
   };
   const cache = new CacheRepositoryService(context);
