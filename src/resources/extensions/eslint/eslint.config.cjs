@@ -10,6 +10,16 @@ module.exports = [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   {
-    ignores: ['*', '!*/', 'config/', 'cypress/', 'jscpd-report/', 'madge-report/', 'eslint-report/', 'plato-report/']
+    ignores: [
+      '*',
+      '!*/',
+      'config/',
+      'cypress/',
+      'jscpd-report/',
+      'madge-report/',
+      'eslint-report/',
+      'plato-report/',
+      'node_modules/'
+    ]
   }
 ];
