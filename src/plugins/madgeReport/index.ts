@@ -7,18 +7,17 @@ import path from 'path';
 export const init = async (context: PluginContext) => {
   logger.info(`${config.name} ${config.initMessage}`);
 
-  if (context.all) {
-    await Promise.allSettled(
-      context.repos.map(async (repo) => {
-        const { name, tag } = repo;
-        const newContext = { ...context, targetDir: path.join(context.targetDir, `${name}${tag ? `@${tag}` : ''}`) };
-        const madgeService = new MadgeReportService(newContext);
-        await madgeService.init();
-      })
-    );
-  } else {
-    const madgeService = new MadgeReportService(context);
-    await madgeService.init();
-  }
+  await Promise.allSettled(
+    context.repos.map(async (repo) => {
+      const { name } = repo;
+      let newContext = { ...context };
+      if (context.all) {
+        newContext = { ...context, targetDir: path.join(context.targetDir, name) };
+      }
+      const madgeService = new MadgeReportService(newContext, repo);
+      await madgeService.init();
+    })
+  );
+
   logger.info(`${config.name} ${config.exitMessage}`);
 };

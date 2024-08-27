@@ -24,10 +24,10 @@ export const writeFile = async (path: string, content: any, needJsonStringify = 
   }
 };
 
-export const copy = async (originPath: string, targetPath: string) => {
+export const copy = async (originPath: string, targetPath: string, options?: fs.CopyOptions) => {
   logger.info(`copy oringinPath ${originPath} to targetPath ${targetPath}`);
   try {
-    await fs.copy(originPath, targetPath);
+    await fs.copy(originPath, targetPath, options);
   } catch (err) {
     logger.error(`copy oringinPath ${originPath} to targetPath ${targetPath} fail:  ${err}`);
   }

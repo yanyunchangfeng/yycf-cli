@@ -1,6 +1,6 @@
 import path from 'path';
 import { copy, logger, readPluginConfig } from '../utils';
-import { PluginContext, resourcePath } from '../shared';
+import { PluginContext, Repo, resourcePath } from '../shared';
 import Inquirer from 'inquirer';
 import { ServerService, SetUpService } from '.';
 class EslintReportService {
@@ -9,12 +9,13 @@ class EslintReportService {
   staticPath: string = 'eslint';
   reportPath: string = 'eslint-report';
   context;
-  constructor(context: PluginContext) {
+  constructor(context: PluginContext, repo: Repo) {
     this.context = context;
     this.setUpService = new SetUpService(context.targetDir);
     this.serverService = new ServerService(context, {
       staticPath: this.staticPath,
-      reportPath: this.reportPath
+      reportPath: this.reportPath,
+      repo
     });
   }
   async copyEslintConfig() {
@@ -58,13 +59,15 @@ class EslintReportService {
   async initInnerEslint() {
     await this.copyEslintConfig();
     await this.setUpEslintGlobalPkg();
-    await this.serverService.copyServerStaticHtml();
+    await this.serverService.copyServerStatic();
+    await this.serverService.generateHTML();
     await this.generatorInnerReport();
     await this.serverService.startServer();
   }
   async initCustomEslint() {
     await this.initEslintPlugin();
-    await this.serverService.copyServerStaticHtml();
+    await this.serverService.copyServerStatic();
+    await this.serverService.generateHTML();
     await this.generatorCustomReport();
     await this.serverService.startServer();
   }

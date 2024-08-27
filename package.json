@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts create xxx -y -f",
-    "build-hmr": "nodemon --watch src --ext ts,json,js,html --exec npm run build ",
+    "build-hmr": "nodemon --watch src --ext ts,json,js,hbs --exec npm run build ",
     "build-ts": "tsc -p tsconfig.build.json",
     "build-brower-ts": "tsc -p tsconfig.brower.json",
     "build": "npm run build-ts &  npm run build-brower-ts & npm run copy-config",
@@ -42,6 +42,7 @@
     "download-git-repo": "3.0.2",
     "express": "4.19.2",
     "fs-extra": "11.2.0",
+    "handlebars": "4.7.8",
     "inquirer": "10.1.5",
     "listr": "0.14.3",
     "open": "8.4.2",

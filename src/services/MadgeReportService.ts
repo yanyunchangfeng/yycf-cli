@@ -1,4 +1,4 @@
-import { PluginContext } from '../shared';
+import { PluginContext, Repo } from '../shared';
 import { SetUpService, ServerService } from '.';
 import { readPluginConfig } from '../utils';
 
@@ -8,12 +8,13 @@ class MadgeReportService {
   serverService: ServerService;
   staticPath = 'madge';
   reportPath = 'madge-report';
-  constructor(context: PluginContext) {
+  constructor(context: PluginContext, repo: Repo) {
     this.context = context;
     this.setUpService = new SetUpService(context.targetDir);
     this.serverService = new ServerService(context, {
       staticPath: this.staticPath,
-      reportPath: this.reportPath
+      reportPath: this.reportPath,
+      repo
     });
   }
   async generatorReport() {
@@ -22,7 +23,8 @@ class MadgeReportService {
   }
   async init() {
     await this.setUpService.setup(this.staticPath);
-    await this.serverService.copyServerStaticHtml();
+    await this.serverService.copyServerStatic();
+    await this.serverService.generateHTML();
     await this.generatorReport();
     await this.serverService.startServer();
   }

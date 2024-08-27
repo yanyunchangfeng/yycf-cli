@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}} Madge Report Visualization</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow-y: hidden;
+    }
+    .flex-fill {
+      flex: 1 !important;
+    }
+    .d-flex {
+      display: flex;
+    }
+    .align-items-center {
+      align-items: center;
+    }
+    .align-items-stretch {
+      -webkit-box-align: stretch !important;
+      -ms-flex-align: stretch !important;
+      align-items: stretch !important;
+    }
+    .align-items-baseline {
+      -webkit-box-align: baseline !important;
+      -ms-flex-align: baseline !important;
+      align-items: baseline !important;
+    }
+    .justify-content-center {
+      justify-content: center;
+    }
+    .align-self-center {
+      -ms-flex-item-align: center !important;
+      -ms-grid-row-align: center !important;
+      align-self: center !important;
+    }
+    .flex-column {
+      -webkit-box-orient: vertical !important;
+      -webkit-box-direction: normal !important;
+      -ms-flex-direction: column !important;
+      flex-direction: column !important;
+    }
+  </style>
+  <style>
+    /* 缩略图样式 */
+    #thumbnail {
+        max-width: 100%;
+        max-height: 80%;
+        cursor: pointer;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        transition: transform 0.2s;
+    }
+
+    #thumbnail:hover {
+        transform: scale(1.1);
+    }
+
+    /* 全屏预览容器样式 */
+    #fullscreen-preview {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        cursor: pointer;
+    }
+
+    /* 全屏预览图片样式 */
+    #fullscreen-preview img {
+        max-width: 100%;
+        max-height: 100%;
+        border: 4px solid #fff;
+        border-radius: 8px;
+    }
+
+    /* 关闭按钮样式 */
+    #close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        color: #fff;
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 3px 12px;
+        border-radius: 50%;
+    }
+</style>
+  <body class="d-flex flex-column justify-content-center">
+    <h1 class="align-self-center">{{title}} Madge Report Visualization</h1>
+    <!-- 缩略图 -->
+    <img id="thumbnail" src="report.png" alt="Thumbnail" class="align-self-center">
+    <!-- 全屏预览容器 -->
+    <div id="fullscreen-preview">
+        <span id="close-btn">&times;</span>
+        <img src="report.png" alt="Fullscreen Image">
+    </div>
+    <script src="index.js" type="module"></script>
+  </body>
+</html>

@@ -34,10 +34,8 @@ class DownloadService {
   async init() {
     await Promise.all(
       this.context.repos.map(async (repo, index) => {
-        const { tag, name } = repo;
-        const targetDir = this.context.all
-          ? path.join(this.context.targetDir, `${name}${tag ? `@${tag}` : ''}`)
-          : this.context.targetDir;
+        const { name } = repo;
+        const targetDir = this.context.all ? path.join(this.context.targetDir, name) : this.context.targetDir;
         if (fs.existsSync(targetDir)) {
           logger.info(`cacheRepository plugin enabled,target dir [${targetDir}] already exists don't need download`);
           return;

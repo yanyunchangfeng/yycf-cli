@@ -1,4 +1,4 @@
-import { PluginContext } from '../shared';
+import { PluginContext, Repo } from '../shared';
 import { readPluginConfig } from '../utils';
 import { SetUpService, ServerService, InstallDependencies } from '.';
 
@@ -9,12 +9,13 @@ class PlatoReportService {
   installDependencies: InstallDependencies;
   staticPath = 'plato';
   reportPath = 'plato-report';
-  constructor(context: PluginContext) {
+  constructor(context: PluginContext, repo: Repo) {
     this.context = context;
     this.setUpService = new SetUpService(context.targetDir);
     this.serverService = new ServerService(context, {
       staticPath: this.staticPath,
-      reportPath: this.reportPath
+      reportPath: this.reportPath,
+      repo
     });
     this.installDependencies = new InstallDependencies(context);
   }
@@ -26,7 +27,8 @@ class PlatoReportService {
     await this.setUpService.setup(this.staticPath);
     await this.installDependencies.build();
     await this.generatorReportJson();
-    await this.serverService.copyServerStaticHtml();
+    await this.serverService.copyServerStatic();
+    await this.serverService.generateHTML();
     await this.serverService.startServer();
   }
 }

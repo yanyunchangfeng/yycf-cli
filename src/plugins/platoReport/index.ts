@@ -6,18 +6,17 @@ import path from 'path';
 
 export const init = async (context: PluginContext) => {
   logger.info(`${config.name} ${config.initMessage}`);
-  if (context.all) {
-    await Promise.allSettled(
-      context.repos.map(async (repo) => {
-        const { name, tag } = repo;
-        const newContext = { ...context, targetDir: path.join(context.targetDir, `${name}${tag ? `@${tag}` : ''}`) };
-        const platoService = new PlatoReportService(newContext);
-        await platoService.init();
-      })
-    );
-  } else {
-    const platoService = new PlatoReportService(context);
-    await platoService.init();
-  }
+
+  await Promise.allSettled(
+    context.repos.map(async (repo) => {
+      const { name } = repo;
+      let newContext = { ...context };
+      if (context.all) {
+        newContext = { ...context, targetDir: path.join(context.targetDir, name) };
+      }
+      const platoService = new PlatoReportService(newContext, repo);
+      await platoService.init();
+    })
+  );
   logger.info(`${config.name} ${config.exitMessage}`);
 };

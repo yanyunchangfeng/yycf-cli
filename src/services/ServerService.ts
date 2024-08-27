@@ -1,6 +1,7 @@
 import { PluginContext, resourcePublicServerPath, ServerParams } from '../shared';
 import express from 'express';
-import { logger, copy } from '../utils';
+import { logger, copy, readFile, writeFile } from '../utils';
+import Handlebars from 'handlebars';
 import path from 'path';
 import http from 'http';
 import open from 'open';
@@ -11,6 +12,7 @@ class ServerService {
   basePort = 3000;
   server?: http.Server;
   ServerParams: ServerParams;
+  filters = ['hbs'];
   constructor(context: PluginContext, serverParams: ServerParams) {
     this.context = context;
     this.ServerParams = serverParams;
@@ -20,15 +22,6 @@ class ServerService {
   }
   async startServer() {
     this.init();
-    // this.app.get('/report', async (req, res) => {
-    //   const reportPath = path.join(this.context.targetDir, this.ServerParams.reportPath, 'report.json');
-    //   try {
-    //     const data = await readFile(reportPath, true);
-    //     res.json(data);
-    //   } catch (err) {
-    //     res.status(500).send(`Error reading ${this.ServerParams.reportPath} report.`);
-    //   }
-    // });
     try {
       const port = await this.findAvailablePort(this.basePort);
       this.server = this.app.listen(port, () => {
@@ -63,10 +56,35 @@ class ServerService {
       });
     });
   }
-  async copyServerStaticHtml() {
+  async generateHTML() {
+    try {
+      // 读取 Handlebars 模板文件
+      const templatePath = path.join(resourcePublicServerPath, this.ServerParams.staticPath, 'index.hbs');
+      const templateContent = await readFile(templatePath);
+      // 编译模板
+      const template = Handlebars.compile(templateContent);
+      // 生成 HTML 内容
+      const htmlContent = template({
+        title: `${this.ServerParams.repo?.name}${this.ServerParams.repo?.tag ? `@${this.ServerParams.repo.tag}` : ''}`
+      });
+      // 输出到文件
+      const outputPath = path.join(this.context.targetDir, this.ServerParams.reportPath, 'index.html');
+      await writeFile(outputPath, htmlContent);
+      logger.info(`${this.ServerParams.staticPath} HTML file generated successfully at ${outputPath}`);
+    } catch (error) {
+      logger.error(`Error generating ${this.ServerParams.staticPath} HTML: ${error}`);
+    }
+  }
+  filter = (src: string, dest: string) => {
+    if (this.filters.find((filter) => src.includes(filter))) {
+      return false;
+    }
+    return true;
+  };
+  async copyServerStatic() {
     const originPath = path.join(resourcePublicServerPath, this.ServerParams.staticPath);
     const targetPath = path.join(this.context.targetDir, this.ServerParams.reportPath);
-    await copy(originPath, targetPath);
+    await copy(originPath, targetPath, { filter: this.filter });
   }
 }
 
