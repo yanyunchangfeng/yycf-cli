@@ -14,16 +14,16 @@ class DownloadService {
   }
   async download(repo: Repo, destDir: string) {
     const { gitServerType, origin, orgs, user, Authorization } = await readGitServerConfig();
-    const { tag, id } = repo;
+    const { tag, id, name } = repo;
     let requestUrl;
     if (gitServerType !== GITSERVER.GITHUB) {
       requestUrl = `direct:${origin}/api/v4/projects/${id}/repository/archive.zip${tag ? `?sha=${tag}` : ''} `;
-      return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, destDir, {
+      return await wrapLoading(this.downloadGitRepo, `waiting for download ${name}`, requestUrl, destDir, {
         headers: { Authorization: `Bearer ${Authorization}` }
       });
     }
-    requestUrl = `${orgs ? orgs : user}/${repo.name}${tag ? '#' + tag : ''}`;
-    return await wrapLoading(this.downloadGitRepo, 'waiting for download ', requestUrl, destDir);
+    requestUrl = `${orgs ? orgs : user}/${name}${tag ? '#' + tag : ''}`;
+    return await wrapLoading(this.downloadGitRepo, `waiting for download ${name}`, requestUrl, destDir);
   }
   async copyFromCacheResponsitory() {
     if (this.context.destDir) {

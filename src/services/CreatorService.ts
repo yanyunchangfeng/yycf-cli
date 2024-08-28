@@ -44,7 +44,7 @@ class CreatorService {
     const { gitServerType } = await readGitServerConfig();
     const tags = await wrapLoading(
       CreatoRequestService[gitServerType as GITSERVER].fetchTagList,
-      'waiting fetch tag',
+      `waiting fetch ${repo.name} tag `,
       repo
     );
     if (!tags?.length) return;
