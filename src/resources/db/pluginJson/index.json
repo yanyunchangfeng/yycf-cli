@@ -91,7 +91,7 @@
     "cacheRepository"
   ],
   "disabledPlugins": ["customEslintReport"],
-  "platoArgs": ["-r", "-d", "plato-report", "dist"],
+  "platoArgs": ["-r", "-d", "plato-report", "-x", "'^(?!dist|out)/*'", "*"],
   "jscpdArgs": ["-p", "'**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
   "madgeArgs": ["--extensions", "ts,tsx", "*", "-i", "madge-report/report.png"]
 }
