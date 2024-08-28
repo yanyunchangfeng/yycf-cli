@@ -50,8 +50,7 @@ export const pluginConfig = convict({
       'downloadRepository',
       'writePkg',
       'userPrompts',
-      'cacheRepository',
-      'customEslintReport'
+      'cacheRepository'
     ]
   },
   disabledPlugins: {
@@ -62,7 +61,7 @@ export const pluginConfig = convict({
   platoArgs: {
     doc: 'plato args',
     format: Array,
-    default: ['-r', '-d', 'plato-report', '-x', "'^(?!dist|out)/*'", '*']
+    default: ['-r', '-d', 'plato-report', '-x', "'.*(vendor|polyfill).*'", 'dist', 'out/_next']
   },
   jscpdArgs: {
     doc: 'jscpd args',

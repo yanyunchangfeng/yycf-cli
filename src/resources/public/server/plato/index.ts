@@ -108,6 +108,16 @@ fetch('report.json')
           scales: {
             y: {
               beginAtZero: true
+            },
+            x: {
+              stacked: true,
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: 10,
+                callback: function (_: any, index: number) {
+                  return index;
+                }
+              }
             }
           }
         }

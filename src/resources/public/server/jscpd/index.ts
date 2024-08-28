@@ -52,7 +52,7 @@ function createChart(
                 ticks: {
                   autoSkip: true,
                   maxTicksLimit: 10, // 限制最大显示的标签数量
-                  callback: function (value: any, index: any, values: any) {
+                  callback: function (_: any, index: number) {
                     return index;
                   }
                 }

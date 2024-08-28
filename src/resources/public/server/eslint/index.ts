@@ -121,10 +121,10 @@ fetch('report.json')
           x: {
             stacked: true,
             ticks: {
-              // autoSkip: true,
-              // maxTicksLimit: 10,
-              callback: function (value: any) {
-                return value;
+              autoSkip: true,
+              maxTicksLimit: 10,
+              callback: function (_: any, index: number) {
+                return index;
               }
             }
           }
