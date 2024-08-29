@@ -5,9 +5,7 @@ import fs from 'fs-extra';
 describe('clearLogs', () => {
   const context: any = {};
   beforeEach(async () => {
-    if (!fs.existsSync(logPath)) {
-      await fs.mkdir(logPath);
-    }
+    await fs.ensureDir(logPath);
   });
   it('should clear logs dir', async () => {
     await init(context);

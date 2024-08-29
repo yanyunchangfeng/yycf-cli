@@ -24,9 +24,7 @@ describe('Main Workflow', () => {
   };
   const cache = new CacheRepositoryService(context);
   beforeEach(async () => {
-    if (!fs.existsSync(logPath)) {
-      await fs.mkdir(logPath);
-    }
+    await fs.ensureDir(logPath);
   });
   it('should execute the full workflow correctly', async () => {
     await clearLogs(context);
