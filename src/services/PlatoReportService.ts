@@ -17,7 +17,7 @@ class PlatoReportService {
       reportPath: this.reportPath,
       repo
     });
-    this.installDependencies = new InstallDependencies(context);
+    this.installDependencies = new InstallDependencies(context, repo);
   }
   async generatorReportJson() {
     const { platoArgs } = await readPluginConfig();

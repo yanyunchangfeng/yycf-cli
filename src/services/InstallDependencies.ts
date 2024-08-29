@@ -1,17 +1,17 @@
 import SetUpService from './SetUpService';
-import { PluginContext } from '../shared';
+import { PluginContext, Repo } from '../shared';
 class InstallDependencies {
   setUpService: SetUpService;
-  context;
-  constructor(context: PluginContext) {
-    this.context = context;
+  repo: Repo;
+  constructor(context: PluginContext, repo: Repo) {
+    this.repo = repo;
     this.setUpService = new SetUpService(context.targetDir);
   }
   async installDependencies() {
-    await this.setUpService.exec('yarn', [], `Install ${this.context.targetDir} dependencies`);
+    await this.setUpService.exec('yarn', ['install', '||', 'true'], `Install ${this.repo.name} dependencies`);
   }
   async buildResource() {
-    await this.setUpService.exec('yarn', ['build'], `Build ${this.context.targetDir} resource`);
+    await this.setUpService.exec('yarn', ['build', '||', 'true'], `Build ${this.repo.name} resource`);
   }
   async build() {
     await this.installDependencies();
