@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import Inquirer from 'inquirer';
-import { wrapLoading, initNodePath } from '../utils';
+import { wrapLoading, initNodeEnv } from '../utils';
 import { main } from '../base/main';
 
 module.exports = async (projectName: string, options: Record<keyof any, any>) => {
@@ -36,6 +36,6 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
     skipPrompts: options.yes,
     all: options.all
   };
-  initNodePath();
+  initNodeEnv();
   main(context);
 };

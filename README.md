@@ -7,16 +7,16 @@
 你好，我是[燕云长风](https://yanyunchangfeng.github.io)。  
 寓意：结合李白著名的边塞诗《关山月》取【燕云长风】—— 长风几万里，吹度玉门关。
 
-yycf-cli 是一个由 TypeScript 开发的脚手架工具，适用于基于远端服务仓库创建新项目并生成代码分析报告。
+yycf-cli 是一款集项目创建与代码分析于一体的开发工具。它能够从远程 Git 仓库快速生成新项目，并通过深入的代码质量分析和可视化报告，助力开发者高效构建和优化项目
 
 ## 功能
 
 - 创建项目：支持基于远端 git Server 仓库模版创建新项目。
-- 文件配置：支持配置远端 git Server 仓库域名、组织、用户和访问令牌
+- 服务配置：支持配置远端 git Server 仓库域名、组织、用户和访问令牌
 - 代码分析：支持分析代码中的常见问题，包括代码风格、代码质量等，并生成数据可视化报告。
   - [eslint 指标](doc/eslint/README.md): 风格
   - [plato 指标](doc/plato/README.md): 质量
-  - [jscpd 指标](doc/jscpd/README.md): 重复度
+  - [jscpd 指标](doc/jscpd/README.md): 重复
   - [madge 指标](doc/madge/README.md): 依赖
 
 ## 技术架构
