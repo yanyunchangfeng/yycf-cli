@@ -91,6 +91,15 @@
     "cacheRepository"
   ],
   "disabledPlugins": ["customEslintReport"],
+  "ignoreRepos": [
+    "Monitoring",
+    "argocd-example-apps",
+    "dify",
+    "Embedding Deployment",
+    "entity_extraction",
+    "ok2k8s",
+    "sup-chat-gateway"
+  ],
   "platoArgs": ["-r", "-d", "plato-report", "-x", "'.*(vendor|polyfill|react).*'", "dist", "out/_next"],
   "jscpdArgs": ["-p", "'**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
   "madgeArgs": ["--extensions", "ts,tsx", "*", "-i", "madge-report/report.png"]

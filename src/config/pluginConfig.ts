@@ -58,6 +58,19 @@ export const pluginConfig = convict({
     format: Array,
     default: ['customEslintReport']
   },
+  ignoreRepos: {
+    doc: 'can not download or non-fe repos',
+    format: Array,
+    default: [
+      'Monitoring',
+      'argocd-example-apps',
+      'dify',
+      'Embedding Deployment',
+      'entity_extraction',
+      'ok2k8s',
+      'sup-chat-gateway'
+    ]
+  },
   platoArgs: {
     doc: 'plato args',
     format: Array,
