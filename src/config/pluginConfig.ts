@@ -6,22 +6,22 @@ export const pluginConfig = convict({
     doc: 'plugin configurations',
     format: Array,
     default: [
-      { name: 'clearLogs', enabled: false, async: false },
-      { name: 'initLogs', enabled: true, async: false },
-      { name: 'clearCacheRepository', enabled: false, async: false },
-      { name: 'loadConfig', enabled: true, async: false },
-      { name: 'userPrompts', enabled: true, async: false },
-      { name: 'createProject', enabled: true, async: false },
-      { name: 'cacheRepository', enabled: true, async: false },
-      { name: 'downloadRepository', enabled: true, async: false },
-      { name: 'writePkg', enabled: true, async: false },
-      { name: 'setUpYarn', enabled: true, async: false },
-      { name: 'customEslintReport', enabled: false, async: true },
-      { name: 'innerEslintReport', enabled: false, async: true },
-      { name: 'jscpdReport', enabled: false, async: true },
-      { name: 'madgeReport', enabled: false, async: true },
-      { name: 'platoReport', enabled: false, async: true },
-      { name: 'installDependencies', enabled: false, async: true }
+      { name: 'clearLogs', enabled: false, async: false, resourceIntensive: false },
+      { name: 'initLogs', enabled: true, async: false, resourceIntensive: false },
+      { name: 'clearCacheRepository', enabled: false, async: false, resourceIntensive: false },
+      { name: 'loadConfig', enabled: true, async: false, resourceIntensive: false },
+      { name: 'userPrompts', enabled: true, async: false, resourceIntensive: false },
+      { name: 'createProject', enabled: true, async: false, resourceIntensive: false },
+      { name: 'cacheRepository', enabled: true, async: false, resourceIntensive: false },
+      { name: 'downloadRepository', enabled: true, async: false, resourceIntensive: false },
+      { name: 'writePkg', enabled: true, async: false, resourceIntensive: false },
+      { name: 'setUpYarn', enabled: true, async: false, resourceIntensive: false },
+      { name: 'customEslintReport', enabled: false, async: true, resourceIntensive: false },
+      { name: 'innerEslintReport', enabled: false, async: true, resourceIntensive: false },
+      { name: 'jscpdReport', enabled: false, async: true, resourceIntensive: false },
+      { name: 'madgeReport', enabled: false, async: true, resourceIntensive: false },
+      { name: 'platoReport', enabled: false, async: true, resourceIntensive: true },
+      { name: 'installDependencies', enabled: false, async: true, resourceIntensive: false }
     ]
   },
   eslintPkgs: {
@@ -54,7 +54,7 @@ export const pluginConfig = convict({
     ]
   },
   disabledPlugins: {
-    doc: 'required plugins',
+    doc: 'disabled plugins',
     format: Array,
     default: ['customEslintReport']
   },
@@ -68,13 +68,18 @@ export const pluginConfig = convict({
       'Embedding Deployment',
       'entity_extraction',
       'ok2k8s',
-      'sup-chat-gateway'
+      'sup-chat-gateway',
+      'ppt-ui',
+      'word-ui',
+      'back-management-vite',
+      'back-management',
+      'data-mind'
     ]
   },
   platoArgs: {
     doc: 'plato args',
     format: Array,
-    default: ['-r', '-d', 'plato-report', '-x', "'.*(vendor|polyfill|react).*'", 'dist', 'out/_next']
+    default: ['-r', '-d', 'plato-report', '-x', "'.*(vendor|polyfill|react|lodash).*'", 'dist', 'out/_next', 'bin']
   },
   jscpdArgs: {
     doc: 'jscpd args',
