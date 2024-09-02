@@ -12,6 +12,7 @@ program
   .option('-y, --yes', 'use defaults without prompting')
   .option('-a, --all', 'download all repos')
   .option('-g, --git', 'initialize a git repository')
+  .option('-i, --install', 'install dependencies')
   .action((name, cmd) => {
     require('./base/create')(name, cmd);
   });

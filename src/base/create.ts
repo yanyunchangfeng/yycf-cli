@@ -34,8 +34,26 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
   if (options.git) {
     const { plugins } = await readPluginConfig();
     const initGitPlugin = plugins.find((plugin) => plugin.name === 'initGit');
-    if (initGitPlugin) {
-      pluginConfig.set('plugins', [...plugins, { ...initGitPlugin, enabled: true }] as any);
+    const index = plugins.findIndex((plugin) => plugin.name === 'initGit');
+    if (index) {
+      pluginConfig.set('plugins', [
+        ...plugins.slice(0, index),
+        { ...initGitPlugin, enabled: true },
+        ...plugins.slice(index + 1)
+      ] as any);
+      await writePluginConfig();
+    }
+  }
+  if (options.install) {
+    const { plugins } = await readPluginConfig();
+    const installPlugin = plugins.find((plugin) => plugin.name === 'installDependencies');
+    const index = plugins.findIndex((plugin) => plugin.name === 'installDependencies');
+    if (installPlugin) {
+      pluginConfig.set('plugins', [
+        ...plugins.slice(0, index),
+        { ...installPlugin, enabled: true },
+        ...plugins.slice(index + 1)
+      ] as any);
       await writePluginConfig();
     }
   }
@@ -44,7 +62,8 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
     targetDir,
     skipPrompts: options.yes,
     all: options.all,
-    git: options.git
+    git: options.git,
+    runInstall: options.install
   };
   initNodeEnv();
   main(context);

@@ -90,7 +90,7 @@
       "name": "installDependencies",
       "enabled": false,
       "async": true,
-      "resourceIntensive": false
+      "resourceIntensive": true
     }
   ],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],

@@ -10,6 +10,7 @@ export interface PluginParams {
   all?: boolean;
   logPath?: string;
   git?: boolean;
+  runInstall?: boolean;
 }
 
 export interface PluginContext extends PluginParams {

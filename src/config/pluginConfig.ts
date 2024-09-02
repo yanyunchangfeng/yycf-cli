@@ -22,7 +22,7 @@ export const pluginConfig = convict({
       { name: 'jscpdReport', enabled: false, async: true, resourceIntensive: false },
       { name: 'madgeReport', enabled: false, async: true, resourceIntensive: false },
       { name: 'platoReport', enabled: false, async: true, resourceIntensive: true },
-      { name: 'installDependencies', enabled: false, async: true, resourceIntensive: false }
+      { name: 'installDependencies', enabled: false, async: true, resourceIntensive: true }
     ]
   },
   eslintPkgs: {
