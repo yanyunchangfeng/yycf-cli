@@ -1,0 +1,7 @@
+{
+  "name": "initGit",
+  "description": "Initialize a git repository",
+  "enabled": true,
+  "initMessage": "plugin is running",
+  "exitMessage": "plugin is exiting"
+}

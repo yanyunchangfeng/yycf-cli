@@ -15,6 +15,7 @@ export const pluginConfig = convict({
       { name: 'cacheRepository', enabled: true, async: false, resourceIntensive: false },
       { name: 'downloadRepository', enabled: true, async: false, resourceIntensive: false },
       { name: 'writePkg', enabled: true, async: false, resourceIntensive: false },
+      { name: 'initGit', enabled: true, async: false, resourceIntensive: false },
       { name: 'setUpYarn', enabled: true, async: false, resourceIntensive: false },
       { name: 'customEslintReport', enabled: false, async: true, resourceIntensive: false },
       { name: 'innerEslintReport', enabled: false, async: true, resourceIntensive: false },
@@ -50,7 +51,8 @@ export const pluginConfig = convict({
       'downloadRepository',
       'writePkg',
       'userPrompts',
-      'cacheRepository'
+      'cacheRepository',
+      'initGit'
     ]
   },
   disabledPlugins: {

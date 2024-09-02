@@ -1,8 +1,9 @@
 import path from 'path';
 import fs from 'fs-extra';
 import Inquirer from 'inquirer';
-import { wrapLoading, initNodeEnv } from '../utils';
+import { wrapLoading, initNodeEnv, readPluginConfig, writePluginConfig } from '../utils';
 import { main } from '../base/main';
+import { pluginConfig } from '../config';
 
 module.exports = async (projectName: string, options: Record<keyof any, any>) => {
   const cwd = process.cwd();
@@ -30,11 +31,20 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
       }
     }
   }
+  if (options.git) {
+    const { plugins } = await readPluginConfig();
+    const initGitPlugin = plugins.find((plugin) => plugin.name === 'initGit');
+    if (initGitPlugin) {
+      pluginConfig.set('plugins', [...plugins, { ...initGitPlugin, enabled: true }] as any);
+      await writePluginConfig();
+    }
+  }
   const context = {
     projectName,
     targetDir,
     skipPrompts: options.yes,
-    all: options.all
+    all: options.all,
+    git: options.git
   };
   initNodeEnv();
   main(context);

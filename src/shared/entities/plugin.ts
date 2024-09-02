@@ -9,6 +9,7 @@ export interface PluginParams {
   cacheDirName?: string;
   all?: boolean;
   logPath?: string;
+  git?: boolean;
 }
 
 export interface PluginContext extends PluginParams {

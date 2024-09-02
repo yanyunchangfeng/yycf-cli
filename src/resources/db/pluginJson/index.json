@@ -49,6 +49,7 @@
       "async": false,
       "resourceIntensive": false
     },
+    { "name": "initGit", "enabled": true, "async": false, "resourceIntensive": false },
     {
       "name": "setUpYarn",
       "enabled": true,
@@ -103,7 +104,8 @@
     "downloadRepository",
     "writePkg",
     "userPrompts",
-    "cacheRepository"
+    "cacheRepository",
+    "initGit"
   ],
   "disabledPlugins": ["customEslintReport"],
   "ignoreRepos": [
