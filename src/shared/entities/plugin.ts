@@ -8,6 +8,7 @@ export interface PluginParams {
   skipPrompts?: boolean;
   cacheDirName?: string;
   all?: boolean;
+  logPath?: string;
 }
 
 export interface PluginContext extends PluginParams {

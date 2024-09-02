@@ -2,44 +2,44 @@ import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { logPath } from '../shared';
 
-const genInfoTransport = () =>
+const genInfoTransport = (defaultLogPath: string = logPath) =>
   new DailyRotateFile({
     filename: 'app-%DATE%.log',
     datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
-    dirname: logPath,
+    dirname: defaultLogPath,
     maxSize: '20m',
     maxFiles: '14d'
   });
-const genErrorTransport = () =>
+const genErrorTransport = (defaultLogPath: string = logPath) =>
   new DailyRotateFile({
     filename: 'error-%DATE%.log',
     datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
-    dirname: logPath,
+    dirname: defaultLogPath,
     maxSize: '20m',
     maxFiles: '14d',
     level: 'error'
   });
-const genExceptionTransport = () =>
+const genExceptionTransport = (defaultLogPath: string = logPath) =>
   new DailyRotateFile({
     filename: 'exceptions-%DATE%.log',
     datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
-    dirname: logPath,
+    dirname: defaultLogPath,
     maxSize: '20m',
     maxFiles: '14d'
   });
-const genRejectionTransport = () =>
+const genRejectionTransport = (defaultLogPath: string = logPath) =>
   new DailyRotateFile({
     filename: 'rejections-%DATE%.log',
     datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
-    dirname: logPath,
+    dirname: defaultLogPath,
     maxSize: '20m',
     maxFiles: '14d'
   });
-const init = () => {
+const init = (defaultLogPath: string = logPath) => {
   return winston.createLogger({
     level: 'info',
     format: winston.format.combine(
@@ -53,18 +53,18 @@ const init = () => {
       }),
       winston.format.colorize()
     ),
-    transports: [new winston.transports.Console(), genInfoTransport(), genErrorTransport()],
-    exceptionHandlers: [genExceptionTransport()],
-    rejectionHandlers: [genRejectionTransport()],
+    transports: [new winston.transports.Console(), genInfoTransport(defaultLogPath), genErrorTransport(defaultLogPath)],
+    exceptionHandlers: [genExceptionTransport(defaultLogPath)],
+    rejectionHandlers: [genRejectionTransport(defaultLogPath)],
     exitOnError: false
   });
 };
 let logger = init();
 logger.info('Logger initialized');
 
-const initializeLogger = () => {
-  logger = init();
-  logger.info('Logger reinitialized');
+const initializeLogger = (defaultLogPath: string = logPath) => {
+  logger = init(defaultLogPath);
+  logger.info(`Logger reinitialized: ${defaultLogPath}`);
 };
 
 process.on('uncaughtException', (error) => {

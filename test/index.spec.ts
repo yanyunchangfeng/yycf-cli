@@ -20,18 +20,24 @@ describe('Main Workflow', () => {
         tag: 'v18.2.0'
       }
     ],
-    cacheDirName: 'cacheRepository'
+    cacheDirName: 'cacheRepository',
+    logPath: path.resolve(logPath, '../serviceTestLogs')
   };
   const cache = new CacheRepositoryService(context);
   beforeEach(async () => {
-    await fs.ensureDir(logPath);
+    await fs.ensureDir(context.logPath!);
   });
   it('should execute the full workflow correctly', async () => {
     await clearLogs(context);
-    expect(fs.existsSync(logPath)).toBe(false);
+    expect(fs.existsSync(context.logPath!)).toBe(false);
     await initLogs(context);
-    expect(fs.existsSync(logPath)).toBe(true);
+    expect(fs.existsSync(context.logPath!)).toBe(true);
     await clearCacheRepository(context);
     expect(fs.existsSync(cache.cacheDir)).toBe(false);
+  });
+  afterEach(async () => {
+    if (fs.existsSync(context.logPath!)) {
+      await fs.remove(context.logPath!);
+    }
   });
 });
