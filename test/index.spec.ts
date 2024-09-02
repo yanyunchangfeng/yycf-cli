@@ -9,6 +9,8 @@ import path from 'path';
 const cwd = process.cwd();
 
 describe('Main Workflow', () => {
+  let logDir: string;
+  let cacheDir: string;
   const context: PluginContext = {
     projectName: 'testProject',
     targetDir: path.join(cwd, 'testProject'),
@@ -19,25 +21,26 @@ describe('Main Workflow', () => {
         name: 'webpack-react-template',
         tag: 'v18.2.0'
       }
-    ],
-    cacheDirName: 'cacheRepository',
-    logPath: path.resolve(logPath, '../serviceTestLogs')
+    ]
   };
-  const cache = new CacheRepositoryService(context);
   beforeEach(async () => {
-    await fs.ensureDir(context.logPath!);
+    logDir = path.join(logPath, `log-${Date.now()}-${Math.random()}`);
+    context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
+    context.logPath = logDir;
+    cacheDir = new CacheRepositoryService(context).cacheDir;
+    await fs.ensureDir(logDir);
+    await fs.ensureDir(cacheDir);
   });
   it('should execute the full workflow correctly', async () => {
     await clearLogs(context);
-    expect(fs.existsSync(context.logPath!)).toBe(false);
+    expect(fs.existsSync(logDir)).toBe(false);
     await initLogs(context);
-    expect(fs.existsSync(context.logPath!)).toBe(true);
+    expect(fs.existsSync(logDir)).toBe(true);
     await clearCacheRepository(context);
-    expect(fs.existsSync(cache.cacheDir)).toBe(false);
+    expect(fs.existsSync(cacheDir)).toBe(false);
   });
   afterEach(async () => {
-    if (fs.existsSync(context.logPath!)) {
-      await fs.remove(context.logPath!);
-    }
+    await fs.remove(logDir);
+    await fs.remove(cacheDir);
   });
 });

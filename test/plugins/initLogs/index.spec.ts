@@ -4,21 +4,18 @@ import fs from 'fs-extra';
 import path from 'path';
 
 describe('initLogs', () => {
-  const context: any = {
-    logPath: path.resolve(logPath, '../unitTestInitLogs')
-  };
+  let logDir: string;
+  const context: any = {};
   beforeEach(async () => {
-    if (fs.existsSync(context.logPath)) {
-      await fs.remove(context.logPath);
-    }
+    logDir = path.join(logPath, `log-${Date.now()}-${Math.random()}`);
+    context.logPath = logDir;
+    await fs.remove(logDir);
   });
   it('should init logs dir', async () => {
     await init(context);
-    expect(fs.existsSync(context.logPath)).toBe(true);
+    expect(fs.existsSync(logDir)).toBe(true);
   });
   afterEach(async () => {
-    if (fs.existsSync(context.logPath)) {
-      await fs.remove(context.logPath);
-    }
+    await fs.remove(logDir);
   });
 });

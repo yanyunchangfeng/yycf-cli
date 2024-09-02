@@ -4,14 +4,18 @@ import fs from 'fs-extra';
 import path from 'path';
 
 describe('clearLogs', () => {
-  const context: any = {
-    logPath: path.resolve(logPath, '../unitTestClearLogs')
-  };
+  let logDir: string;
+  const context: any = {};
   beforeEach(async () => {
-    await fs.ensureDir(context.logPath);
+    logDir = path.join(logPath, `log-${Date.now()}-${Math.random()}`);
+    context.logPath = logDir;
+    await fs.ensureDir(logDir);
   });
   it('should clear logs dir', async () => {
     await init(context);
-    expect(fs.existsSync(context.logPath)).toBe(false);
+    expect(fs.existsSync(logDir)).toBe(false);
+  });
+  afterEach(async () => {
+    await fs.remove(logDir);
   });
 });
