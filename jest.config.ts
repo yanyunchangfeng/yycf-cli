@@ -16,7 +16,8 @@ const config: Config = {
     ]
   },
   moduleNameMapper: {
-    '^src/(.*)$': '<rootDir>/src/$1'
+    '^src/(.*)$': '<rootDir>/src/$1',
+    '^test/(.*)$': '<rootDir>/test/$1'
   },
 
   coverageReporters: ['lcov', 'html'],

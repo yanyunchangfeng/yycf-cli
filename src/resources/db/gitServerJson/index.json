@@ -17,6 +17,6 @@
   },
   "defaults": {
     "defaultGitServer": "github",
-    "gitServerConfigured": false
+    "gitServerConfigured": true
   }
 }

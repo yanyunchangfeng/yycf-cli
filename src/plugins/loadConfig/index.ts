@@ -1,10 +1,14 @@
+import { PluginContext, gitSeverPath } from '../../shared';
 import { gitServerConfig } from '../../config';
 import { logger } from '../../utils';
-import { gitSeverPath } from '../../shared';
 import config from './config.json';
+import fs from 'fs-extra';
 
-export async function init() {
+export const init = async (context: PluginContext) => {
   logger.info(`${config.name} ${config.initMessage}`);
-  gitServerConfig.loadFile(gitSeverPath);
+  const curGitServerPath = context.gitServerPath || gitSeverPath;
+  if (fs.existsSync(curGitServerPath)) {
+    gitServerConfig.loadFile(curGitServerPath);
+  }
   logger.info(`${config.name} ${config.exitMessage}`);
-}
+};
