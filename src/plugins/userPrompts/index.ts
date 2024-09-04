@@ -5,8 +5,8 @@ import config from './config.json';
 
 export const init = async (context: PluginContext) => {
   logger.info(`${config.name} ${config.initMessage}`);
-  const prompt = new PromptService(context);
   if (!context.skipPrompts) {
+    const prompt = new PromptService(context);
     await prompt.init();
   }
   logger.info(`${config.name} ${config.exitMessage}`);
