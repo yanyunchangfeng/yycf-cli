@@ -1,12 +1,13 @@
 import { init } from 'src/plugins/clearLogs';
-import { logPath } from 'src/shared';
+import { logPath, PluginContext } from 'src/shared';
 import fs from 'fs-extra';
 import path from 'path';
 
 describe('clearLogs', () => {
   let logDir: string;
-  const context: any = {};
+  let context: PluginContext;
   beforeEach(async () => {
+    context = {} as PluginContext;
     logDir = path.join(logPath, `log-${Date.now()}-${Math.random()}`);
     context.logPath = logDir;
     await fs.ensureDir(logDir);

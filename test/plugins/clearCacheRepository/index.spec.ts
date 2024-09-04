@@ -8,20 +8,10 @@ const cwd = process.cwd();
 
 describe('clearCacheRepository', () => {
   let cacheDir: string;
-  const context: PluginContext = {
-    projectName: 'testProject',
-    targetDir: path.join(cwd, 'testProject'),
-    destDirs: [],
-    repos: [
-      {
-        id: 222,
-        name: 'webpack-react-template',
-        tag: 'v1.0.0'
-      }
-    ]
-  };
+  let context: PluginContext;
 
   beforeEach(async () => {
+    context = {} as PluginContext;
     context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
     cacheDir = new CacheRepositoryService(context).cacheDir;
     await fs.ensureDir(cacheDir);

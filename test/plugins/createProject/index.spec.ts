@@ -19,7 +19,7 @@ describe('createProject', () => {
     jest.clearAllMocks();
   });
 
-  it('should log init and exit messages', async () => {
+  it('should log init and exit messages [mock]', async () => {
     await init(context);
     // 验证是否记录了初始化消息
     expect(logSpy).toHaveBeenCalledWith(`${config.name} ${config.initMessage}`);
@@ -27,7 +27,7 @@ describe('createProject', () => {
     expect(logSpy).toHaveBeenCalledWith(`${config.name} ${config.exitMessage}`);
   });
 
-  it('should create a project', async () => {
+  it('should create a project [mock]', async () => {
     await init(context);
     expect(initSpy).toHaveBeenCalled();
   });

@@ -2,35 +2,26 @@ import { init as clearLogs } from 'src/plugins/clearLogs';
 import { init as initLogs } from 'src/plugins/initLogs';
 import { init as clearCacheRepository } from 'src/plugins/clearCacheRepository';
 import { init as loadConfig } from 'src/plugins/loadConfig';
+import { init as userPrompts } from 'src/plugins/userPrompts';
+import { init as createProject } from 'src/plugins/createProject';
 import { setupContextAndCopyFile } from 'test/utils';
-import fs from 'fs-extra';
 import { logPath, PluginContext } from 'src/shared';
 import { CacheRepositoryService } from 'src/services';
-import path from 'path';
 import { gitServerConfig } from 'src/config';
-
-const cwd = process.cwd();
+import fs from 'fs-extra';
+import path from 'path';
 
 describe('Main Workflow', () => {
   let logDir: string;
   let cacheDir: string;
   let tempGitSeverPath: string;
-  const context: PluginContext = {
-    projectName: 'testProject',
-    targetDir: path.join(cwd, 'testProject'),
-    destDirs: [],
-    repos: [
-      {
-        id: 222,
-        name: 'webpack-react-template',
-        tag: 'v18.2.0'
-      }
-    ]
-  };
+  let context: PluginContext;
   beforeEach(async () => {
+    context = {} as PluginContext;
     logDir = path.join(logPath, `log-${Date.now()}-${Math.random()}`);
-    context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
     context.logPath = logDir;
+    context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
+    context.targetDir = path.join(process.cwd());
     cacheDir = new CacheRepositoryService(context).cacheDir;
     tempGitSeverPath = await setupContextAndCopyFile(context);
     await fs.ensureDir(logDir);

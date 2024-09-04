@@ -19,7 +19,7 @@ describe('userPrompts', () => {
     jest.clearAllMocks();
   });
 
-  it('should log init and exit messages', async () => {
+  it('should log init and exit messages [mock]', async () => {
     await init(context);
     // 验证是否记录了初始化消息
     expect(logSpy).toHaveBeenCalledWith(`${config.name} ${config.initMessage}`);
@@ -27,7 +27,7 @@ describe('userPrompts', () => {
     expect(logSpy).toHaveBeenCalledWith(`${config.name} ${config.exitMessage}`);
   });
 
-  it('should initialize PromptService when skipPrompts is false', async () => {
+  it('should initialize PromptService when skipPrompts is false [mock]', async () => {
     await init(context);
     expect(initSpy).toHaveBeenCalled();
   });
