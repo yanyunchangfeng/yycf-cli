@@ -1,9 +1,9 @@
 import path from 'path';
 import fs from 'fs-extra';
 import Inquirer from 'inquirer';
-import { wrapLoading, initNodeEnv, readPluginConfig, writePluginConfig } from '../utils';
+import { wrapLoading, initNodeEnv } from '../utils';
 import { main } from '../base/main';
-import { pluginConfig } from '../config';
+import { dbService } from '../services';
 
 module.exports = async (projectName: string, options: Record<keyof any, any>) => {
   const cwd = process.cwd();
@@ -32,30 +32,10 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
     }
   }
   if (options.git) {
-    const { plugins } = await readPluginConfig();
-    const initGitPlugin = plugins.find((plugin) => plugin.name === 'initGit');
-    const index = plugins.findIndex((plugin) => plugin.name === 'initGit');
-    if (index) {
-      pluginConfig.set('plugins', [
-        ...plugins.slice(0, index),
-        { ...initGitPlugin, enabled: true },
-        ...plugins.slice(index + 1)
-      ] as any);
-      await writePluginConfig();
-    }
+    await dbService.setSinglePluginEnabled('initGit');
   }
   if (options.install) {
-    const { plugins } = await readPluginConfig();
-    const installPlugin = plugins.find((plugin) => plugin.name === 'installDependencies');
-    const index = plugins.findIndex((plugin) => plugin.name === 'installDependencies');
-    if (installPlugin) {
-      pluginConfig.set('plugins', [
-        ...plugins.slice(0, index),
-        { ...installPlugin, enabled: true },
-        ...plugins.slice(index + 1)
-      ] as any);
-      await writePluginConfig();
-    }
+    await dbService.setSinglePluginEnabled('installDependencies');
   }
   const context = {
     projectName,

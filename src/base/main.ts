@@ -1,12 +1,13 @@
 import path from 'path';
-import { logger, readPluginConfig } from '../utils';
+import { logger } from '../utils';
+import { dbService } from '../services';
 import Listr from 'listr';
 
 export const main = async (context: Record<keyof any, any>) => {
   try {
     // 任务生成函数
     const generateTasks = async () => {
-      const { plugins } = await readPluginConfig();
+      const { plugins } = await dbService.readPluginConfig();
       const serialTasks: Listr.ListrTask<any>[] = [];
       const parallelTasks: Listr.ListrTask<any>[] = [];
       const resourceIntensiveTasks: Listr.ListrTask<any>[] = [];
@@ -38,7 +39,7 @@ export const main = async (context: Record<keyof any, any>) => {
               task: async () => {
                 await pluginModule.init(context);
                 // 更新 JSON 数据后重新生成任务列表
-                const { plugins: updatedPlugins } = await readPluginConfig();
+                const { plugins: updatedPlugins } = await dbService.readPluginConfig();
                 return updatedPlugins;
               }
             });

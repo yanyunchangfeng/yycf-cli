@@ -1,7 +1,7 @@
 import Inquirer from 'inquirer';
-import { gitServerConfig as config, pluginConfig } from '../config';
-import { readGitServerConfig, writeGitServerConfig, logger, readPluginConfig, writePluginConfig } from '../utils';
+import { logger } from '../utils';
 import { GITSERVER, PluginContext } from '../shared';
+import { dbService } from '../services';
 
 class PromptService {
   context;
@@ -9,7 +9,7 @@ class PromptService {
     this.context = context;
   }
   async inquirerGitServerConfig() {
-    const { gitServerType, gitServerConfig, gitServer } = await readGitServerConfig();
+    const { gitServerType, gitServerConfig, gitServer } = await dbService.readGitServerConfig();
     const basePrompts = [
       {
         name: 'origin',
@@ -49,7 +49,7 @@ class PromptService {
       ];
       const { orgs, user } = await Inquirer.prompt(gitHubExtraPrompts as any);
       if (!origin || !Authorization || !(orgs || user)) return;
-      config.set(`gitServers.${gitServer}`, {
+      dbService.gitServerConfigDb.set(`gitServers.${gitServer}`, {
         ...gitServerConfig,
         origin,
         Authorization,
@@ -57,21 +57,21 @@ class PromptService {
         orgs,
         user
       });
-      config.set('defaults.gitServerConfigured', true);
-      return await writeGitServerConfig();
+      dbService.gitServerConfigDb.set('defaults.gitServerConfigured', true);
+      return await dbService.writeGitServerConfig();
     }
     if (!origin || !Authorization) return;
-    config.set(`gitServers.${gitServer}`, {
+    dbService.gitServerConfigDb.set(`gitServers.${gitServer}`, {
       ...gitServerConfig,
       origin,
       Authorization,
       type
     });
-    config.set('defaults.gitServerConfigured', true);
-    await writeGitServerConfig();
+    dbService.gitServerConfigDb.set('defaults.gitServerConfigured', true);
+    await dbService.writeGitServerConfig();
   }
   async inquirerNewGitServer() {
-    const { gitServerList } = await readGitServerConfig();
+    const { gitServerList } = await dbService.readGitServerConfig();
     const { gitServer } = await Inquirer.prompt([
       {
         type: 'input',
@@ -129,17 +129,17 @@ class PromptService {
     };
     if (type === GITSERVER.GITHUB) {
       const { orgs, user } = await Inquirer.prompt(gitHubExtraPrompts as any);
-      config.set(`gitServers.${gitServer}`, {
+      dbService.gitServerConfigDb.set(`gitServers.${gitServer}`, {
         ...result,
         orgs,
         user
       });
     }
-    config.set(`gitServers.${gitServer}`, result);
-    await writeGitServerConfig();
+    dbService.gitServerConfigDb.set(`gitServers.${gitServer}`, result);
+    await dbService.writeGitServerConfig();
   }
   async inquirerChooseGitServer() {
-    const { gitServerList, gitServer: defaultGitServer } = await readGitServerConfig();
+    const { gitServerList, gitServer: defaultGitServer } = await dbService.readGitServerConfig();
     const { gitServer } = await Inquirer.prompt([
       {
         name: 'gitServer',
@@ -149,11 +149,11 @@ class PromptService {
         message: 'please choose a git server:'
       }
     ] as any);
-    config.set('defaults.defaultGitServer', gitServer);
-    await writeGitServerConfig();
+    dbService.gitServerConfigDb.set('defaults.defaultGitServer', gitServer);
+    await dbService.writeGitServerConfig();
   }
   async inquireDeleteGitServer() {
-    const { gitServerList, gitServer: defaultGitServer } = await readGitServerConfig();
+    const { gitServerList, gitServer: defaultGitServer } = await dbService.readGitServerConfig();
     if (!gitServerList.length) {
       return;
     }
@@ -179,16 +179,16 @@ class PromptService {
       return;
     }
 
-    const gitServerConfig: any = config.getProperties();
+    const gitServerConfig: any = await dbService.readGitServerConfigAll();
     delete gitServerConfig.gitServers[gitServer];
-    config.set('gitServers', gitServerConfig.gitServers);
+    dbService.gitServerConfigDb.set('gitServers', gitServerConfig.gitServers);
     if (defaultGitServer === gitServer) {
-      config.set('defaults.defaultGitServer', '');
+      dbService.gitServerConfigDb.set('defaults.defaultGitServer', '');
     }
-    await writeGitServerConfig();
+    await dbService.writeGitServerConfig();
   }
   async inquirerChoosePluginsEnabled() {
-    const { plugins, requiredPlugins, disabledPlugins } = await readPluginConfig();
+    const { plugins, requiredPlugins, disabledPlugins } = await dbService.readPluginConfig();
     const pluginList = plugins
       .filter((plugin) => !disabledPlugins.includes(plugin.name))
       .map((plugin) => {
@@ -213,8 +213,8 @@ class PromptService {
       }
       return { ...plugin, enabled: false };
     });
-    pluginConfig.set('plugins', newPlugins);
-    await writePluginConfig();
+    dbService.pluginConfigDb.set('plugins', newPlugins);
+    await dbService.writePluginConfig();
   }
   async promptUserOption() {
     const { option } = await Inquirer.prompt([
@@ -234,7 +234,7 @@ class PromptService {
     switch (option) {
       case 'chooseGitServer':
         await this.inquirerChooseGitServer();
-        if (config.get('defaults.gitServerConfigured')) return;
+        if (dbService.gitServerConfigDb.get('defaults.gitServerConfigured')) return;
         await this.inquirerGitServerConfig();
         return;
       case 'newGitServer':
@@ -244,8 +244,8 @@ class PromptService {
         await this.inquireDeleteGitServer();
         break;
       case 'resetGitServerConfigured':
-        config.set('defaults.gitServerConfigured', false);
-        await writeGitServerConfig();
+        dbService.gitServerConfigDb.set('defaults.gitServerConfigured', false);
+        await dbService.writeGitServerConfig();
         break;
       case 'choosePluginsEnabled':
         await this.inquirerChoosePluginsEnabled();

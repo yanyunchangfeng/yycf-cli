@@ -1,5 +1,6 @@
+import { dbService } from '../services';
 import { GITSERVER, PluginContext, Repo } from '../shared';
-import { logger, readGitServerConfig, wrapLoading, copy } from '../utils';
+import { logger, wrapLoading, copy } from '../utils';
 import util from 'util';
 // @ts-ignore   正常不用忽略也没问题 因为typings里面有定义  主要是为了解决调式模式下的ts报错（调式编译器的问题）
 import dowloadGitRepo from 'download-git-repo';
@@ -13,7 +14,7 @@ class DownloadService {
     this.context = context;
   }
   async download(repo: Repo, destDir: string) {
-    const { gitServerType, origin, orgs, user, Authorization } = await readGitServerConfig();
+    const { gitServerType, origin, orgs, user, Authorization } = await dbService.readGitServerConfig();
     const { tag, id, name } = repo;
     let requestUrl;
     if (gitServerType !== GITSERVER.GITHUB) {

@@ -1,6 +1,5 @@
 import { PluginContext, Repo } from '../shared';
-import { SetUpService, ServerService } from '.';
-import { readPluginConfig } from '../utils';
+import { SetUpService, ServerService, dbService } from '.';
 import path from 'path';
 import { rename } from 'fs-extra';
 class JsCpdService {
@@ -19,7 +18,7 @@ class JsCpdService {
     });
   }
   async generatorReportJson() {
-    const { jscpdArgs } = await readPluginConfig();
+    const { jscpdArgs } = await dbService.readPluginConfig();
     await this.setUpService.exec(this.staticPath, jscpdArgs, `generator ${this.staticPath} Report Json`);
     await rename(
       path.join(this.context.targetDir, this.reportPath, 'jscpd-report.json'),

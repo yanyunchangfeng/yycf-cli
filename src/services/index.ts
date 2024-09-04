@@ -11,3 +11,4 @@ export { default as PlatoReportService } from './PlatoReportService';
 export { default as JsCpdService } from './JsCpdService';
 export { default as PackageService } from './PackageService';
 export { default as MadgeReportService } from './MadgeReportService';
+export { default as dbService } from './DBService';

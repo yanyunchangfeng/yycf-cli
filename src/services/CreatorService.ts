@@ -1,6 +1,6 @@
 import Inquirer from 'inquirer';
-import { CreatoRequestService } from '.';
-import { wrapLoading, readGitServerConfig, readPluginConfig } from '../utils';
+import { CreatoRequestService, dbService } from '.';
+import { wrapLoading } from '../utils';
 import { GITSERVER, Repo, PluginContext } from '../shared';
 
 class CreatorService {
@@ -9,7 +9,7 @@ class CreatorService {
     this.context = context;
   }
   async fetchRepo() {
-    let { gitServerType } = await readGitServerConfig();
+    let { gitServerType } = await dbService.readGitServerConfig();
     let repos: any = await wrapLoading(
       CreatoRequestService[gitServerType as GITSERVER].fetchRepoList,
       'waiting for fetch template'
@@ -41,7 +41,7 @@ class CreatorService {
     }
   }
   async fetchTag(repo: Repo) {
-    const { gitServerType } = await readGitServerConfig();
+    const { gitServerType } = await dbService.readGitServerConfig();
     const tags = await wrapLoading(
       CreatoRequestService[gitServerType as GITSERVER].fetchTagList,
       `waiting fetch ${repo.name} tag `,
@@ -66,7 +66,7 @@ class CreatorService {
     const repos = await this.fetchRepo();
     if (!repos) return;
     const tags = await Promise.all(repos.map((repo: Repo) => this.fetchTag(repo)));
-    const { ignoreRepos } = await readPluginConfig();
+    const { ignoreRepos } = await dbService.readPluginConfig();
     this.context.repos = repos
       .map((repo: any, index: number) => {
         return {

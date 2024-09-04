@@ -1,6 +1,5 @@
 import { PluginContext, Repo } from '../shared';
-import { readPluginConfig } from '../utils';
-import { SetUpService, ServerService, InstallDependencies } from '.';
+import { SetUpService, ServerService, InstallDependencies, dbService } from '.';
 
 class PlatoReportService {
   context;
@@ -20,7 +19,7 @@ class PlatoReportService {
     this.installDependencies = new InstallDependencies(context, repo);
   }
   async generatorReportJson() {
-    const { platoArgs } = await readPluginConfig();
+    const { platoArgs } = await dbService.readPluginConfig();
     await this.setUpService.exec(this.staticPath, platoArgs, `generator ${this.staticPath} report json`);
   }
   async init() {

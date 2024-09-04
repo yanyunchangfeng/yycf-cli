@@ -1,6 +1,5 @@
 import { PluginContext, Repo } from '../shared';
-import { SetUpService, ServerService } from '.';
-import { readPluginConfig } from '../utils';
+import { SetUpService, ServerService, dbService } from '.';
 
 class MadgeReportService {
   context;
@@ -18,7 +17,7 @@ class MadgeReportService {
     });
   }
   async generatorReport() {
-    const { madgeArgs } = await readPluginConfig();
+    const { madgeArgs } = await dbService.readPluginConfig();
     await this.setUpService.exec(this.staticPath, madgeArgs, `Generate ${this.staticPath} report`);
   }
   async init() {

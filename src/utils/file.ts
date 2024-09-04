@@ -1,7 +1,5 @@
 import fs from 'fs-extra';
 import { safeJsonParse } from '.';
-import { gitSeverPath, pluginPath } from '../shared';
-import { gitServerConfig as gitServersConfig, pluginConfig } from '../config';
 import { logger } from '../utils';
 
 export const readFile = async (path: string, needParse = false) => {
@@ -31,40 +29,4 @@ export const copy = async (originPath: string, targetPath: string, options?: fs.
   } catch (err) {
     logger.error(`copy oringinPath ${originPath} to targetPath ${targetPath} fail:  ${err}`);
   }
-};
-
-export const readGitServerConfig = async () => {
-  const gitServer = gitServersConfig.get('defaults.defaultGitServer');
-  const gitServers: any = gitServersConfig.get('gitServers');
-  const gitServerList = Object.keys(gitServers);
-  const gitServerConfig = gitServersConfig.get(
-    gitServer ? `gitServers.${gitServer}` : (`gitServers.${gitServerList[0]}` as any)
-  );
-  const orgs = gitServerConfig.orgs;
-  const user = gitServerConfig.user;
-  const origin = gitServerConfig.origin;
-  const Authorization = gitServerConfig.Authorization;
-  const gitServerType = gitServerConfig.type;
-
-  return {
-    gitServer,
-    gitServerConfig,
-    gitServerList,
-    orgs,
-    user,
-    origin,
-    Authorization,
-    gitServerType
-  };
-};
-
-export const writeGitServerConfig = async () => {
-  return await writeFile(gitSeverPath, gitServersConfig.getProperties(), true);
-};
-
-export const readPluginConfig = async () => {
-  return pluginConfig.getProperties();
-};
-export const writePluginConfig = async () => {
-  return await writeFile(pluginPath, pluginConfig.getProperties(), true);
 };
