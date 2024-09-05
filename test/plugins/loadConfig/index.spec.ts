@@ -1,24 +1,26 @@
 import { init } from 'src/plugins/loadConfig';
-import { gitServerConfig } from 'src/config';
 import { setupContextAndCopyFile, createTempGitServerPath } from 'test/utils';
 import path from 'path';
 import { logger } from 'src/utils';
 import fs from 'fs-extra';
 import config from 'src/plugins/loadConfig/config.json';
-import { gitSeverPath } from 'src/shared';
+import { dbService } from 'src/services';
+import { PluginContext } from 'src/shared';
 
 describe('loadConfig', () => {
-  const context: any = {};
+  let context: PluginContext;
   let logSpy: jest.SpyInstance;
+  let initSpy: jest.SpyInstance;
   let tempGitSeverPath: string;
   let secondTempGitSeverPath: string;
-  let loadFileSpy: jest.SpyInstance;
   let loadContextSpy: jest.SpyInstance;
 
   beforeEach(async () => {
     // tempGitSeverPath = await setupContextAndCopyFile(context);
+    context = {} as PluginContext;
+    context.gitServerPath = await createTempGitServerPath();
     logSpy = jest.spyOn(logger, 'info').mockImplementation((() => {}) as any);
-    loadFileSpy = jest.spyOn(gitServerConfig, 'loadFile').mockImplementation((() => {}) as any);
+    initSpy = jest.spyOn(dbService, 'init').mockImplementation((() => {}) as any);
     jest.clearAllMocks();
   });
 
@@ -49,9 +51,7 @@ describe('loadConfig', () => {
 
   it('should load config file with default path on init [mock]', async () => {
     await init(context);
-    expect(loadFileSpy).toHaveBeenCalledWith(gitSeverPath);
-    const defaultGitServer = gitServerConfig.get('defaults.defaultGitServer');
-    expect(defaultGitServer).toBe('');
+    expect(initSpy).toHaveBeenCalledWith(context);
   });
 
   afterEach(async () => {

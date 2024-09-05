@@ -1,7 +1,7 @@
 import { writeFile } from '../utils';
 import { pluginConfig, gitServerConfig } from '../config';
-import { pluginPath, gitSeverPath } from '../shared';
-
+import { pluginPath, gitSeverPath, PluginContext } from '../shared';
+import fs from 'fs';
 class DBService {
   pluginConfigDb = pluginConfig;
   gitServerConfigDb = gitServerConfig;
@@ -55,6 +55,12 @@ class DBService {
   }
   async readGitServerConfigAll() {
     return this.gitServerConfigDb.getProperties();
+  }
+  async init(context: PluginContext) {
+    const curGitServerPath = context.gitServerPath || gitSeverPath;
+    if (fs.existsSync(curGitServerPath)) {
+      this.gitServerConfigDb.loadFile(curGitServerPath);
+    }
   }
 }
 
