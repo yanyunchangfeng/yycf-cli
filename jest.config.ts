@@ -20,7 +20,7 @@ const config: Config = {
     '^test/(.*)$': '<rootDir>/test/$1'
   },
 
-  coverageReporters: ['lcov', 'html'],
+  coverageReporters: ['lcov', 'html', 'text-summary'],
   testRegex: '/test/.*\\.spec\\.ts$',
   collectCoverageFrom: ['src/**/*']
 };
