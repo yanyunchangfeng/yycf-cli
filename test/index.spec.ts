@@ -16,6 +16,7 @@ describe('Main Workflow', () => {
   let cacheDir: string;
   let tempGitSeverPath: string;
   let context: PluginContext;
+
   beforeEach(async () => {
     context = {} as PluginContext;
     logDir = path.join(logPath, `log-${Date.now()}-${Math.random()}`);
@@ -27,6 +28,7 @@ describe('Main Workflow', () => {
     await fs.ensureDir(logDir);
     await fs.ensureDir(cacheDir);
   });
+
   it('should execute the full workflow correctly', async () => {
     await clearLogs(context);
     expect(fs.existsSync(logDir)).toBe(false);
@@ -39,6 +41,7 @@ describe('Main Workflow', () => {
     expect(configLoaded).toBeDefined();
     expect(configLoaded.defaults.gitServerConfigured).toBe(true);
   });
+
   afterEach(async () => {
     await fs.remove(logDir);
     await fs.remove(cacheDir);

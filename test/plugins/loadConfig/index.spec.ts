@@ -55,6 +55,6 @@ describe('loadConfig', () => {
   });
 
   afterEach(async () => {
-    // await fs.remove(path.dirname(tempGitSeverPath));
+    // await fs.remove(path.dirname(tempGitSeverPath));//[real]
   });
 });

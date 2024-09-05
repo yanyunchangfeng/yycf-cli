@@ -1,22 +1,24 @@
-import { init } from 'src/plugins/clearCacheRepository';
+import { init } from 'src/plugins/cacheRepository';
 import { PluginContext } from 'src/shared';
 import { CacheRepositoryService } from 'src/services';
 import fs from 'fs-extra';
 
-describe('clearCacheRepository', () => {
+describe('cacheRepository', () => {
   let cacheDir: string;
   let context: PluginContext;
+  let initSpy: jest.SpyInstance;
 
   beforeEach(async () => {
     context = {} as PluginContext;
     context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
     cacheDir = new CacheRepositoryService(context).cacheDir;
-    await fs.ensureDir(cacheDir);
+    initSpy = jest.spyOn(CacheRepositoryService.prototype, 'init').mockImplementation((() => {}) as any);
+    jest.clearAllMocks();
   });
 
-  it('should clear cache repo dir', async () => {
+  it('should cache repo dir', async () => {
     await init(context);
-    expect(fs.existsSync(cacheDir)).toBe(false);
+    expect(initSpy).toHaveBeenCalled();
   });
 
   afterEach(async () => {
