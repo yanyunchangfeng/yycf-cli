@@ -23,13 +23,9 @@
   "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
   "license": "MIT",
   "keywords": [
-    "code-analysis",
-    "code-analyzer",
-    "code-analyze",
-    "code",
-    "analysis",
-    "analyzer",
-    "analyze"
+    "cli",
+    "create-project",
+    "code-analysis"
   ],
   "files": [
     "bin"
