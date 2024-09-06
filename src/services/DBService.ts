@@ -50,8 +50,9 @@ class DBService {
       gitServerType
     };
   }
-  async writeGitServerConfig() {
-    return await writeFile(gitSeverPath, this.gitServerConfigDb.getProperties(), true);
+  async writeGitServerConfig(context?: PluginContext) {
+    const curGitServerPath = context?.gitServerPath || gitSeverPath;
+    return await writeFile(curGitServerPath, this.gitServerConfigDb.getProperties(), true);
   }
   async readGitServerConfigAll() {
     return this.gitServerConfigDb.getProperties();
