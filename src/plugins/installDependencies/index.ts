@@ -14,7 +14,7 @@ export async function init(context: PluginContext) {
         newContext = { ...context, targetDir: path.join(context.targetDir, name) };
       }
       const insDep = new InstallDependencies(newContext, repo);
-      await insDep.installDependencies();
+      await insDep.init();
     })
   );
   logger.info(`${config.name} ${config.exitMessage}`);
