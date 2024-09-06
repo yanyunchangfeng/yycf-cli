@@ -1,7 +1,7 @@
 import { init } from 'src/plugins/initLogs';
-import { logPath, PluginContext } from 'src/shared';
+import { PluginContext } from 'src/shared';
 import fs from 'fs-extra';
-import path from 'path';
+import { createTempPath } from 'test/utils';
 
 describe('initLogs', () => {
   let logDir: string;
@@ -9,7 +9,7 @@ describe('initLogs', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    logDir = path.join(logPath, `log-${Date.now()}-${Math.random()}`);
+    logDir = createTempPath('logs');
     context.logPath = logDir;
     await fs.remove(logDir);
   });

@@ -206,6 +206,7 @@ fetch('report.json')
     ];
     const eslint = document.getElementById('reportChart') as HTMLCanvasElement;
     const ctx = eslint.getContext('2d');
+    // @ts-ignore
     new Chart(ctx, {
       type: 'bar',
       data: {

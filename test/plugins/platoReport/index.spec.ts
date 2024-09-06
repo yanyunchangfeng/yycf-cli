@@ -1,6 +1,7 @@
 import { init } from 'src/plugins/platoReport';
 import { PluginContext } from 'src/shared';
 import { PlatoReportService } from 'src/services';
+import { uniqueId } from 'test/utils';
 
 describe('platopReport', () => {
   let context: PluginContext;
@@ -9,7 +10,7 @@ describe('platopReport', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    repoName = `repo-${Date.now()}-${Math.random()}`;
+    repoName = uniqueId();
     context.repos = [
       {
         id: Date.now(),

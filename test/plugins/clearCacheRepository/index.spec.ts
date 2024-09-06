@@ -2,6 +2,7 @@ import { init } from 'src/plugins/clearCacheRepository';
 import { PluginContext } from 'src/shared';
 import { CacheRepositoryService } from 'src/services';
 import fs from 'fs-extra';
+import { uniqueId } from 'test/utils';
 
 describe('clearCacheRepository', () => {
   let cacheDir: string;
@@ -9,7 +10,7 @@ describe('clearCacheRepository', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
+    context.cacheDirName = uniqueId();
     cacheDir = new CacheRepositoryService(context).cacheDir;
     await fs.ensureDir(cacheDir);
   });

@@ -1,6 +1,7 @@
 import { init } from 'src/plugins/installDependencies';
 import { PluginContext } from 'src/shared';
 import { InstallDependencies } from 'src/services';
+import { uniqueId } from 'test/utils';
 
 describe('installDependencies', () => {
   let context: PluginContext;
@@ -9,7 +10,7 @@ describe('installDependencies', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    repoName = `repo-${Date.now()}-${Math.random()}`;
+    repoName = uniqueId();
     context.repos = [
       {
         id: Date.now(),

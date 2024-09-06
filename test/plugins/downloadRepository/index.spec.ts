@@ -1,6 +1,7 @@
 import { init } from 'src/plugins/downloadRepository';
 import { PluginContext } from 'src/shared';
 import { DownLoadService } from 'src/services';
+import { uniqueId } from 'test/utils';
 
 describe('cacheRepository', () => {
   let context: PluginContext;
@@ -8,7 +9,7 @@ describe('cacheRepository', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
+    context.cacheDirName = uniqueId();
     initSpy = jest.spyOn(DownLoadService.prototype, 'init').mockImplementation((() => {}) as any);
     jest.clearAllMocks();
   });

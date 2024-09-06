@@ -1,6 +1,7 @@
 import { init } from 'src/plugins/jscpdReport';
 import { PluginContext } from 'src/shared';
 import { JsCpdService } from 'src/services';
+import { uniqueId } from 'test/utils';
 
 describe('jscpdReport', () => {
   let context: PluginContext;
@@ -9,7 +10,7 @@ describe('jscpdReport', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    repoName = `repo-${Date.now()}-${Math.random()}`;
+    repoName = uniqueId();
     context.repos = [
       {
         id: Date.now(),

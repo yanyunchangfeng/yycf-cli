@@ -1,6 +1,7 @@
 import { init } from 'src/plugins/madgeReport';
 import { PluginContext } from 'src/shared';
 import { MadgeReportService } from 'src/services';
+import { uniqueId } from 'test/utils';
 
 describe('madgeReport', () => {
   let context: PluginContext;
@@ -9,7 +10,7 @@ describe('madgeReport', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    repoName = `repo-${Date.now()}-${Math.random()}`;
+    repoName = uniqueId();
     context.repos = [
       {
         id: Date.now(),

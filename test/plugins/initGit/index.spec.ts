@@ -1,6 +1,7 @@
 import { init } from 'src/plugins/initGit';
 import { PluginContext } from 'src/shared';
 import { SetUpService } from 'src/services';
+import { uniqueId } from 'test/utils';
 
 describe('initGit', () => {
   let context: PluginContext;
@@ -9,7 +10,7 @@ describe('initGit', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    repoName = `repo-${Date.now()}-${Math.random()}`;
+    repoName = uniqueId();
     context.repos = [
       {
         id: Date.now(),

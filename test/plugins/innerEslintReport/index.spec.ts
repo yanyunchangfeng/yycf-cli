@@ -1,6 +1,7 @@
 import { init } from 'src/plugins/innerEslintReport';
 import { PluginContext } from 'src/shared';
 import { EslintReportService } from 'src/services';
+import { uniqueId } from 'test/utils';
 
 describe('innerEslintReport', () => {
   let context: PluginContext;
@@ -9,7 +10,7 @@ describe('innerEslintReport', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    repoName = `repo-${Date.now()}-${Math.random()}`;
+    repoName = uniqueId();
     context.repos = [
       {
         id: Date.now(),

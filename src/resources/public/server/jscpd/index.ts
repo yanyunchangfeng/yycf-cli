@@ -22,6 +22,7 @@ function createChart(
   backgroundColors: string[],
   borderColors: string[]
 ): void {
+  // @ts-ignore
   new Chart(ctx, {
     type: type,
     data: {

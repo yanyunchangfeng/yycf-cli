@@ -2,6 +2,7 @@ import { init } from 'src/plugins/cacheRepository';
 import { PluginContext } from 'src/shared';
 import { CacheRepositoryService } from 'src/services';
 import fs from 'fs-extra';
+import { uniqueId } from 'test/utils';
 
 describe('cacheRepository', () => {
   let cacheDir: string;
@@ -10,7 +11,7 @@ describe('cacheRepository', () => {
 
   beforeEach(async () => {
     context = {} as PluginContext;
-    context.cacheDirName = `cache-${Date.now()}-${Math.random()}`;
+    context.cacheDirName = uniqueId();
     cacheDir = new CacheRepositoryService(context).cacheDir;
     initSpy = jest.spyOn(CacheRepositoryService.prototype, 'init').mockImplementation((() => {}) as any);
     jest.clearAllMocks();
