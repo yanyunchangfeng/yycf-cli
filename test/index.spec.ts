@@ -28,7 +28,7 @@ import {
   PlatoReportService,
   InstallDependencies
 } from 'src/services';
-import { copy, logger } from 'src/utils';
+import { copy, logger, initNodeEnv } from 'src/utils';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -41,6 +41,7 @@ describe('Main Workflow', () => {
 
   beforeEach(async () => {
     await fs.remove(tempDir);
+    initNodeEnv();
     context = {} as PluginContext;
     logDir = createTempPath('logs');
     context.logPath = logDir;
