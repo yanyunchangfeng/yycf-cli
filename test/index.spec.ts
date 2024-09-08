@@ -22,7 +22,11 @@ import {
   PromptService,
   DownLoadService,
   JsCpdService,
-  ServerService
+  ServerService,
+  MadgeReportService,
+  EslintReportService,
+  PlatoReportService,
+  InstallDependencies
 } from 'src/services';
 import { copy, logger } from 'src/utils';
 import fs from 'fs-extra';
@@ -85,8 +89,21 @@ describe('Main Workflow', () => {
     await downloadRepository(context);
     expect(downloadInitCalled).toBe(true);
 
+    // 下载所有 无需写入package.json
     await writePkg(context);
+
     await initGit(context);
+    const gitPath = path.join(context.targetDir, context.repos[0].name, '.git');
+    expect(fs.existsSync(gitPath)).toBe(true);
+
+    let madgeInitCalled = false;
+    const madgeInit = MadgeReportService.prototype.init;
+    MadgeReportService.prototype.init = async function () {
+      madgeInitCalled = true;
+      await madgeInit.call(this);
+    };
+    await madgeReport(context);
+    expect(madgeInitCalled).toBe(true);
 
     const startServer = ServerService.prototype.startServer;
     ServerService.prototype.startServer = async function () {
@@ -96,8 +113,6 @@ describe('Main Workflow', () => {
       await startServer.call(this);
     };
 
-    await madgeReport(context);
-
     let jscpdInitCalled = false;
     const jscpdInit = JsCpdService.prototype.init;
     JsCpdService.prototype.init = async function () {
@@ -106,9 +121,34 @@ describe('Main Workflow', () => {
     };
     await jscpdReport(context);
     expect(jscpdInitCalled).toBe(true);
+
+    let innerEslintInitCalled = false;
+    const innerEslintInit = EslintReportService.prototype.initInnerEslint;
+    EslintReportService.prototype.initInnerEslint = async function () {
+      innerEslintInitCalled = true;
+      await innerEslintInit.call(this);
+    };
     await innerEslintReport(context);
+    expect(innerEslintInitCalled).toBe(true);
+
+    let installInitCalled = false;
+    const installInit = InstallDependencies.prototype.init;
+    InstallDependencies.prototype.init = async function () {
+      installInitCalled = true;
+      await installInit.call(this);
+    };
     await installDependencies(context);
+    expect(installInitCalled).toBe(true);
+
+    let platoInitCalled = false;
+    const platoInit = PlatoReportService.prototype.init;
+    PlatoReportService.prototype.init = async function () {
+      platoInitCalled = true;
+      await platoInit.call(this);
+    };
+
     await platoReport(context);
+    expect(platoInitCalled).toBe(true);
   });
 
   afterEach(async () => {

@@ -14,7 +14,7 @@ export const init = async (context: PluginContext) => {
         newContext = { ...context, targetDir: path.join(context.targetDir, name) };
       }
       const setUpService = new SetUpService(newContext.targetDir);
-      setUpService.exec('git', ['init'], `initialize ${name} git repository`);
+      await setUpService.exec('git', ['init'], `initialize ${name} git repository`);
     })
   );
   logger.info(`${config.name} ${config.exitMessage}`);
