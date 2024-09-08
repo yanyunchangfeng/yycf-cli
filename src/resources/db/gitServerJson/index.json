@@ -1,6 +1,6 @@
 {
   "gitServers": {
-    "github": {
+    "yycf": {
       "origin": "https://api.github.com",
       "user": "yanyunchangfeng",
       "orgs": "yycfFSET",
@@ -16,7 +16,7 @@
     }
   },
   "defaults": {
-    "defaultGitServer": "github",
+    "defaultGitServer": "",
     "gitServerConfigured": true
   }
 }

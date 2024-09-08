@@ -23,7 +23,7 @@ const config: Config = {
   coverageReporters: ['lcov', 'html', 'text-summary'],
   testRegex: '/test/.*\\.spec\\.ts$',
   collectCoverageFrom: ['src/**/*'],
-  testTimeout: 60 * 1000
+  testTimeout: 3 * 60 * 1000
 };
 
 export default config;

@@ -13,7 +13,8 @@ import { init as innerEslintReport } from 'src/plugins/innerEslintReport';
 import { init as jscpdReport } from 'src/plugins/jscpdReport';
 import { init as platoReport } from 'src/plugins/platoReport';
 import { init as installDependencies } from 'src/plugins/installDependencies';
-import { setupContextAndCopyFile, uniqueId, createTempPath, tempDir } from 'test/utils';
+import { setupContextAndCopyFile, uniqueId, createTempPath } from 'test/utils';
+import { tempDir, resourcePublicServerPath } from 'test/shared';
 import { PluginContext } from 'src/shared';
 import {
   CacheRepositoryService,
@@ -21,10 +22,9 @@ import {
   PromptService,
   DownLoadService,
   JsCpdService,
-  SetUpService,
   ServerService
 } from 'src/services';
-import { logger } from 'src/utils';
+import { copy, logger } from 'src/utils';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -84,15 +84,15 @@ describe('Main Workflow', () => {
     };
     await downloadRepository(context);
     expect(downloadInitCalled).toBe(true);
+
     await writePkg(context);
     await initGit(context);
 
-    // 编译目标ts文件
     const startServer = ServerService.prototype.startServer;
     ServerService.prototype.startServer = async function () {
-      const setUpService = new SetUpService(this.context.targetDir);
-      const tsFile = path.join(this.context.targetDir, this.ServerParams.reportPath, 'index.ts');
-      await setUpService.exec('tsc', [tsFile, '--target', 'es6', '--module', 'esnext'], 'complile ts files');
+      const originJsPath = path.join(resourcePublicServerPath, this.ServerParams.staticPath, 'index.js');
+      const targetJsPath = path.join(this.context.targetDir, this.ServerParams.reportPath, 'index.js');
+      copy(originJsPath, targetJsPath);
       await startServer.call(this);
     };
 
@@ -106,9 +106,9 @@ describe('Main Workflow', () => {
     };
     await jscpdReport(context);
     expect(jscpdInitCalled).toBe(true);
-    // await innerEslintReport(context);
-    // await installDependencies(context);
-    // await platoReport(context);
+    await innerEslintReport(context);
+    await installDependencies(context);
+    await platoReport(context);
   });
 
   afterEach(async () => {
