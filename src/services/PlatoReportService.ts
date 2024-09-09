@@ -20,7 +20,11 @@ class PlatoReportService {
   }
   async generatorReportJson() {
     const { platoArgs } = await dbService.readPluginConfig();
-    await this.setUpService.exec(this.staticPath, platoArgs, `generator ${this.staticPath} report json`);
+    await this.setUpService.exec(
+      this.staticPath,
+      platoArgs,
+      `generator ${this.serverService.getRepoTitle()} ${this.staticPath} report json`
+    );
   }
   async init() {
     await this.setUpService.setup(this.staticPath);

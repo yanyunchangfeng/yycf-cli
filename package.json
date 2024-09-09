@@ -19,7 +19,9 @@
     "prettier": "prettier -c --write  **/* --cache",
     "pre-commit": "lint-staged && npm test",
     "test": "jest",
-    "service-test": "jest test/index.spec.ts"
+    "test:integ": "jest test/integration --detectOpenHandles",
+    "test:unit": "jest test/unit",
+    "test:e2e": "jest test/e2e"
   },
   "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
   "license": "MIT",

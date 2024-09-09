@@ -19,7 +19,11 @@ class JsCpdService {
   }
   async generatorReportJson() {
     const { jscpdArgs } = await dbService.readPluginConfig();
-    await this.setUpService.exec(this.staticPath, jscpdArgs, `generator ${this.staticPath} Report Json`);
+    await this.setUpService.exec(
+      this.staticPath,
+      jscpdArgs,
+      `generator ${this.serverService.getRepoTitle()} ${this.staticPath} Report Json`
+    );
     await rename(
       path.join(this.context.targetDir, this.reportPath, 'jscpd-report.json'),
       path.join(this.context.targetDir, this.reportPath, 'report.json')

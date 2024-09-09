@@ -29,11 +29,19 @@ class EslintReportService {
   }
   async generatorInnerReport() {
     const { eslintArgs } = await dbService.readPluginConfig();
-    await this.setUpService.exec(this.staticPath, eslintArgs, `generator ${this.staticPath} report json`);
+    await this.setUpService.exec(
+      this.staticPath,
+      eslintArgs,
+      `generator ${this.serverService.getRepoTitle()} ${this.staticPath} report json`
+    );
   }
   async generatorCustomReport() {
     const { eslintArgs } = await dbService.readPluginConfig();
-    await this.setUpService.exec('yarn', [this.staticPath, ...eslintArgs], `generator ${this.staticPath} report json`);
+    await this.setUpService.exec(
+      'yarn',
+      [this.staticPath, ...eslintArgs],
+      `generator ${this.serverService.getRepoTitle()} ${this.staticPath} report json`
+    );
   }
   async initEslintPlugin() {
     // 1. yarn 会出现node版本 以及安装不了插件的问题

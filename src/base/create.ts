@@ -43,7 +43,8 @@ module.exports = async (projectName: string, options: Record<keyof any, any>) =>
     skipPrompts: options.yes,
     all: options.all,
     git: options.git,
-    runInstall: options.install
+    runInstall: options.install,
+    exit: options.exit
   };
   initNodeEnv();
   main(context);

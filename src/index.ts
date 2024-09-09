@@ -13,6 +13,7 @@ program
   .option('-a, --all', 'download all repos')
   .option('-g, --git', 'initialize a git repository')
   .option('-i, --install', 'install dependencies')
+  .option('-e, --exit', 'exit after creating')
   .action((name, cmd) => {
     require('./base/create')(name, cmd);
   });

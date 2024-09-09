@@ -13,8 +13,8 @@ import { init as innerEslintReport } from 'src/plugins/innerEslintReport';
 import { init as jscpdReport } from 'src/plugins/jscpdReport';
 import { init as platoReport } from 'src/plugins/platoReport';
 import { init as installDependencies } from 'src/plugins/installDependencies';
-import { setupContextAndCopyFile, uniqueId, createTempPath } from 'test/utils';
-import { tempDir, resourcePublicServerPath } from 'test/shared';
+import { setUpGitServerContextAndCopyFile, uniqueId, createTempPath } from 'test/utils';
+import { integrationTempDir, resourcePublicServerPath } from 'test/shared';
 import { PluginContext } from 'src/shared';
 import {
   CacheRepositoryService,
@@ -40,14 +40,15 @@ describe('Main Workflow', () => {
   let targetDir: string;
 
   beforeEach(async () => {
-    await fs.remove(tempDir);
+    await fs.remove(integrationTempDir);
     initNodeEnv();
     context = {} as PluginContext;
     logDir = createTempPath('logs');
     context.logPath = logDir;
+    context.exit = true;
     context.cacheDirName = uniqueId('test-cache-repos');
     cacheDir = new CacheRepositoryService(context).cacheDir;
-    tempGitServerPath = await setupContextAndCopyFile(context);
+    tempGitServerPath = await setUpGitServerContextAndCopyFile(context);
     targetDir = createTempPath('projects');
     context.targetDir = targetDir;
     await fs.ensureDir(logDir);
@@ -108,8 +109,8 @@ describe('Main Workflow', () => {
 
     const startServer = ServerService.prototype.startServer;
     ServerService.prototype.startServer = async function () {
-      const originJsPath = path.join(resourcePublicServerPath, this.ServerParams.staticPath, 'index.js');
-      const targetJsPath = path.join(this.context.targetDir, this.ServerParams.reportPath, 'index.js');
+      const originJsPath = path.join(resourcePublicServerPath, this.serverParams.staticPath, 'index.js');
+      const targetJsPath = path.join(this.context.targetDir, this.serverParams.reportPath, 'index.js');
       copy(originJsPath, targetJsPath);
       await startServer.call(this);
     };

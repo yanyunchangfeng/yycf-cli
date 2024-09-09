@@ -1,6 +1,6 @@
 import { PluginContext, resourcePublicServerPath, ServerParams } from '../shared';
 import express from 'express';
-import { logger, copy, readFile, writeFile } from '../utils';
+import { logger, copy, readFile, writeFile, sleep } from '../utils';
 import Handlebars from 'handlebars';
 import path from 'path';
 import http from 'http';
@@ -11,31 +11,37 @@ class ServerService {
   app = express();
   basePort = 3000;
   server?: http.Server;
-  ServerParams: ServerParams;
+  serverParams: ServerParams;
   filters = ['hbs'];
   constructor(context: PluginContext, serverParams: ServerParams) {
     this.context = context;
-    this.ServerParams = serverParams;
+    this.serverParams = serverParams;
   }
   init() {
-    this.app.use(express.static(path.join(this.context.targetDir, this.ServerParams.reportPath)));
+    this.app.use(express.static(path.join(this.context.targetDir, this.serverParams.reportPath)));
   }
   async startServer() {
     this.init();
     try {
       const port = await this.findAvailablePort(this.basePort);
-      this.server = this.app.listen(port, () => {
-        logger.info(`${this.ServerParams.staticPath} server running at http://localhost:${port}`);
+      this.server = this.app.listen(port, async () => {
+        logger.info(
+          `${this.getRepoTitle()} ${this.serverParams.staticPath} server running at http://localhost:${port}`
+        );
         open(`http://localhost:${port}`);
+        if (this.context.exit) {
+          await sleep(1000);
+          this.stopServer();
+        }
       });
     } catch (err) {
-      logger.error(`Error finding available port: ${err}`);
+      logger.error(` Error  ${this.getRepoTitle()} ${this.serverParams.staticPath} finding available port: ${err}`);
     }
   }
   async stopServer() {
     if (this.server) {
       this.server.close(() => {
-        logger.info('Server stopped.');
+        logger.info(`${this.getRepoTitle()} ${this.serverParams.staticPath} Server stopped.`);
       });
     }
   }
@@ -56,23 +62,28 @@ class ServerService {
       });
     });
   }
+  getRepoTitle() {
+    return `${this.serverParams.repo?.name}${this.serverParams.repo?.tag ? `@${this.serverParams.repo.tag}` : ''}`;
+  }
   async generateHTML() {
     try {
       // 读取 Handlebars 模板文件
-      const templatePath = path.join(resourcePublicServerPath, this.ServerParams.staticPath, 'index.hbs');
+      const templatePath = path.join(resourcePublicServerPath, this.serverParams.staticPath, 'index.hbs');
       const templateContent = await readFile(templatePath);
       // 编译模板
       const template = Handlebars.compile(templateContent);
       // 生成 HTML 内容
       const htmlContent = template({
-        title: `${this.ServerParams.repo?.name}${this.ServerParams.repo?.tag ? `@${this.ServerParams.repo.tag}` : ''}`
+        title: this.getRepoTitle()
       });
       // 输出到文件
-      const outputPath = path.join(this.context.targetDir, this.ServerParams.reportPath, 'index.html');
+      const outputPath = path.join(this.context.targetDir, this.serverParams.reportPath, 'index.html');
       await writeFile(outputPath, htmlContent);
-      logger.info(`${this.ServerParams.staticPath} HTML file generated successfully at ${outputPath}`);
+      logger.info(
+        `generated ${this.getRepoTitle()} ${this.serverParams.staticPath} HTML file successfully at ${outputPath}`
+      );
     } catch (error) {
-      logger.error(`Error generating ${this.ServerParams.staticPath} HTML: ${error}`);
+      logger.error(`Error generating ${this.getRepoTitle()} ${this.serverParams.staticPath} HTML: ${error}`);
     }
   }
   filter = (src: string, dest: string) => {
@@ -82,8 +93,8 @@ class ServerService {
     return true;
   };
   async copyServerStatic() {
-    const originPath = path.join(resourcePublicServerPath, this.ServerParams.staticPath);
-    const targetPath = path.join(this.context.targetDir, this.ServerParams.reportPath);
+    const originPath = path.join(resourcePublicServerPath, this.serverParams.staticPath);
+    const targetPath = path.join(this.context.targetDir, this.serverParams.reportPath);
     await copy(originPath, targetPath, { filter: this.filter });
   }
 }

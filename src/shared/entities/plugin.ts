@@ -12,6 +12,7 @@ export interface PluginParams {
   git?: boolean;
   runInstall?: boolean;
   gitServerPath?: string;
+  exit?: boolean;
 }
 
 export interface PluginContext extends PluginParams {
