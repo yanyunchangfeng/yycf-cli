@@ -19,7 +19,7 @@
     "prettier": "prettier -c --write  **/* --cache",
     "pre-commit": "lint-staged && npm test",
     "test": "jest",
-    "test-service-test": "jest test/index.spec.ts"
+    "service-test": "jest test/index.spec.ts"
   },
   "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
   "license": "MIT",
@@ -44,7 +44,6 @@
     "listr": "0.14.3",
     "open": "8.4.2",
     "ora": "5.4.0",
-    "plato": "1.7.0",
     "winston": "3.13.1",
     "winston-daily-rotate-file": "5.0.0"
   },
