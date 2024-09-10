@@ -5,7 +5,7 @@ export const gitServerConfig = convict({
     doc: 'Git servers configurations',
     format: Object,
     default: {
-      github: {
+      yycf: {
         origin: null,
         Authorization: null,
         orgs: null,
