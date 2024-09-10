@@ -67,14 +67,15 @@ class CreatorService {
     if (!repos) return;
     const tags = await Promise.all(repos.map((repo: Repo) => this.fetchTag(repo)));
     const { ignoreRepos } = await dbService.readPluginConfig();
-    this.context.repos = repos
-      .map((repo: any, index: number) => {
-        return {
-          ...repo,
-          tag: tags[index]
-        };
-      })
-      .filter((repo: any) => !ignoreRepos.includes(repo.name));
+    this.context.repos = repos.map((repo: any, index: number) => {
+      return {
+        ...repo,
+        tag: tags[index]
+      };
+    });
+    if (this.context.all) {
+      this.context.repos = this.context.repos.filter((repo: any) => !ignoreRepos.includes(repo.name));
+    }
   }
   async init() {
     await this.fetchTemplate();
