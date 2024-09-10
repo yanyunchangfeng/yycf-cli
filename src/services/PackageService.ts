@@ -8,7 +8,7 @@ class PackageService {
   }
   async writePkg() {
     const pkgPath = path.join(this.context.targetDir, 'package.json');
-    let pInfo: any = await readFile(pkgPath, true);
+    const pInfo: any = await readFile(pkgPath, true);
     if (!pInfo) return;
     pInfo.name = this.context.projectName;
     await writeFile(pkgPath, pInfo, true);

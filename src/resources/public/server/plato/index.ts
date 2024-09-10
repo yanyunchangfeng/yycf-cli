@@ -88,7 +88,6 @@ fetch('report.json')
     // 创建图表
     function createChart(ctx: CanvasRenderingContext2D, labels: string[], data: number[], label: string): void {
       const Color = randomColor();
-      // @ts-ignore
       new Chart(ctx, {
         type: 'bar',
         data: {
