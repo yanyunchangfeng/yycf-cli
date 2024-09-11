@@ -1,6 +1,6 @@
 import { PluginContext, resourcePublicServerPath, ServerParams } from '../shared';
 import express from 'express';
-import { logger, copy, readFile, writeFile, sleep } from '../utils';
+import { logger, copy, readFile, writeFile } from '../utils';
 import Handlebars from 'handlebars';
 import path from 'path';
 import http from 'http';
@@ -29,13 +29,13 @@ class ServerService {
           `${this.getRepoTitle()} ${this.serverParams.staticPath} server running at http://localhost:${port}`
         );
         open(`http://localhost:${port}`);
-        if (this.context.exit) {
-          await sleep(1000);
-          this.stopServer();
-        }
       });
     } catch (err) {
       logger.error(` Error  ${this.getRepoTitle()} ${this.serverParams.staticPath} finding available port: ${err}`);
+    } finally {
+      if (this.context.exit) {
+        this.stopServer();
+      }
     }
   }
   async stopServer() {
