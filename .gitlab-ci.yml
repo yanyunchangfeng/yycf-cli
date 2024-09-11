@@ -11,7 +11,12 @@ unit-integration-e2e-test:
     - yarn build # 构建项目
   script:
     - yarn test # 运行测试脚本
+  retry: 2 # 重试次数
   coverage: /Statements\s+:\s+([\d\.]+)%\s+\(\s*\d+\/\d+\s*\)/ # 根据你的覆盖率输出调整正则表达式
   artifacts:
     paths:
       - coverage/ # 保存覆盖率报告
+      - integrationTestTemp/ # 保存集成测试结果
+      - e2eTestTemp/ # 保存端到端测试结果
+    exclude:
+      - '**/node_modules/**'
