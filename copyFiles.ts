@@ -3,7 +3,7 @@ import path from 'path';
 
 const originDbPath = path.join(__dirname, 'src/resources/db');
 const targetDbPath = path.join(__dirname, 'bin/resources/db');
-const filters = ['db', 'ts'];
+const filters = ['db', '.ts'];
 
 const filter = (src: string, dest: string) => {
   if (filters.find((filter) => src.includes(filter))) {

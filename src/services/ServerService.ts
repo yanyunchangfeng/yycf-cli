@@ -12,7 +12,7 @@ class ServerService {
   basePort = 3000;
   server?: http.Server;
   serverParams: ServerParams;
-  filters = ['hbs'];
+  filters = ['.hbs', '.ts'];
   constructor(context: PluginContext, serverParams: ServerParams) {
     this.context = context;
     this.serverParams = serverParams;
