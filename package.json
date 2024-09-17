@@ -22,7 +22,8 @@
     "test:integ": "jest test/integration --detectOpenHandles",
     "test:unit": "jest test/unit",
     "test:e2e": "jest test/e2e",
-    "test:only": "jest test/unit/userPrompts"
+    "test:only": "jest test/unit/userPrompts",
+    "test:github": "yarn test:unit"
   },
   "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
   "license": "MIT",
