@@ -17,3 +17,5 @@ jobs:
       - run: yarn test:github
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
