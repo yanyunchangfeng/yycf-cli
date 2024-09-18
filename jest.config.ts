@@ -19,7 +19,7 @@ const config: Config = {
     '^src/(.*)$': '<rootDir>/src/$1',
     '^test/(.*)$': '<rootDir>/test/$1'
   },
-
+  modulePathIgnorePatterns: ['<rootDir>/e2eTestTemp/', '<rootDir>/integrationTestTemp/'],
   coverageReporters: ['lcov', 'html', 'text-summary'],
   testRegex: '/test/.*\\.spec\\.ts$',
   collectCoverageFrom: ['src/**/*'],
