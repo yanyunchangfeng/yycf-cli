@@ -38,7 +38,7 @@ export const pluginConfig = convict({
   eslintArgs: {
     doc: 'eslint args',
     format: Array,
-    default: ['-f', 'json', '-o', 'eslint/report.json', '||', 'true']
+    default: ['-c', 'eslint.config.cjs', '-f', 'json', '-o', 'eslint-report/report.json', '||', 'true']
   },
   requiredPlugins: {
     doc: 'required plugins',

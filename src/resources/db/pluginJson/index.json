@@ -95,7 +95,7 @@
   ],
   "eslintPkgs": ["eslint", "globals", "@eslint/js", "typescript-eslint", "eslint-plugin-react", "typescript"],
   "eslintPlugins": ["@eslint/config@latest"],
-  "eslintArgs": ["-f", "json", "-o", "eslint-report/report.json", "||", "true"],
+  "eslintArgs": ["-c", "eslint.config.cjs", "-f", "json", "-o", "eslint-report/report.json", "||", "true"],
   "requiredPlugins": [
     "initLogs",
     "loadConfig",
