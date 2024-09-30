@@ -1,4 +1,4 @@
-![build](https://github.com/yanyunchangfeng/yycf-cli/actions/workflows/test.yml/badge.svg) [![codecov](https://codecov.io/gh/yanyunchangfeng/yycf-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/yanyunchangfeng/yycf-cli)
+[![build](https://github.com/yanyunchangfeng/yycf-cli/actions/workflows/test.yml/badge.svg)](https://github.com/yanyunchangfeng/yycf-cli/actions/workflows/test.yml) [![codecov](https://codecov.io/gh/yanyunchangfeng/yycf-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/yanyunchangfeng/yycf-cli)
 
 <p align="center">
     <img width="100" src="https://cdn.jsdelivr.net/gh/yanyunchangfeng/cdn@1.0/assets/icons/cf-icon@0,75x.png">
