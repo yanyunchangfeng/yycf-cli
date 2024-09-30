@@ -7,6 +7,7 @@ unit-integration-e2e-test:
   tags:
     - coverage
   before_script:
+    - npm config set registry https://registry.npmmirror.com # 设置npm源
     - yarn install # 安装依赖
     - yarn build # 构建项目
   script:
