@@ -15,6 +15,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '21.x'
+      - run: yarn config list
       - run: yarn install
       - run: yarn test:github
       - name: Upload coverage to Codecov
