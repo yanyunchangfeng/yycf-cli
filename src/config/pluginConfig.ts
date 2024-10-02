@@ -88,7 +88,7 @@ export const pluginConfig = convict({
     format: Array,
     default: ['-p', '"**/*.{ts,tsx}"', '-r', 'json', '-o', 'jscpd-report']
   },
-  madgeArgs: ['--extensions', 'ts,tsx', '*', '-i', 'madge-report/report.png']
+  madgeArgs: ['--extensions', 'ts,tsx', '*', '-i', 'madge-report/report.svg']
 });
 
 pluginConfig.validate({ allowed: 'strict' });
