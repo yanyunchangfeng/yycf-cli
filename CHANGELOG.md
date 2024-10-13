@@ -1,3 +1,9 @@
+# [1.2.0-beta.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.1.0...v1.2.0-beta.1) (2024-10-13)
+
+### Features
+
+- update .releaserc ([d3132e4](https://github.com/yanyunchangfeng/yycf-cli/commit/d3132e4981589f8d27931e8fa6904fb96fd4e436))
+
 # [1.1.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.0.1...v1.1.0) (2024-10-13)
 
 ### Features
