@@ -41,6 +41,7 @@ class CacheRepositoryService {
         const targetDir = this.context.all ? path.join(this.context.targetDir, name) : this.context.targetDir;
         this.context.destDirs.push(destDir);
         if (fs.existsSync(destDir)) {
+          // 手动删除远端的tag 会导致原有的缓存目拷贝到新项目下结构不对 需要清除原有的缓存目录
           await copy(destDir, targetDir);
         }
       })
