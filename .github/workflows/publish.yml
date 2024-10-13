@@ -30,7 +30,7 @@ jobs:
       - run: yarn test:github
 
       # 运行 semantic-release 来自动管理版本和发布
-      - run: npx semantic-release
+      - run: yarn semantic-release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 从 GitHub Secrets 中获取 NPM token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub token，用于创建 release 和标签
