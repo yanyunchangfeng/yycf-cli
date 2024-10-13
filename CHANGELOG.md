@@ -1,3 +1,9 @@
+# [1.1.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.0.1...v1.1.0) (2024-10-13)
+
+### Features
+
+- update ci ([fceb374](https://github.com/yanyunchangfeng/yycf-cli/commit/fceb374b39cb2dbbc5c6572f355f24a68dd13293))
+
 # 1.0.0 (2024-10-13)
 
 ### Bug Fixes
