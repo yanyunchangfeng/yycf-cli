@@ -24,7 +24,8 @@
     "test:e2e": "jest test/e2e",
     "test:only": "jest test/unit/userPrompts",
     "test:github": "yarn test:unit",
-    "test:single": "jest test/unit/promptService"
+    "test:single": "jest test/unit/promptService",
+    "release": "semantic-release"
   },
   "author": "yanyunchangfeng <yanyunchangfeng@gmail.com> (https://github.com/yanyunchangfeng)",
   "license": "MIT",
