@@ -3,7 +3,7 @@
     "main",
     {
       "name": "dev/cf",
-      "prerelease": "beta"
+      "prerelease": "rc"
     }
   ],
   "plugins": [
