@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main # 在 main 分支推送时触发
+      - dev/**
 
 jobs:
   release:
@@ -17,6 +18,7 @@ jobs:
       # 设置 Node.js 环境
       - uses: actions/setup-node@v3
         with:
+          node-version: '21.x'
           registry-url: 'https://registry.npmjs.org'
 
       # 安装依赖
