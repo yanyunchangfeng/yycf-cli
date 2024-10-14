@@ -1,3 +1,9 @@
+# [1.4.0-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.3.0...v1.4.0-rc.1) (2024-10-14)
+
+### Features
+
+- add CretorRequestService ([ab09137](https://github.com/yanyunchangfeng/yycf-cli/commit/ab09137d8d48bb5c66a7f7b23da69929e9a3b771))
+
 # [1.3.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.2.0...v1.3.0) (2024-10-14)
 
 ### Features
