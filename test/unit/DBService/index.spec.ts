@@ -1,10 +1,9 @@
-import dbService from 'src/services/DBService'; // 假设 DBService 文件的路径为 ./DBService
+import dbService from 'src/services/DBService';
 import { pluginConfig, gitServerConfig } from 'src/config';
 import { writeFile } from 'src/utils';
 import fs from 'fs-extra';
 import { GITSERVER, PluginContext } from 'src/shared';
 
-// Mock 外部依赖
 jest.mock('src/config', () => ({
   pluginConfig: {
     getProperties: jest.fn(),
