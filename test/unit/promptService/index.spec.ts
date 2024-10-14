@@ -8,19 +8,26 @@ jest.mock('inquirer');
 
 describe('PromptService', () => {
   let promptService: PromptService;
+  let dbServiceReadGitServerConfigSpy: jest.SpyInstance;
+  let dbServiceWriteGitServerConfigSpy: jest.SpyInstance;
+  let dbServiceGitServerConfigSetSpy: jest.SpyInstance;
+  let inquirerSpy: jest.SpyInstance;
 
   beforeEach(() => {
     // 创建一个新的 PluginContext，并实例化 PromptService
     const context: PluginContext = {} as any;
     promptService = new PromptService(context);
-
+    inquirerSpy = jest.spyOn(Inquirer, 'prompt');
+    dbServiceReadGitServerConfigSpy = jest.spyOn(dbService, 'readGitServerConfig');
+    dbServiceWriteGitServerConfigSpy = jest.spyOn(dbService, 'writeGitServerConfig');
+    dbServiceGitServerConfigSetSpy = jest.spyOn(dbService.gitServerConfigDb, 'set');
     // 清理所有的 jest mocks
     jest.clearAllMocks();
   });
 
   it('should configure and write git server config for GitHub with valid inputs', async () => {
     // Mock dbService.readGitServerConfig to return sample data
-    jest.spyOn(dbService, 'readGitServerConfig').mockResolvedValue({
+    dbServiceReadGitServerConfigSpy.mockResolvedValue({
       gitServerType: GITSERVER.GITHUB,
       gitServerConfig: { origin: 'https://github.com', Authorization: 'token' },
       gitServer: 'github',
@@ -32,31 +39,29 @@ describe('PromptService', () => {
     });
 
     // Mock Inquirer.prompt to simulate user input
-    jest
-      .spyOn(Inquirer, 'prompt')
+    inquirerSpy
       .mockResolvedValueOnce({ origin: 'https://github.com', Authorization: 'token', type: GITSERVER.GITHUB })
       .mockResolvedValueOnce({ orgs: 'my-org', user: 'my-user' });
 
     // Mock dbService.gitServerConfigDb.set and writeGitServerConfig
-    const mockSet = jest.spyOn(dbService.gitServerConfigDb, 'set');
-    const mockWrite = jest.spyOn(dbService, 'writeGitServerConfig').mockResolvedValue(undefined);
+    dbServiceWriteGitServerConfigSpy.mockResolvedValue(undefined);
 
     await promptService.inquirerGitServerConfig();
 
     // 验证是否调用了 dbService.gitServerConfigDb.set 和 writeGitServerConfig
-    expect(mockSet).toHaveBeenCalledWith('gitServers.github', {
+    expect(dbServiceGitServerConfigSetSpy).toHaveBeenCalledWith('gitServers.github', {
       origin: 'https://github.com',
       Authorization: 'token',
       type: GITSERVER.GITHUB,
       orgs: 'my-org',
       user: 'my-user'
     });
-    expect(mockWrite).toHaveBeenCalled();
+    expect(dbServiceWriteGitServerConfigSpy).toHaveBeenCalled();
   });
 
   it('should configure and write git server config for non-GitHub server', async () => {
     // Mock dbService.readGitServerConfig to return sample data
-    jest.spyOn(dbService, 'readGitServerConfig').mockResolvedValue({
+    dbServiceReadGitServerConfigSpy.mockResolvedValue({
       gitServerType: GITSERVER.GITLAB,
       gitServerConfig: { origin: 'https://gitlab.com', Authorization: 'token' },
       gitServer: 'gitlab',
@@ -68,51 +73,48 @@ describe('PromptService', () => {
     });
 
     // Mock Inquirer.prompt to simulate user input
-    jest
-      .spyOn(Inquirer, 'prompt')
-      .mockResolvedValueOnce({ origin: 'https://gitlab.com', Authorization: 'token', type: GITSERVER.GITLAB });
+    inquirerSpy.mockResolvedValueOnce({ origin: 'https://gitlab.com', Authorization: 'token', type: GITSERVER.GITLAB });
 
     // Mock dbService.gitServerConfigDb.set and writeGitServerConfig
-    const mockSet = jest.spyOn(dbService.gitServerConfigDb, 'set');
-    const mockWrite = jest.spyOn(dbService, 'writeGitServerConfig').mockResolvedValue(undefined);
+    // const mockSet = jest.spyOn(dbService.gitServerConfigDb, 'set');
+    dbServiceWriteGitServerConfigSpy.mockResolvedValue(undefined);
 
     await promptService.inquirerGitServerConfig();
 
     // 验证是否调用了 dbService.gitServerConfigDb.set 和 writeGitServerConfig
-    expect(mockSet).toHaveBeenCalledWith('gitServers.gitlab', {
+    expect(dbServiceGitServerConfigSetSpy).toHaveBeenCalledWith('gitServers.gitlab', {
       origin: 'https://gitlab.com',
       Authorization: 'token',
       type: GITSERVER.GITLAB
     });
-    expect(mockWrite).toHaveBeenCalled();
+    expect(dbServiceWriteGitServerConfigSpy).toHaveBeenCalled();
   });
 
   it('should not configure git server if required inputs are missing', async () => {
     // Mock dbService.readGitServerConfig to return sample data
-    jest.spyOn(dbService, 'readGitServerConfig').mockResolvedValue({
+    dbServiceReadGitServerConfigSpy.mockResolvedValue({
       gitServerType: GITSERVER.GITHUB,
       gitServerConfig: { origin: 'https://github.com', Authorization: 'token' },
       gitServer: 'github'
     } as any);
 
     // Simulate missing inputs for origin, Authorization, orgs, or user
-    jest.spyOn(Inquirer, 'prompt').mockResolvedValueOnce({ origin: '', Authorization: '', type: GITSERVER.GITHUB }); // Invalid data
-    jest.spyOn(Inquirer, 'prompt').mockResolvedValueOnce({ orgs: '', user: '' }); // Invalid data
+    inquirerSpy.mockResolvedValueOnce({ origin: '', Authorization: '', type: GITSERVER.GITHUB }); // Invalid data
+    inquirerSpy.mockResolvedValueOnce({ orgs: '', user: '' }); // Invalid data
 
     // Mock dbService.gitServerConfigDb.set and writeGitServerConfig
-    const mockSet = jest.spyOn(dbService.gitServerConfigDb, 'set');
-    const mockWrite = jest.spyOn(dbService, 'writeGitServerConfig').mockResolvedValue(undefined);
+    dbServiceWriteGitServerConfigSpy.mockResolvedValue(undefined);
 
     await promptService.inquirerGitServerConfig();
 
     // 验证是否未调用 set 和 write 方法，因为输入无效
-    expect(mockSet).not.toHaveBeenCalled();
-    expect(mockWrite).not.toHaveBeenCalled();
+    expect(dbServiceGitServerConfigSetSpy).not.toHaveBeenCalled();
+    expect(dbServiceWriteGitServerConfigSpy).not.toHaveBeenCalled();
   });
 
   it('should handle deleting a git server', async () => {
     // Mock dbService.readGitServerConfig to return sample data
-    jest.spyOn(dbService, 'readGitServerConfig').mockResolvedValue({
+    dbServiceReadGitServerConfigSpy.mockResolvedValue({
       gitServerList: ['github', 'gitlab'],
       gitServer: 'github'
     } as any);
@@ -134,19 +136,17 @@ describe('PromptService', () => {
     } as any);
 
     // Mock Inquirer.prompt for choosing and confirming delete
-    jest
-      .spyOn(Inquirer, 'prompt')
+    inquirerSpy
       .mockResolvedValueOnce({ gitServer: 'github' }) // Simulate choosing 'github'
       .mockResolvedValueOnce({ confirmDelete: true }); // Simulate confirming deletion
 
-    const mockSet = jest.spyOn(dbService.gitServerConfigDb, 'set');
-    const mockWrite = jest.spyOn(dbService, 'writeGitServerConfig').mockResolvedValue();
+    dbServiceWriteGitServerConfigSpy.mockResolvedValue(undefined);
 
     // Act: Call the method we want to test
     await promptService.inquireDeleteGitServer();
 
     // Assert: Ensure 'github' is deleted from the config
-    expect(mockSet).toHaveBeenCalledWith('gitServers', {
+    expect(dbServiceGitServerConfigSetSpy).toHaveBeenCalledWith('gitServers', {
       gitlab: {
         origin: 'https://gitlab.com',
         Authorization: 'token',
@@ -155,13 +155,13 @@ describe('PromptService', () => {
     });
 
     // If 'github' was the default, ensure defaultGitServer is reset
-    expect(mockSet).toHaveBeenCalledWith('defaults.defaultGitServer', '');
-    expect(mockWrite).toHaveBeenCalled();
+    expect(dbServiceGitServerConfigSetSpy).toHaveBeenCalledWith('defaults.defaultGitServer', '');
+    expect(dbServiceWriteGitServerConfigSpy).toHaveBeenCalled();
   });
 
   it('should not delete the last git server', async () => {
     // Mock dbService.readGitServerConfig to return sample data
-    jest.spyOn(dbService, 'readGitServerConfig').mockResolvedValue({
+    dbServiceReadGitServerConfigSpy.mockResolvedValue({
       gitServerType: GITSERVER.GITHUB,
       gitServerConfig: { origin: 'https://github.com', Authorization: 'token' },
       gitServer: 'github',
@@ -173,10 +173,7 @@ describe('PromptService', () => {
     });
 
     // Simulate user selecting a git server to delete and confirming deletion
-    jest
-      .spyOn(Inquirer, 'prompt')
-      .mockResolvedValueOnce({ gitServer: 'github' })
-      .mockResolvedValueOnce({ confirmDelete: true });
+    inquirerSpy.mockResolvedValueOnce({ gitServer: 'github' }).mockResolvedValueOnce({ confirmDelete: true });
 
     // Mock logger to warn that last git server can't be deleted
     const mockWarn = jest.spyOn(logger, 'warn');
@@ -186,6 +183,7 @@ describe('PromptService', () => {
     // 验证是否记录了警告
     expect(mockWarn).toHaveBeenCalledWith('can not delete the last git server');
   });
+
   // 测试插件启用/禁用的逻辑
   it('should enable or disable plugins based on user input', async () => {
     jest.spyOn(dbService, 'readPluginConfig').mockResolvedValue({
@@ -197,7 +195,7 @@ describe('PromptService', () => {
       disabledPlugins: []
     } as any);
 
-    jest.spyOn(Inquirer, 'prompt').mockResolvedValueOnce({ choosePlugins: ['pluginA'] });
+    inquirerSpy.mockResolvedValueOnce({ choosePlugins: ['pluginA'] });
 
     const mockSet = jest.spyOn(dbService.pluginConfigDb, 'set');
     const mockWrite = jest.spyOn(dbService, 'writePluginConfig').mockResolvedValue(undefined);
@@ -210,37 +208,39 @@ describe('PromptService', () => {
     ]);
     expect(mockWrite).toHaveBeenCalled();
   });
+
   // 测试新增 git server 流程
   it('should add a new git server with valid inputs', async () => {
-    jest.spyOn(dbService, 'readGitServerConfig').mockResolvedValue({ gitServerList: [] } as any);
+    dbServiceReadGitServerConfigSpy.mockResolvedValue({ gitServerList: [] } as any);
 
-    jest
-      .spyOn(Inquirer, 'prompt')
+    inquirerSpy
       .mockResolvedValueOnce({ gitServer: 'bitbucket' })
       .mockResolvedValueOnce({
         origin: 'https://bitbucket.org',
         Authorization: 'token',
-        type: GITSERVER.GITHUB
+        type: GITSERVER.GITHUB,
+        orgs: '',
+        user: ''
       })
       .mockResolvedValueOnce({ org: '', user: '' });
 
-    const mockSet = jest.spyOn(dbService.gitServerConfigDb, 'set');
-    const mockWrite = jest.spyOn(dbService, 'writeGitServerConfig').mockResolvedValue(undefined);
+    dbServiceWriteGitServerConfigSpy.mockResolvedValue(undefined);
 
     await promptService.inquirerNewGitServer();
 
-    expect(mockSet).toHaveBeenCalledWith('gitServers.bitbucket', {
+    expect(dbServiceGitServerConfigSetSpy).toHaveBeenCalledWith('gitServers.bitbucket', {
       origin: 'https://bitbucket.org',
       Authorization: 'token',
       type: GITSERVER.GITHUB,
       orgs: '',
       user: ''
     });
-    expect(mockWrite).toHaveBeenCalled();
+    expect(dbServiceWriteGitServerConfigSpy).toHaveBeenCalled();
   });
+
   it('should call inquirerChooseGitServer when "chooseGitServer" is selected', async () => {
     // 模拟用户选择 "chooseGitServer"
-    jest.spyOn(Inquirer, 'prompt').mockResolvedValueOnce({ option: 'chooseGitServer' });
+    inquirerSpy.mockResolvedValueOnce({ option: 'chooseGitServer' });
     const chooseGitServerSpy = jest.spyOn(promptService, 'inquirerChooseGitServer').mockResolvedValueOnce(undefined);
 
     // 模拟 gitServerConfigured 仍然为 false
