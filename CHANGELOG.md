@@ -1,3 +1,9 @@
+# [1.3.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.2.0...v1.3.0) (2024-10-14)
+
+### Features
+
+- update DBService & add unit test for it ([a0d51b8](https://github.com/yanyunchangfeng/yycf-cli/commit/a0d51b8e3ab93a4aef351b84f27389ecae8a1e0f))
+
 # [1.3.0-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.2.0...v1.3.0-rc.1) (2024-10-14)
 
 ### Features
