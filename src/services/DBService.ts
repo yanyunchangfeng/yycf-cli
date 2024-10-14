@@ -1,7 +1,7 @@
 import { writeFile } from '../utils';
 import { pluginConfig, gitServerConfig } from '../config';
 import { pluginPath, gitSeverPath, PluginContext } from '../shared';
-import fs from 'fs';
+import fs from 'fs-extra';
 class DBService {
   pluginConfigDb = pluginConfig;
   gitServerConfigDb = gitServerConfig;
