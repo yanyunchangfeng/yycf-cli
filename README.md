@@ -1,5 +1,7 @@
 [![Test Coverage](https://github.com/yanyunchangfeng/yycf-cli/actions/workflows/test.yml/badge.svg)](https://github.com/yanyunchangfeng/yycf-cli/actions/workflows/test.yml?query=branch:main) [![codecov](https://codecov.io/gh/yanyunchangfeng/yycf-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/yanyunchangfeng/yycf-cli)
 
+[![npm latest version](https://img.shields.io/npm/v/yycf-cli/latest.svg)](https://www.npmjs.com/package/yycf-cli)
+
 <p align="center">
     <img width="100" src="https://cdn.jsdelivr.net/gh/yanyunchangfeng/cdn@1.0/assets/icons/cf-icon@0,75x.png">
 </p>
