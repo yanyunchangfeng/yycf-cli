@@ -1,3 +1,9 @@
+# [1.4.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.3.0...v1.4.0) (2024-10-26)
+
+### Features
+
+- add fetchAllData for git server ([6199b52](https://github.com/yanyunchangfeng/yycf-cli/commit/6199b52cca2521fd3548ddedf368b2f8aebfc42e))
+
 # [1.4.0-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.3.0...v1.4.0-rc.1) (2024-10-26)
 
 ### Features
