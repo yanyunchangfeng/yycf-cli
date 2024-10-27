@@ -1,6 +1,6 @@
 {
   "name": "yycf-cli",
-  "version": "1.4.1-rc.1",
+  "version": "1.4.1",
   "description": "yycf cli",
   "main": "bin/index.js",
   "bin": {
