@@ -1,13 +1,14 @@
 name: Test Coverage
 
+env:
+  TEST_SCRIPT: ${{vars.TEST_SCRIPT ||  'test:unit'}}
+
 on:
   workflow_dispatch:
   push:
     branches:
       - main
       - dev/**
-env:
-  TEST_SCRIPT: ${{vars.TEST_SCRIPT ||  'test:unit'}}
 
 jobs:
   build:

@@ -1,5 +1,8 @@
 name: Publish Package to npmjs
 
+env:
+  TEST_SCRIPT: ${{vars.TEST_SCRIPT ||  'test:unit'}}
+
 on:
   workflow_dispatch: # 手动触发
   push:
@@ -27,7 +30,7 @@ jobs:
       - run: yarn build
 
       # 运行测试（可选）
-      - run: yarn test:unit
+      - run: yarn ${{env.TEST_SCRIPT}}
 
       # 运行 semantic-release 来自动管理版本和发布
       - run: yarn release
