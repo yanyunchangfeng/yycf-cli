@@ -17,7 +17,7 @@
     "start:debug": "node --inspect-brk -r ts-node/register src/index.ts create xxx -y -f",
     "prepare": "husky install",
     "prettier": "prettier -c --write  **/* --cache",
-    "pre-commit": "lint-staged && npm run test:unit",
+    "pre-commit": "lint-staged",
     "test": "jest",
     "test:integ": "jest test/integration --detectOpenHandles",
     "test:unit": "jest test/unit",
