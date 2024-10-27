@@ -1,3 +1,9 @@
+## [1.4.1-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.4.0...v1.4.1-rc.1) (2024-10-27)
+
+### Bug Fixes
+
+- cache dir permission ([fb34c8f](https://github.com/yanyunchangfeng/yycf-cli/commit/fb34c8fb37e5f94edf5dea0235651dc64cacce94))
+
 # [1.4.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.3.0...v1.4.0) (2024-10-26)
 
 ### Features
