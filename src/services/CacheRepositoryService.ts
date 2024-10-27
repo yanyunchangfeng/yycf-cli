@@ -17,13 +17,14 @@ class CacheRepositoryService {
     this.initCacheDir(this.context.cacheDirName || this.dirName);
   }
   async initCacheDir(dirName: string) {
+    const homedir = os.homedir();
     const plaform = os.platform();
     if (plaform === 'linux') {
-      this.cacheDir = `/var/cache/${dirName}`; // 替换为实际的缓存目录
+      this.cacheDir = path.join(homedir, '.cache', dirName); // 替换为实际的缓存目录; // 替换为实际的缓存目录
     } else if (plaform === 'darwin') {
-      this.cacheDir = `/Library/Caches/${dirName}`; // 替换为实际的缓存目录
+      this.cacheDir = path.join(homedir, 'Library', 'Caches', dirName); // 替换为实际的缓存目录
     } else if (plaform === 'win32') {
-      const appData = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming');
+      const appData = process.env.APPDATA || path.join(homedir, 'AppData', 'Roaming');
       this.cacheDir = path.join(appData, dirName); // 替换为实际的缓存目录
     } else {
       throw new Error('不支持的操作系统');
