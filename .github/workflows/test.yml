@@ -6,6 +6,9 @@ on:
     branches:
       - main
       - dev/**
+env:
+  TEST_SCRIPT: ${{vars.TEST_SCRIPT ||  'test:unit'}}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,7 +20,7 @@ jobs:
           node-version: '21.x'
       - run: yarn config list
       - run: yarn install
-      - run: yarn test:unit
+      - run: yarn ${{env.TEST_SCRIPT}}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
