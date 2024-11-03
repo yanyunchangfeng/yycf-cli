@@ -10,10 +10,13 @@ unit-integration-e2e-test:
   tags:
     - coverage
   before_script:
-    - yarn install # 安装依赖
-    - yarn build # 构建项目
+    - npm config set registry https://registry.npmmirror.com # 设置npm源
+    - npm install -g pnpm # 安装pnpm
+    - pnpm install # 安装依赖
+    - pnpm build # 构建项目
+    - npm link
   script:
-    - yarn ${TEST_SCRIPT} # 运行测试脚本
+    - pnpm ${TEST_SCRIPT} # 运行测试脚本
   retry: 2 # 重试次数
   coverage: /Statements\s+:\s+([\d\.]+)%\s+\(\s*\d+\/\d+\s*\)/ # 根据你的覆盖率输出调整正则表达式
   artifacts:
