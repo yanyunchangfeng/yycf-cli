@@ -51,12 +51,6 @@
     },
     { "name": "initGit", "enabled": true, "async": false, "resourceIntensive": false },
     {
-      "name": "setUpYarn",
-      "enabled": true,
-      "async": false,
-      "resourceIntensive": false
-    },
-    {
       "name": "customEslintReport",
       "enabled": false,
       "async": true,
@@ -100,7 +94,6 @@
     "initLogs",
     "loadConfig",
     "createProject",
-    "setUpYarn",
     "downloadRepository",
     "writePkg",
     "userPrompts",
@@ -120,9 +113,7 @@
     "word-ui",
     "back-management-vite",
     "back-management",
-    "data-mind",
-    "webpack-electron-react-template",
-    "webpack-react-template"
+    "data-mind"
   ],
   "platoArgs": ["-r", "-d", "plato-report", "-x", "'.*(vendor|polyfill|react|lodash).*'", "dist", "out/_next", "bin"],
   "jscpdArgs": ["-p", "'**/*.{ts,tsx}'", "-r", "json", "-o", "jscpd-report"],
