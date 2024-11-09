@@ -1,6 +1,0 @@
-{
-  "name": "setUpYarn",
-  "enabled": true,
-  "initMessage": "plugin is running",
-  "exitMessage": "plugin is exiting"
-}

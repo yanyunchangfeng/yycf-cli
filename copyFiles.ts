@@ -18,7 +18,7 @@ const copyFiles = async () => {
     if (!fs.existsSync(targetDbPath)) {
       await fs.copy(originDbPath, targetDbPath);
     }
-    // await fs.copy('src/resources/db/pluginJson', 'bin/resources/db/pluginJson');
+    await fs.copy('src/resources/db/pluginJson', 'bin/resources/db/pluginJson');
     console.log('Files copied successfully!');
   } catch (err) {
     console.error('Error copying files:', err);
