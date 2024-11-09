@@ -1,3 +1,9 @@
+# [1.5.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.4.1...v1.5.0) (2024-11-09)
+
+### Features
+
+- add detectPackageManager for install & remove setUpYarn & update pluginConfig ([42ca09e](https://github.com/yanyunchangfeng/yycf-cli/commit/42ca09e54bea74d5465c2b81b388e942af164a8d))
+
 # [1.5.0-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.4.1...v1.5.0-rc.1) (2024-11-09)
 
 ### Features
