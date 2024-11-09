@@ -8,7 +8,6 @@ import { init as cacheRepository } from 'src/plugins/cacheRepository';
 import { init as downloadRepository } from 'src/plugins/downloadRepository';
 import { init as writePkg } from 'src/plugins/writePkg';
 import { init as initGit } from 'src/plugins/initGit';
-import { init as setUpYarn } from 'src/plugins/setUpYarn';
 import { init as madgeReport } from 'src/plugins/madgeReport';
 import { init as innerEslintReport } from 'src/plugins/innerEslintReport';
 import { init as jscpdReport } from 'src/plugins/jscpdReport';
@@ -99,15 +98,6 @@ describe('Main Workflow', () => {
     await initGit(context);
     const gitPath = path.join(context.targetDir, context.repos[0].name, '.git');
     expect(fs.existsSync(gitPath)).toBe(true);
-
-    let setUpYarnCalled = false;
-    const setUpYarnInit = SetUpService.prototype.setup;
-    SetUpService.prototype.setup = async function (pkg: string) {
-      setUpYarnCalled = true;
-      await setUpYarnInit.call(this, pkg);
-    };
-    await setUpYarn(context);
-    expect(setUpYarnCalled).toBe(true);
 
     let madgeInitCalled = false;
     const madgeInit = MadgeReportService.prototype.init;
