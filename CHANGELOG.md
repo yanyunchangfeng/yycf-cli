@@ -1,3 +1,9 @@
+# [1.5.0-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.4.1...v1.5.0-rc.1) (2024-11-09)
+
+### Features
+
+- add Install for pkgManager ([cdb7e70](https://github.com/yanyunchangfeng/yycf-cli/commit/cdb7e70342306f31bef0d4fedec996d8905db9aa))
+
 ## [1.4.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.4.0...v1.4.1) (2024-10-27)
 
 ### Bug Fixes
