@@ -1,3 +1,9 @@
+# [1.6.0-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.5.0...v1.6.0-rc.1) (2024-11-18)
+
+### Features
+
+- update EslintReportService ([c360aba](https://github.com/yanyunchangfeng/yycf-cli/commit/c360aba3aea3ffb52bec618cdfe32feb336257e4))
+
 # [1.5.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.4.1...v1.5.0) (2024-11-09)
 
 ### Features
