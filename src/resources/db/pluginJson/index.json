@@ -100,7 +100,7 @@
     "cacheRepository",
     "initGit"
   ],
-  "disabledPlugins": ["customEslintReport"],
+  "disabledPlugins": [],
   "ignoreRepos": [
     "Monitoring",
     "argocd-example-apps",

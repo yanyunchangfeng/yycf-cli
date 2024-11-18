@@ -32,7 +32,7 @@ export const pluginConfig = convict({
   eslintPlugins: {
     doc: 'eslint Plugin',
     format: Array,
-    default: ['@eslint/config@latest', '--config', 'eslint-config-standard']
+    default: ['@eslint/config@latest']
   },
   eslintArgs: {
     doc: 'eslint args',

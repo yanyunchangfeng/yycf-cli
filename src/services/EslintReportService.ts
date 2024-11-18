@@ -39,7 +39,7 @@ class EslintReportService {
     const { eslintArgs } = await dbService.readPluginConfig();
     await this.setUpService.exec(
       'yarn',
-      [this.staticPath, ...eslintArgs],
+      [this.staticPath, ...eslintArgs.slice(2)],
       `generator ${this.serverService.getRepoTitle()} ${this.staticPath} report json`
     );
   }
