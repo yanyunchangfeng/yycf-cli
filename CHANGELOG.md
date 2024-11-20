@@ -1,3 +1,9 @@
+# [1.7.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.6.0...v1.7.0) (2024-11-20)
+
+### Features
+
+- update writePkg plugin ([3a5f6f2](https://github.com/yanyunchangfeng/yycf-cli/commit/3a5f6f29a6efda654a290717f8d4738fd81662e5))
+
 # [1.7.0-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.6.0...v1.7.0-rc.1) (2024-11-20)
 
 ### Features
