@@ -1,3 +1,9 @@
+## [1.7.1-rc.1](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.7.0...v1.7.1-rc.1) (2024-12-18)
+
+### Bug Fixes
+
+- pkgJson repository.url ([37354e7](https://github.com/yanyunchangfeng/yycf-cli/commit/37354e788061dd9667ec0210ecc68b0e3a29bde1))
+
 # [1.7.0](https://github.com/yanyunchangfeng/yycf-cli/compare/v1.6.0...v1.7.0) (2024-11-20)
 
 ### Features
