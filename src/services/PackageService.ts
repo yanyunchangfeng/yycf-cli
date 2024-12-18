@@ -15,8 +15,8 @@ class PackageService {
     const repoUrl = pInfo.repository?.url;
     if (repoUrl) {
       const parsedUrl = new URL(repoUrl);
-      const baseUrl = path.join(parsedUrl.origin, parsedUrl.pathname.split('/').filter(Boolean).slice(0, 1).join('/'));
-      pInfo.repository.url = path.join(baseUrl, `${pInfo.name}.git`);
+      const userPath = parsedUrl.pathname.split('/').filter(Boolean).slice(0, 1).join('/');
+      pInfo.repository.url = new URL(`${userPath}/${pInfo.name}.git`, parsedUrl.origin).toString();
     }
     await writeFile(pkgPath, pInfo, true);
   }
